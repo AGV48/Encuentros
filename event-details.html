@@ -1,0 +1,58 @@
+<!-- FILE: chat-details.html (Descripción y lista de compras del encuentro) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuentros • Detalles del encuentro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,sans-serif;background:#0b1021;color:#E8ECF7;padding:20px}
+.section{max-width:700px;margin:auto;background:#121735;padding:20px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35);margin-bottom:20px}
+h2{margin:0 0 12px}
+label{display:block;margin:8px 0 4px;font-weight:600}
+input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#0f1430;color:#E8ECF7}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.12)}
+.total{font-weight:700;text-align:right;margin-top:10px}
+.btn{margin-top:12px;padding:10px 14px;border:none;border-radius:12px;font-weight:700;background:linear-gradient(135deg,#635BFF,#22D3EE);color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="section">
+<h2>Descripción del encuentro</h2>
+<form action="chat.html">
+<label for="place">Lugar</label>
+<input id="place" type="text" value="Restaurante Central">
+<label for="date">Fecha</label>
+<input id="date" type="date" value="2025-08-25">
+<label for="time">Hora</label>
+<input id="time" type="time" value="19:30">
+<button class="btn" type="submit">Actualizar descripción</button>
+</form>
+</div>
+
+
+<div class="section">
+<h2>Lista de compras</h2>
+<form>
+<label for="item">Producto</label>
+<input id="item" type="text" placeholder="Ej: Pizza">
+<label for="price">Precio</label>
+<input id="price" type="number" placeholder="Ej: 20000">
+<button class="btn" type="submit">Agregar a la lista</button>
+</form>
+<table>
+<thead>
+<tr><th>Producto</th><th>Precio</th></tr>
+</thead>
+<tbody>
+<tr><td>Pizza</td><td>$20,000</td></tr>
+<tr><td>Refrescos</td><td>$10,000</td></tr>
+</tbody>
+</table>
+<div class="total">Total: $30,000</div>
+<div class="total">Por persona (3): $10,000</div>
+</div>
+</body>
+</html>

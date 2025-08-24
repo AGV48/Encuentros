@@ -8,95 +8,95 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0b1021;
-      --primary: #635BFF; /* Índigo eléctrico */
-      --secondary: #22D3EE; /* Cian */
-      --accent: #F43F5E; /* Rosa fuerte */
-      --card: #121735;
-      --text: #E6E8F2;
-      --muted: #9AA0B7;
-      --ok: #10B981;
-      --warning: #F59E0B;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text);
-      background:
-        radial-gradient(60vmax 60vmax at 10% 10%, rgba(34,211,238,.12), transparent 60%),
-        radial-gradient(40vmax 40vmax at 90% 20%, rgba(99,91,255,.15), transparent 60%),
-        radial-gradient(40vmax 40vmax at 10% 90%, rgba(244,63,94,.12), transparent 60%),
-        var(--bg);
-      display:grid; place-items:center; padding:24px;
-    }
-    .card{
-      width:min(420px, 100%); background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08); backdrop-filter: blur(10px);
-      border-radius:var(--radius); box-shadow:var(--shadow); padding:28px;
-    }
-    .logo-row{display:flex; align-items:center; gap:12px; margin-bottom:8px}
-    .logo{width:40px; height:40px; border-radius:10px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display:grid; place-items:center; font-weight:800}
-    h1{margin:0; font-size:1.35rem}
-    p.sub{margin:.25rem 0 1rem; color:var(--muted); font-size:.95rem}
-    form{display:grid; gap:14px}
-    label{font-weight:600; font-size:.9rem}
-    input[type="email"], input[type="password"], input[type="text"]{
-      width:100%; padding:14px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
-      background:#0f1430; color:var(--text); outline:none; transition:border .2s, transform .04s ease;
-    }
-    input:focus{border-color:var(--secondary);}
-    .row{display:flex; align-items:center; justify-content:space-between; gap:8px}
-    .btn{appearance:none; border:none; cursor:pointer; padding:12px 16px; border-radius:12px; font-weight:700; transition:transform .05s ease, box-shadow .2s}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{background:linear-gradient(135deg, var(--primary), var(--secondary)); color:white; box-shadow:0 10px 20px rgba(99,91,255,.3)}
-    .btn-ghost{background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.12)}
-    .aux{display:flex; justify-content:space-between; align-items:center; gap:8px; color:var(--muted); font-size:.9rem}
-    .divider{display:flex; align-items:center; gap:12px; margin:10px 0}
-    .divider::before,.divider::after{content:""; flex:1; height:1px; background:rgba(255,255,255,.12)}
-    a{color:var(--secondary); text-decoration:none}
-    .providers{display:grid; gap:10px}
-    .provider{display:flex; align-items:center; gap:10px; justify-content:center}
-    .provider svg{width:18px; height:18px}
-  </style>
-</head>
-<body>
-  <main class="card" aria-label="Inicio de sesión">
-    <div class="logo-row">
-      <div class="logo" aria-hidden="true">💬</div>
-      <div>
-        <h1>Encuentros</h1>
-        <p class="sub">Organiza, chatea y no olvides ningún plan</p>
+    <style>
+      :root {
+        --bg: #0b1021;
+        --primary: #635BFF; /* Índigo eléctrico */
+        --secondary: #22D3EE; /* Cian */
+        --accent: #F43F5E; /* Rosa fuerte */
+        --card: #121735;
+        --text: #E6E8F2;
+        --muted: #9AA0B7;
+        --ok: #10B981;
+        --warning: #F59E0B;
+        --radius: 16px;
+        --shadow: 0 10px 30px rgba(0,0,0,.35);
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0; font-family:Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text);
+        background:
+          radial-gradient(60vmax 60vmax at 10% 10%, rgba(34,211,238,.12), transparent 60%),
+          radial-gradient(40vmax 40vmax at 90% 20%, rgba(99,91,255,.15), transparent 60%),
+          radial-gradient(40vmax 40vmax at 10% 90%, rgba(244,63,94,.12), transparent 60%),
+          var(--bg);
+        display:grid; place-items:center; padding:24px;
+      }
+      .card{
+        width:min(420px, 100%); background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+        border:1px solid rgba(255,255,255,.08); backdrop-filter: blur(10px);
+        border-radius:var(--radius); box-shadow:var(--shadow); padding:28px;
+      }
+      .logo-row{display:flex; align-items:center; gap:12px; margin-bottom:8px}
+      .logo{width:40px; height:40px; border-radius:10px; background: linear-gradient(135deg, var(--primary), var(--secondary)); display:grid; place-items:center; font-weight:800}
+      h1{margin:0; font-size:1.35rem}
+      p.sub{margin:.25rem 0 1rem; color:var(--muted); font-size:.95rem}
+      form{display:grid; gap:14px}
+      label{font-weight:600; font-size:.9rem}
+      input[type="email"], input[type="password"], input[type="text"]{
+        width:100%; padding:14px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+        background:#0f1430; color:var(--text); outline:none; transition:border .2s, transform .04s ease;
+      }
+      input:focus{border-color:var(--secondary);}
+      .row{display:flex; align-items:center; justify-content:space-between; gap:8px}
+      .btn{appearance:none; border:none; cursor:pointer; padding:12px 16px; border-radius:12px; font-weight:700; transition:transform .05s ease, box-shadow .2s}
+      .btn:active{transform:translateY(1px)}
+      .btn-primary{background:linear-gradient(135deg, var(--primary), var(--secondary)); color:white; box-shadow:0 10px 20px rgba(99,91,255,.3)}
+      .btn-ghost{background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.12)}
+      .aux{display:flex; justify-content:space-between; align-items:center; gap:8px; color:var(--muted); font-size:.9rem}
+      .divider{display:flex; align-items:center; gap:12px; margin:10px 0}
+      .divider::before,.divider::after{content:""; flex:1; height:1px; background:rgba(255,255,255,.12)}
+      a{color:var(--secondary); text-decoration:none}
+      .providers{display:grid; gap:10px}
+      .provider{display:flex; align-items:center; gap:10px; justify-content:center}
+      .provider svg{width:18px; height:18px}
+    </style>
+  </head>
+  <body>
+    <main class="card" aria-label="Inicio de sesión">
+      <div class="logo-row">
+        <div class="logo" aria-hidden="true">💬</div>
+        <div>
+          <h1>Encuentros</h1>
+          <p class="sub">Organiza, chatea y no olvides ningún plan</p>
+        </div>
       </div>
-    </div>
-    <form action="dashboard.html">
-      <div>
-        <label for="email">Correo</label>
-        <input id="email" type="email" placeholder="nombre@correo.com">
+      <form action="dashboard.html">
+        <div>
+          <label for="email">Correo</label>
+          <input id="email" type="email" placeholder="nombre@correo.com">
+        </div>
+        <div>
+          <label for="password">Contraseña</label>
+          <input id="password" type="password" placeholder="••••••••">
+        </div>
+        <div class="aux">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:500">
+            <input type="checkbox"> Recordarme
+          </label>
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button class="btn btn-primary" type="submit">Iniciar sesión</button>
+      </form>
+      <div class="divider"><span>o</span></div>
+      <div class="providers">
+        <button class="btn btn-ghost provider" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.35 11.1H12v2.9h5.3c-.23 1.5-1.8 4.4-5.3 4.4A6.4 6.4 0 0 1 5.6 12 6.4 6.4 0 0 1 12 5.6c1.82 0 3.05.78 3.75 1.45l2.58-2.5A9.55 9.55 0 0 0 12 2a10 10 0 1 0 0 20c5.76 0 9.6-4.04 9.6-9.74 0-.65-.07-1.12-.25-1.16Z"/></svg> Continuar con Google</button>
+        <button class="btn btn-ghost provider" type="button">Continuar con correo corporativo</button>
       </div>
-      <div>
-        <label for="password">Contraseña</label>
-        <input id="password" type="password" placeholder="••••••••">
-      </div>
-      <div class="aux">
-        <label style="display:flex;align-items:center;gap:8px;font-weight:500">
-          <input type="checkbox"> Recordarme
-        </label>
-        <a href="#">¿Olvidaste tu contraseña?</a>
-      </div>
-      <button class="btn btn-primary" type="submit">Iniciar sesión</button>
-    </form>
-    <div class="divider"><span>o</span></div>
-    <div class="providers">
-      <button class="btn btn-ghost provider" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.35 11.1H12v2.9h5.3c-.23 1.5-1.8 4.4-5.3 4.4A6.4 6.4 0 0 1 5.6 12 6.4 6.4 0 0 1 12 5.6c1.82 0 3.05.78 3.75 1.45l2.58-2.5A9.55 9.55 0 0 0 12 2a10 10 0 1 0 0 20c5.76 0 9.6-4.04 9.6-9.74 0-.65-.07-1.12-.25-1.16Z"/></svg> Continuar con Google</button>
-      <button class="btn btn-ghost provider" type="button">Continuar con correo corporativo</button>
-    </div>
-    <p class="sub" style="margin-top:14px">¿No tienes cuenta? <a href="#">Crea una</a></p>
-  </main>
-</body>
+      <p class="sub" style="margin-top:14px">¿No tienes cuenta? <a href="register.html">Crea una</a></p>
+    </main>
+  </body>
 </html>
 
 

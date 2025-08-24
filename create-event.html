@@ -1,0 +1,33 @@
+<!-- FILE: create-event.html (Crear encuentro) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuentros • Nuevo encuentro</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,sans-serif;background:#0b1021;color:#E8ECF7;padding:20px}
+.card{max-width:600px;margin:auto;background:#121735;padding:20px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+h1{margin:0 0 20px}
+label{display:block;margin:10px 0 4px;font-weight:600}
+input,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0f1430;color:#E8ECF7}
+textarea{resize:none}
+.btn{margin-top:16px;width:100%;padding:12px;border:none;border-radius:12px;font-weight:700;background:linear-gradient(135deg,#635BFF,#22D3EE);color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Nuevo encuentro</h1>
+<form action="dashboard.html">
+<label for="title">Título del encuentro</label>
+<input id="title" type="text" placeholder="Ej: Cena con amigos">
+<label for="desc">Descripción</label>
+<textarea id="desc" rows="3" placeholder="Notas adicionales"></textarea>
+<label for="place">Agregar amigos</label>
+<input id="place" type="text" placeholder="Ej: Restaurante Central">
+<button class="btn" type="submit">Crear encuentro</button>
+</form>
+</div>
+</body>
+</html>

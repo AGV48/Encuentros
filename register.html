@@ -1,0 +1,37 @@
+<!-- FILE: signup.html (Registro de usuario) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuentros • Crear cuenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:Poppins,sans-serif;background:#0b1021;color:#E8ECF7;display:grid;place-items:center;min-height:100vh;padding:24px}
+.card{width:min(420px,100%);background:#121735;border-radius:18px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+h1{margin:0 0 12px;font-size:1.4rem}
+label{display:block;margin:10px 0 4px;font-weight:600}
+input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0f1430;color:#E8ECF7}
+.btn{width:100%;padding:12px;margin-top:16px;border-radius:12px;border:none;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#635BFF,#22D3EE);color:#fff}
+p{margin-top:16px;font-size:.9rem;color:#9AA0B7}
+a{color:#22D3EE;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Crea tu cuenta</h1>
+<form>
+<label for="name">Nombre completo</label>
+<input id="name" type="text" placeholder="Tu nombre" required>
+<label for="email">Correo electrónico</label>
+<input id="email" type="email" placeholder="nombre@correo.com" required>
+<label for="password">Contraseña</label>
+<input id="password" type="password" placeholder="••••••••" required>
+<label for="confirm">Confirmar contraseña</label>
+<input id="confirm" type="password" placeholder="••••••••" required>
+<button class="btn" type="submit">Crear cuenta</button>
+</form>
+<p>¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a></p>
+</div>
+</body>
+</html>
