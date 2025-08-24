@@ -1,0 +1,110 @@
+<!-- FILE: dashboard.html (Calendario + navegación inferior) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Encuentros • Calendario</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1021;--text:#E8ECF7;--muted:#9AA0B7;--primary:#635BFF;--secondary:#22D3EE;--accent:#F43F5E;--card:#121735;--radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35)}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{position:sticky;top:0;background:linear-gradient(180deg,#0b1021 0%, rgba(11,16,33,.6) 100%);backdrop-filter:blur(10px);z-index:10;border-bottom:1px solid rgba(255,255,255,.06)}
+    .top{display:flex;align-items:center;justify-content:space-between;padding:16px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:grid;place-items:center}
+    .month{font-weight:700;font-size:1.1rem}
+    .container{padding:16px 16px 90px}
+    .calendar{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+    .cal-head{display:grid;grid-template-columns:repeat(7,1fr);gap:0;background:rgba(255,255,255,.04);padding:10px}
+    .cal-head div{text-align:center;color:var(--muted);font-weight:600}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:10px}
+    .day{aspect-ratio:1/1.05;background:#0f1430;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:6px}
+    .day .dnum{font-weight:700;color:var(--muted)}
+    .event{font-size:.72rem;padding:6px;border-radius:10px;background:linear-gradient(135deg, rgba(99,91,255,.18), rgba(34,211,238,.18));border:1px dashed rgba(255,255,255,.14)}
+    .event.important{background:linear-gradient(135deg, rgba(244,63,94,.2), rgba(99,91,255,.18));}
+    .list{margin-top:16px;display:grid;gap:10px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:14px;display:flex;justify-content:space-between;align-items:center}
+    .chip{font-size:.75rem;padding:6px 10px;border-radius:999px;background:rgba(34,211,238,.14);border:1px solid rgba(34,211,238,.35)}
+    nav.bottom{position:fixed;bottom:10px;left:0;right:0;display:flex;justify-content:center;z-index:50}
+    .nav-wrap{width:min(820px, 94%);display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);padding:10px;border-radius:16px;box-shadow:var(--shadow)}
+    .tab{display:flex;align-items:center; justify-content:center; gap:10px; padding:12px;border-radius:12px;color:var(--text);text-decoration:none;border:1px solid transparent}
+    .tab.active{background:linear-gradient(135deg, rgba(99,91,255,.25), rgba(34,211,238,.2)); border-color:rgba(255,255,255,.2)}
+    .tab span{font-weight:600}
+    .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+    .kpi .item{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:12px}
+    .item .big{font-weight:800;font-size:1.3rem}
+    @media (max-width:680px){.cal-head{display:none}.calendar{border-radius:12px}.kpi{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <div class="brand"><div class="logo">💬</div><div class="month">Agosto 2025</div></div>
+      <button style="background:transparent;color:#E8ECF7;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:10px">Crear encuentro +</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="kpi" aria-label="Resumen">
+      <div class="item"><div class="big">3</div><div>Encuentros hoy</div></div>
+      <div class="item"><div class="big">12</div><div>Este mes</div></div>
+      <div class="item"><div class="big">2</div><div>Pendientes</div></div>
+    </section>
+
+    <section class="calendar" aria-label="Calendario mensual">
+      <div class="cal-head">
+        <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+      </div>
+      <div class="cal-grid">
+        <!-- Rellena con tus días según lógica; aquí hay ejemplo fijo -->
+        <div class="day"><div class="dnum">1</div></div>
+        <div class="day"><div class="dnum">2</div></div>
+        <div class="day"><div class="dnum">3</div><div class="event">Almuerzo equipo</div></div>
+        <div class="day"><div class="dnum">4</div></div>
+        <div class="day"><div class="dnum">5</div><div class="event important">Cumple de Sara</div></div>
+        <div class="day"><div class="dnum">6</div></div>
+        <div class="day"><div class="dnum">7</div></div>
+        <div class="day"><div class="dnum">8</div><div class="event">Fútbol</div></div>
+        <div class="day"><div class="dnum">9</div></div>
+        <div class="day"><div class="dnum">10</div></div>
+        <div class="day"><div class="dnum">11</div><div class="event">Proyecto U</div></div>
+        <div class="day"><div class="dnum">12</div></div>
+        <div class="day"><div class="dnum">13</div></div>
+        <div class="day"><div class="dnum">14</div></div>
+        <div class="day"><div class="dnum">15</div></div>
+        <div class="day"><div class="dnum">16</div><div class="event">Cine</div></div>
+        <div class="day"><div class="dnum">17</div></div>
+        <div class="day"><div class="dnum">18</div></div>
+        <div class="day"><div class="dnum">19</div></div>
+        <div class="day"><div class="dnum">20</div></div>
+        <div class="day"><div class="dnum">21</div><div class="event">Viaje</div></div>
+        <div class="day"><div class="dnum">22</div></div>
+        <div class="day"><div class="dnum">23</div></div>
+        <div class="day"><div class="dnum">24</div></div>
+        <div class="day"><div class="dnum">25</div><div class="event">Asado</div></div>
+        <div class="day"><div class="dnum">26</div></div>
+        <div class="day"><div class="dnum">27</div></div>
+        <div class="day"><div class="dnum">28</div></div>
+        <div class="day"><div class="dnum">29</div></div>
+        <div class="day"><div class="dnum">30</div></div>
+        <div class="day"><div class="dnum">31</div></div>
+      </div>
+    </section>
+
+    <section class="list" aria-label="Próximos encuentros">
+      <div class="card"><div><strong>Almuerzo equipo</strong><br><span style="color:var(--muted)">Hoy • 12:30 PM • Laureles</span></div><div class="chip">Grupo</div></div>
+      <div class="card"><div><strong>Fútbol</strong><br><span style="color:var(--muted)">Jue 8 • 7:00 PM • Unidad Deportiva</span></div><div class="chip">Deporte</div></div>
+      <div class="card"><div><strong>Cine</strong><br><span style="color:var(--muted)">Vie 16 • 6:45 PM • Viva Envigado</span></div><div class="chip">Amigos</div></div>
+    </section>
+  </main>
+
+  <nav class="bottom" aria-label="Navegación">
+    <div class="nav-wrap">
+      <a class="tab active" href="dashboard.html">🗓️ <span>Calendario</span></a>
+      <a class="tab" href="chats.html">💬 <span>Chats</span></a>
+      <a class="tab" href="settings.html">⚙️ <span>Cuenta</span></a>
+    </div>
+  </nav>
+</body>
+</html>

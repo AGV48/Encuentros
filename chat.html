@@ -1,0 +1,55 @@
+<!-- FILE: chat.html (Pantalla de conversación) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Encuentros • Chat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1021;--text:#E8ECF7;--muted:#9AA0B7;--primary:#635BFF;--secondary:#22D3EE;--me:#1f2a5c;--them:#0f1430;--radius:16px}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{position:sticky;top:0;background:#0b1021;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:12px;padding:12px}
+    .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:grid;place-items:center}
+    .name{font-weight:700}
+    main{padding:12px 12px 92px;display:grid;gap:10px}
+    .bubble{max-width:78%; padding:10px 12px; border-radius:14px; display:inline-block; line-height:1.35}
+    .left{justify-self:start;background:var(--them);border:1px solid rgba(255,255,255,.08)}
+    .right{justify-self:end;background:linear-gradient(135deg, rgba(99,91,255,.35), rgba(34,211,238,.2)); border:1px solid rgba(99,91,255,.4)}
+    .meta{font-size:.75rem;color:var(--muted);margin-top:6px}
+    .inputbar{position:fixed;bottom:10px;left:0;right:0;display:flex;justify-content:center}
+    .bar{width:min(820px,94%);display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);padding:8px;border-radius:16px}
+    .field{border:none;outline:none;background:#0f1430;color:var(--text);padding:10px 12px;border-radius:12px}
+    .iconbtn{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:10px;border-radius:12px}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="chats.html" style="color:#E8ECF7;text-decoration:none;border:1px solid rgba(255,255,255,.12);padding:8px 10px;border-radius:10px">←</a>
+    <div class="avatar">AE</div>
+    <div>
+      <div class="name">Almuerzo equipo</div>
+      <small style="color:var(--muted)">3 participantes • Hoy 12:30 PM</small>
+    </div>
+    <div style="margin-left:auto; display:flex; gap:8px">
+      <button class="iconbtn">📎</button>
+      <button class="iconbtn">⋮</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="bubble left">Hola equipo, ¿confirmamos el lugar? <div class="meta">Sofi • 10:58</div></div>
+    <div class="bubble right">Sí, en Laureles como acordamos. <div class="meta">Tú • 11:00</div></div>
+    <div class="bubble left">Perfecto, llevo la cámara 📷 <div class="meta">Juan • 11:01</div></div>
+    <div class="bubble right">Yo llego un poco antes para separar mesa. <div class="meta">Tú • 11:02</div></div>
+  </main>
+
+  <div class="inputbar" aria-label="Enviar mensaje">
+    <div class="bar">
+      <button class="iconbtn" title="Adjuntar">＋</button>
+      <input class="field" placeholder="Escribe un mensaje" />
+      <button class="iconbtn" title="Enviar">➡️</button>
+    </div>
+  </div>
+</body>
+</html> 

@@ -1,0 +1,108 @@
+<!-- FILE: settings.html (Perfil y configuración) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Encuentros • Configuración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b1021;--text:#E8ECF7;--muted:#9AA0B7;--primary:#635BFF;--secondary:#22D3EE;--card:#121735;--radius:18px;--shadow:0 10px 30px rgba(0,0,0,.35)}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{position:sticky;top:0;background:linear-gradient(180deg,#0b1021, rgba(11,16,33,.6));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);z-index:10}
+    .top{display:flex;align-items:center;justify-content:space-between;padding:16px}
+    .container{padding:16px 16px 90px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .section{margin-bottom:16px}
+    .row{display:grid;gap:10px}
+    label{font-weight:600}
+    input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#0f1430;color:var(--text)}
+    .btn{appearance:none;border:none;cursor:pointer;padding:12px 16px;border-radius:12px;font-weight:700;color: white;}
+    .btn-primary{background:linear-gradient(135deg, var(--primary), var(--secondary)); color:white}
+    .avatar-wrap{display:flex;align-items:center;gap:12px}
+    .avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:grid;place-items:center;font-weight:800}
+    .danger{background:linear-gradient(135deg, rgba(244,63,94,.3), rgba(99,91,255,.15));border:1px solid rgba(244,63,94,.4)}
+    nav.bottom{position:fixed;bottom:10px;left:0;right:0;display:flex;justify-content:center}
+    .nav-wrap{width:min(820px,94%);display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);padding:10px;border-radius:16px}
+    .tab{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border-radius:12px;color:var(--text);text-decoration:none;border:1px solid transparent}
+    .tab.active{background:linear-gradient(135deg, rgba(99,91,255,.25), rgba(34,211,238,.2)); border-color:rgba(255,255,255,.2)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <strong style="font-size:1.1rem">Configuración</strong>
+      <form action="index.html">
+          <button style="background:transparent;color:#E8ECF7;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:10px">Cerrar sesión</button>
+      </form>
+    </div>
+  </header>
+  <main class="container">
+    <section class="card section" aria-label="Foto de perfil">
+      <div class="avatar-wrap">
+        <div class="avatar">AG</div>
+        <div>
+          <div style="font-weight:700">Alejandro G.</div>
+          <small style="color:var(--muted)">alejandro@example.com</small>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:8px">
+          <button class="btn" style="border:1px solid rgba(255,255,255,.12);background:transparent">Subir foto</button>
+          <button class="btn" style="border:1px solid rgba(255,255,255,.12);background:transparent">Eliminar</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" aria-label="Datos personales">
+      <h3 style="margin:0 0 10px">Datos personales</h3>
+      <div class="row">
+        <div>
+          <label for="nombre">Nombre</label>
+          <input id="nombre" placeholder="Tu nombre" value="Alejandro Gutierrez" />
+        </div>
+        <div>
+          <label for="usuario">Usuario</label>
+          <input id="usuario" placeholder="usuario" value="alejo" />
+        </div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end">
+        <button class="btn" style="border:1px solid rgba(255,255,255,.12);background:transparent">Cancelar</button>
+        <button class="btn btn-primary">Guardar cambios</button>
+      </div>
+    </section>
+
+    <section class="card section" aria-label="Seguridad">
+      <h3 style="margin:0 0 10px">Seguridad</h3>
+      <div class="row">
+        <div>
+          <label for="correo">Correo</label>
+          <input id="correo" type="email" placeholder="nombre@correo.com" value="alejandro@example.com" />
+        </div>
+        <div>
+          <label for="password-actual">Contraseña actual</label>
+          <input id="password-actual" type="password" placeholder="••••••••" />
+        </div>
+        <div>
+          <label for="password-nueva">Nueva contraseña</label>
+          <input id="password-nueva" type="password" placeholder="••••••••" />
+        </div>
+      </div>
+      <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-end">
+        <button class="btn btn-primary">Actualizar contraseña</button>
+      </div>
+    </section>
+
+    <section class="card danger section" aria-label="Zona peligrosa">
+      <h3 style="margin:0 0 10px">Zona peligrosa</h3>
+      <p style="color:var(--text)">Eliminar cuenta y datos asociados.</p>
+      <button class="btn" style="border:1px solid rgba(255,255,255,.2);background:transparent">Eliminar cuenta</button>
+    </section>
+  </main>
+  <nav class="bottom" aria-label="Navegación">
+    <div class="nav-wrap">
+      <a class="tab" href="dashboard.html">🗓️ <span>Calendario</span></a>
+      <a class="tab" href="chats.html">💬 <span>Chats</span></a>
+      <a class="tab active" href="settings.html">⚙️ <span>Cuenta</span></a>
+    </div>
+  </nav>
+</body>
+</html>
