@@ -1,0 +1,50 @@
+<!-- FILE: notifications.html (Notificaciones de encuentros) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Encuentros • Notificaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1021;--text:#E8ECF7;--muted:#9AA0B7;--primary:#635BFF;--secondary:#22D3EE;--card:#121735;--radius:18px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Poppins,sans-serif}
+header{position:sticky;top:0;background:linear-gradient(180deg,#0b1021,rgba(11,16,33,.6));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06);z-index:10}
+.top{padding:16px;font-weight:700;font-size:1.1rem}
+.container{padding:16px 16px 90px;display:grid;gap:12px}
+.card{background:var(--card);padding:14px;border-radius:var(--radius);border:1px solid rgba(255,255,255,.08)}
+.title{font-weight:600}
+.time{font-size:.85rem;color:var(--muted)}
+nav.bottom{position:fixed;bottom:10px;left:0;right:0;display:flex;justify-content:center}
+.nav-wrap{width:min(820px,94%);display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);padding:10px;border-radius:16px}
+.tab{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;border-radius:12px;color:var(--text);text-decoration:none;border:1px solid transparent}
+.tab.active{background:linear-gradient(135deg,rgba(99,91,255,.25),rgba(34,211,238,.2));border-color:rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+<header><div class="top">Notificaciones</div></header>
+<main class="container">
+<div class="card">
+<div class="title">📌 Almuerzo equipo confirmado</div>
+<div class="time">Hoy • 12:00 PM</div>
+</div>
+<div class="card">
+<div class="title">📅 Fútbol jueves actualizado</div>
+<div class="time">Mañana • 7:00 PM</div>
+</div>
+<div class="card">
+<div class="title">✏️ Descripción de "Cine viernes" modificada</div>
+<div class="time">Hace 1 hora</div>
+</div>
+</main>
+<nav class="bottom" aria-label="Navegación">
+<div class="nav-wrap">
+<a class="tab" href="dashboard.html">🗓️ <span>Calendario</span></a>
+<a class="tab" href="chats.html">💬 <span>Chats</span></a>
+<a class="tab" href="settings.html">⚙️ <span>Cuenta</span></a>
+<a class="tab active" href="notifications.html">🔔 <span>Notificaciones</span></a>
+</div>
+</nav>
+</body>
+</html>
