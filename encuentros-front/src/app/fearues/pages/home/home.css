@@ -1,0 +1,241 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b1021;
+  color: #E8ECF7;
+  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* =========================
+   HEADER
+========================= */
+header {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, #0b1021 0%, rgba(11,16,33,.6) 100%);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #635BFF, #22D3EE);
+  display: grid;
+  place-items: center;
+}
+
+.month {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.btn-create {
+  background: transparent;
+  color: #E8ECF7;
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+/* =========================
+   CONTENEDOR
+========================= */
+.container {
+  padding: 16px 16px 90px;
+}
+
+/* =========================
+   KPI
+========================= */
+.kpi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.kpi .item {
+  background: #121735;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.item .big {
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+/* =========================
+   CALENDARIO
+========================= */
+.calendar {
+  background: #121735;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+.cal-head {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0;
+  background: rgba(255,255,255,.04);
+  padding: 10px;
+}
+
+.cal-head div {
+  text-align: center;
+  color: #9AA0B7;
+  font-weight: 600;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  padding: 10px;
+}
+
+.day {
+  aspect-ratio: 1 / 1.05;
+  background: #0f1430;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.day .dnum {
+  font-weight: 700;
+  color: #9AA0B7;
+}
+
+.event {
+  font-size: .72rem;
+  padding: 6px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(99,91,255,.18), rgba(34,211,238,.18));
+  border: 1px dashed rgba(255,255,255,.14);
+}
+
+.event.important {
+  background: linear-gradient(135deg, rgba(244,63,94,.2), rgba(99,91,255,.18));
+}
+
+/* =========================
+   LISTA DE EVENTOS
+========================= */
+.list {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.card {
+  background: #121735;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chip {
+  font-size: .75rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(34,211,238,.14);
+  border: 1px solid rgba(34,211,238,.35);
+}
+
+.muted {
+  color: #9AA0B7;
+}
+
+/* =========================
+   NAVEGACIÓN INFERIOR
+========================= */
+nav.bottom {
+  position: fixed;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 50;
+}
+
+.nav-wrap {
+  width: min(820px, 94%);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 10px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  color: #E8ECF7;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.tab.active {
+  background: linear-gradient(135deg, rgba(99,91,255,.25), rgba(34,211,238,.2));
+  border-color: rgba(255,255,255,.2);
+}
+
+.tab span {
+  font-weight: 600;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 680px) {
+  .cal-head {
+    display: none;
+  }
+
+  .calendar {
+    border-radius: 12px;
+  }
+
+  .kpi {
+    grid-template-columns: 1fr 1fr;
+  }
+}

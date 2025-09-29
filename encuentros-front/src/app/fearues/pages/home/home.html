@@ -1,0 +1,60 @@
+<body>
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo">💬</div>
+        <div class="month">{{month}}</div>
+      </div>
+      <form action="create-event.html">
+        <button class="btn-create">Crear encuentro +</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- KPI -->
+    <section class="kpi" aria-label="Resumen">
+      <div class="item"><div class="big">3</div><div>Encuentros hoy</div></div>
+      <div class="item"><div class="big">12</div><div>Este mes</div></div>
+      <div class="item"><div class="big">2</div><div>Pendientes</div></div>
+    </section>
+
+    <!-- Calendario -->
+    <section class="calendar" aria-label="Calendario mensual">
+        <div class="cal-head">
+            <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+        </div>
+        <div class="cal-grid">
+        <div class="day" *ngFor="let d of days">
+            <div class="dnum">{{ d }}</div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Lista de próximos -->
+    <section class="list" aria-label="Próximos encuentros">
+      <div class="card">
+        <div><strong>Almuerzo equipo</strong><br><span class="muted">Hoy • 12:30 PM • Laureles</span></div>
+        <div class="chip">Grupo</div>
+      </div>
+      <div class="card">
+        <div><strong>Fútbol</strong><br><span class="muted">Jue 8 • 7:00 PM • Unidad Deportiva</span></div>
+        <div class="chip">Deporte</div>
+      </div>
+      <div class="card">
+        <div><strong>Cine</strong><br><span class="muted">Vie 16 • 6:45 PM • Viva Envigado</span></div>
+        <div class="chip">Amigos</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Navegación inferior -->
+  <nav class="bottom" aria-label="Navegación">
+    <div class="nav-wrap">
+      <a class="tab active" routerLink="/home">🗓️ <span>Calendario</span></a>
+      <a class="tab" routerLink="/chats">💬 <span>Chats</span></a>
+      <a class="tab" routerLink="/account">⚙️ <span>Cuenta</span></a>
+      <a class="tab" routerLink="/notifications">🔔 <span>Notificaciones</span></a>
+    </div>
+  </nav>
+</body>

@@ -1,0 +1,32 @@
+<!-- Fuente -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<body>
+  <div class="card">
+    <div class="logo-section">
+      <img src="logo_encuentros.png" alt="Encuentros logo" class="logo-img" />
+      <h1>Encuentros</h1>
+      <p>Organiza, chatea y no olvides ningún plan</p>
+    </div>
+    <h1>Crea tu cuenta</h1>
+    <form [formGroup]="signUpForm">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" formControlName="nombre" type="text" placeholder="Tu nombre" required>
+
+      <label for="apellido">Apellido</label>
+      <input id="apellido" formControlName="apellido" type="text" placeholder="Tu apellido" required>
+
+      <label for="email">Correo electrónico</label>
+      <input id="email" formControlName="email" type="email" placeholder="nombre@correo.com" required>
+
+      <label for="contrasena">Contraseña</label>
+      <input id="contrasena" formControlName="contrasena" type="password" placeholder="••••••••" required>
+
+      <label for="confirm">Confirmar contraseña</label>
+      <input id="confirm" formControlName="confirmPassword" type="password" placeholder="••••••••" required>
+
+      <button class="btn" type="submit" (click)="onSignUp()">Crear cuenta</button>
+    </form>
+    <p>¿Ya tienes cuenta? <a routerLink="/">Inicia sesión</a></p>
+  </div>
+</body>

@@ -1,0 +1,148 @@
+/* Fuente y colores base */
+.login-wrapper {
+  min-height: 100vh;
+  background: #0b1021; /* fondo general del body */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  font-family: Poppins, sans-serif;
+  color: #E8ECF7;
+}
+
+/* Tarjeta principal */
+.login-card {
+  background: #121735; /* mismo fondo de la .card */
+  border-radius: 1rem;
+  padding: 4rem;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  text-align: center;
+}
+
+/* Logo y encabezado */
+.logo-section {
+  margin-bottom: 1.5rem;
+}
+.logo-section h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0.25rem;
+  color: #E8ECF7;
+}
+.logo-section p {
+  font-size: 0.9rem;
+  color: #9AA0B7;
+  margin: 0;
+}
+.logo-img {
+  width: 48px;
+  height: 48px;
+}
+
+/* Inputs */
+form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+label {
+  font-size: 0.85rem;
+  margin: 0.5rem 0 0.25rem;
+  font-weight: 600;
+  color: #E8ECF7;
+}
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  background: #0f1430;
+  color: #E8ECF7;
+  margin-bottom: 0.5rem;
+}
+input::placeholder {
+  color: #9AA0B7;
+}
+
+/* Opciones (recordarme + link) */
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  color: #9AA0B7;
+}
+.options input {
+  accent-color: #22D3EE;
+}
+.link {
+  color: #22D3EE;
+  text-decoration: none;
+}
+
+/* Botón principal */
+.btn-primary {
+  background: linear-gradient(135deg, #635BFF, #22D3EE);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  padding: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* Divider */
+.divider {
+  margin: 1rem 0;
+  position: relative;
+  text-align: center;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  position: absolute;
+  top: 50%;
+  width: 40%;
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+.divider span {
+  color: #9AA0B7;
+  padding: 0 0.5rem;
+  background: transparent;
+}
+
+/* Botones alternativos */
+.btn-outline {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, .12);
+  color: #E8ECF7;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  width: 100%;
+}
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Sección registro */
+.signup {
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  color: #9AA0B7;
+}
+.signup .link {
+  color: #22D3EE;
+}
