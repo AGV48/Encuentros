@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  db:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: encuentros_db
+    environment:
+      # contraseña para SYS/SYSTEM (requerido en la primera inicialización)
+      ORACLE_PASSWORD: admin
+      # crea un usuario de aplicación (APP_USER) con APP_USER_PASSWORD
+      APP_USER: C##ENCUENTROS_ADMIN
+      APP_USER_PASSWORD: admin
+      ORACLE_DATABASE: XE
+    ports:
+    - "1521:1521"
+    volumes:
+    - oracle_data:/opt/oracle/oradata
+    restart: always
+
+
+  backend:
+  build:
+  context: ./encuentros-back
+  container_name: encuentros_back
+  environment:
+  # Variables leídas por la configuración TypeORM (ver patch sugerido)
+  DB_HOST: db
+  DB_PORT: '1521'
+  DB_USERNAME: C##ENCUENTROS_ADMIN
+  DB_PASSWORD: admin
+  DB_SID: XE
+  PORT: '3000'
+  ports:
+  - "3000:3000"
+  depends_on:
+  - db
+  restart: on-failure
+
+
+  frontend:
+  build:
+  context: ./encuentros-front
+  container_name: encuentros_front
+  ports:
+  - "80:80"
+  depends_on:
+  - backend
+  restart: on-failure
+
+
+volumes:
+  oracle_data:
