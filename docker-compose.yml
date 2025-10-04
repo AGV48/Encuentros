@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   db:
     image: gvenzl/oracle-xe:21-slim
@@ -11,41 +12,63 @@ services:
       APP_USER_PASSWORD: admin
       ORACLE_DATABASE: XE
     ports:
-    - "1521:1521"
+      - "1521:1521"
     volumes:
-    - oracle_data:/opt/oracle/oradata
+      - oracle_data:/opt/oracle/oradata
     restart: always
-
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   backend:
-  build:
-  context: ./encuentros-back
-  container_name: encuentros_back
-  environment:
-  # Variables leídas por la configuración TypeORM (ver patch sugerido)
-  DB_HOST: db
-  DB_PORT: '1521'
-  DB_USERNAME: C##ENCUENTROS_ADMIN
-  DB_PASSWORD: admin
-  DB_SID: XE
-  PORT: '3000'
-  ports:
-  - "3000:3000"
-  depends_on:
-  - db
-  restart: on-failure
-
+    build:
+      context: ./encuentros-back
+      dockerfile: Dockerfile
+    container_name: encuentros_back
+    environment:
+      # Variables leídas por la configuración TypeORM
+      DB_HOST: db
+      DB_PORT: '1521'
+      DB_USERNAME: C##ENCUENTROS_ADMIN
+      DB_PASSWORD: admin
+      DB_SID: XE
+      PORT: '3000'
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - encuentros-network
 
   frontend:
-  build:
-  context: ./encuentros-front
-  container_name: encuentros_front
-  ports:
-  - "80:80"
-  depends_on:
-  - backend
-  restart: on-failure
-
+    build:
+      context: ./encuentros-front
+      dockerfile: Dockerfile
+    container_name: encuentros_front
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    environment:
+      - API_URL=http://backend:3000
+    networks:
+      - encuentros-network
 
 volumes:
   oracle_data:
+    driver: local
+
+networks:
+  encuentros-network:
+    driver: bridge
