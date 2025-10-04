@@ -24,7 +24,7 @@ FROM node:20-alpine
 # Definir el directorio de trabajo
 WORKDIR /app
 
-# copia package-lock si existe para npm ci reproducible
+# copia package-lock 
 COPY package*.json ./ ./ package-lock.json ./
 
 # Instalamos solo las dependencias de producción
