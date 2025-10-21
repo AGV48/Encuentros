@@ -15,7 +15,7 @@ RUN npm ci --silent
 COPY . .
 
 # build; si vamos a cambiar la configuración de salida, ajustar aquí, ajustar los flags
-RUN npm run build --
+RUN npm run build
 
 # Stage 2: Servir la aplicación con Nginx
 
@@ -23,7 +23,7 @@ RUN npm run build --
 FROM nginx:stable-alpine
 
 # Copia los artefactos del build al directorio de nginx
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Exponemos el puerto 80
