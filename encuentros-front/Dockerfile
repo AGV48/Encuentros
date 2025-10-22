@@ -23,7 +23,7 @@ RUN npm run build
 FROM nginx:stable-alpine
 
 # Copia los artefactos del build al directorio de nginx
-COPY --from=build /app/dist/browser /usr/share/nginx/html
+COPY --from=build /app/dist/encuentros-front/browser /usr/share/nginx/html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Exponemos el puerto 80
