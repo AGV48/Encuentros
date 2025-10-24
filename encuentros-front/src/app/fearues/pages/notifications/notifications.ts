@@ -9,9 +9,9 @@ import { RouterLink } from '@angular/router';
 })
 export class Notifications {
   constructor() {
-    let userLogged = localStorage.getItem('isLogged');
-    if (!userLogged || userLogged !== 'true') {
-      window.location.href = '/';
-    }
+    // let userLogged = localStorage.getItem('isLogged');
+    // if (!userLogged || userLogged !== 'true') {
+    //   window.location.href = '/';
+    // }
   }
 }

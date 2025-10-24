@@ -1,86 +1,126 @@
+/* === BASE === */
 * {
   box-sizing: border-box;
-}
-
-body {
   margin: 0;
-  background: #0b1021;
-  color: #E8ECF7;
-  font-family: Poppins, sans-serif;
+  padding: 0;
+}
+body {
+  background: #f7f9fb;
+  color: #1f2937;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
 }
 
+/* === HEADER === */
 header {
   position: sticky;
   top: 0;
-  background: linear-gradient(180deg, #0b1021, rgba(11,16,33,0.6));
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: #ffffffcc;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e6e9ef;
   z-index: 10;
 }
-
 .top {
   padding: 16px;
   font-weight: 700;
   font-size: 1.1rem;
+  color: #0f172a;
 }
 
+/* === CONTENEDOR === */
 .container {
-  padding: 16px 16px 90px;
+  padding: 16px;
+  padding-bottom: 110px; /* espacio para navegación */
   display: grid;
-  gap: 12px;
+  gap: 14px;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
+/* === TARJETAS === */
 .card {
-  background: #121735;
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 1px solid #e6eef7;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+  transition: transform .15s ease, box-shadow .15s ease;
 }
-
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+}
 .title {
   font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 6px;
 }
-
 .time {
-  font-size: 0.85rem;
-  color: #9AA0B7;
+  font-size: 0.88rem;
+  color: #64748b;
 }
 
+/* === NAVEGACIÓN INFERIOR === */
 nav.bottom {
-    background: #0b1021;
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
+  position: fixed;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 50;
+  pointer-events: none;
 }
-
 .nav-wrap {
+  pointer-events: auto;
   width: min(820px, 94%);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffffcc;
+  backdrop-filter: blur(8px);
+  border: 1px solid #e6eef7;
   padding: 10px;
   border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
+/* === TABS === */
 .tab {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 12px;
+  gap: 8px;
+  padding: 10px;
   border-radius: 12px;
-  color: #E8ECF7;
+  color: #0f172a;
   text-decoration: none;
-  border: 1px solid transparent;
+  font-weight: 600;
+  transition: background .15s ease, transform .15s ease;
+}
+.tab:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+}
+.tab.active {
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  color: #ffffff;
 }
 
-.tab.active {
-  background: linear-gradient(135deg, rgba(99, 91, 255, 0.25), rgba(34, 211, 238, 0.2));
-  border-color: rgba(255, 255, 255, 0.2);
+/* === RESPONSIVO === */
+@media (max-width: 680px) {
+  .container {
+    padding: 12px;
+    padding-bottom: 120px;
+  }
+  .nav-wrap {
+    padding: 8px;
+    gap: 8px;
+  }
+  .tab {
+    padding: 8px;
+    font-size: 0.95rem;
+  }
 }

@@ -9,9 +9,9 @@ import { RouterLink } from '@angular/router';
 })
 export class Chats {
   constructor() {
-    let userLogged = localStorage.getItem('isLogged');
-    if (!userLogged || userLogged !== 'true') {
-      window.location.href = '/';
-    }
+    // let userLogged = localStorage.getItem('isLogged');
+    // if (!userLogged || userLogged !== 'true') {
+    //   window.location.href = '/';
+    // }
   }
 }

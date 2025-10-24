@@ -11,10 +11,10 @@ export class Account {
   router = inject(Router)
 
   constructor() {
-    let userLogged = localStorage.getItem('isLogged');
-    if (!userLogged || userLogged !== 'true') {
-      this.router.navigate(['/']);
-    }
+    // let userLogged = localStorage.getItem('isLogged');
+    // if (!userLogged || userLogged !== 'true') {
+    //   this.router.navigate(['/']);
+    // }
   }
 
   onLogout() {

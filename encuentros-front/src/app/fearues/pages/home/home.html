@@ -6,7 +6,7 @@
         <div class="month">{{month}}</div>
       </div>
       <form action="create-event.html">
-        <button class="btn-create">Crear encuentro +</button>
+        <button class="btn-create">➕ Crear encuentro</button>
       </form>
     </div>
   </header>
@@ -21,14 +21,14 @@
 
     <!-- Calendario -->
     <section class="calendar" aria-label="Calendario mensual">
-        <div class="cal-head">
-            <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
-        </div>
-        <div class="cal-grid">
+      <div class="cal-head">
+        <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
+      </div>
+      <div class="cal-grid">
         <div class="day" *ngFor="let d of days">
-            <div class="dnum">{{ d }}</div>
+          <div class="dnum">{{ d }}</div>
         </div>
-        </div>
+      </div>
     </section>
 
     <!-- Lista de próximos -->

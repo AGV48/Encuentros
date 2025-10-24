@@ -1,24 +1,25 @@
 /* Fuente y colores base */
 .login-wrapper {
   min-height: 100vh;
-  background: #0b1021; /* fondo general del body */
+  background: #F5F7FB; /* fondo claro general */
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem;
   font-family: Poppins, sans-serif;
-  color: #E8ECF7;
+  color: #1A1C2B;
 }
 
 /* Tarjeta principal */
 .login-card {
-  background: #121735; /* mismo fondo de la .card */
-  border-radius: 1rem;
-  padding: 4rem;
+  background: #FFFFFF;
+  border-radius: 1.2rem;
+  padding: 3rem;
   width: 100%;
   max-width: 360px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
   text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* Logo y encabezado */
@@ -29,16 +30,16 @@
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0.5rem 0 0.25rem;
-  color: #E8ECF7;
+  color: #1A1C2B;
 }
 .logo-section p {
   font-size: 0.9rem;
-  color: #9AA0B7;
+  color: #646A85;
   margin: 0;
 }
 .logo-img {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
 }
 
 /* Inputs */
@@ -51,20 +52,26 @@ label {
   font-size: 0.85rem;
   margin: 0.5rem 0 0.25rem;
   font-weight: 600;
-  color: #E8ECF7;
+  color: #1A1C2B;
 }
 input[type="email"],
 input[type="password"] {
   width: 100%;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: #0f1430;
-  color: #E8ECF7;
+  border: 1px solid rgba(0, 0, 0, .1);
+  background: #FAFBFF;
+  color: #1A1C2B;
   margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+input:focus {
+  outline: none;
+  border-color: #6B63FF;
+  box-shadow: 0 0 0 3px rgba(107, 99, 255, 0.15);
 }
 input::placeholder {
-  color: #9AA0B7;
+  color: #A0A5BA;
 }
 
 /* Opciones (recordarme + link) */
@@ -74,34 +81,38 @@ input::placeholder {
   align-items: center;
   font-size: 0.8rem;
   margin-bottom: 1rem;
-  color: #9AA0B7;
+  color: #646A85;
 }
 .options input {
-  accent-color: #22D3EE;
+  accent-color: #6B63FF;
 }
 .link {
-  color: #22D3EE;
+  color: #6B63FF;
   text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
 }
 
 /* Botón principal */
 .btn-primary {
-  background: linear-gradient(135deg, #635BFF, #22D3EE);
+  background: linear-gradient(135deg, #6B63FF, #22C1EE);
   border: none;
   border-radius: 12px;
   color: #fff;
   padding: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .btn-primary:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 193, 238, 0.3);
 }
 
 /* Divider */
 .divider {
-  margin: 1rem 0;
+  margin: 1.2rem 0;
   position: relative;
   text-align: center;
 }
@@ -109,7 +120,7 @@ input::placeholder {
 .divider::after {
   content: "";
   height: 1px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.08);
   position: absolute;
   top: 50%;
   width: 40%;
@@ -117,32 +128,43 @@ input::placeholder {
 .divider::before { left: 0; }
 .divider::after { right: 0; }
 .divider span {
-  color: #9AA0B7;
+  color: #8E92A8;
   padding: 0 0.5rem;
-  background: transparent;
+  background: #FFFFFF;
 }
 
 /* Botones alternativos */
 .btn-outline {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, .12);
-  color: #E8ECF7;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, .1);
+  color: #1A1C2B;
   border-radius: 12px;
   padding: 12px;
   margin-bottom: 0.5rem;
   cursor: pointer;
   width: 100%;
+  transition: background 0.2s, box-shadow 0.2s;
 }
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: #F0F2FA;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
 }
 
 /* Sección registro */
 .signup {
   font-size: 0.85rem;
   margin-top: 1rem;
-  color: #9AA0B7;
+  color: #646A85;
 }
 .signup .link {
-  color: #22D3EE;
+  color: #6B63FF;
+}
+
+a {
+  color: #6B63FF;
+  text-decoration: none;
+  font-weight: 600;
+}
+a:hover {
+  text-decoration: underline;
 }

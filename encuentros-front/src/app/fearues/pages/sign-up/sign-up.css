@@ -1,14 +1,24 @@
 body {
   margin: 0;
-  font-family: Poppins, sans-serif;
-  background: #0b1021;
-  color: #E8ECF7;
+  font-family: 'Poppins', sans-serif;
+  background: #F5F7FB; /* Fondo general claro */
+  color: #1A1C2B;
   display: grid;
   place-items: center;
   min-height: 100vh;
   padding: 24px;
 }
 
+/* Tarjeta principal */
+.card {
+  width: min(420px, 100%);
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 40px 50px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
 
 /* Logo y encabezado */
 .logo-section {
@@ -19,47 +29,55 @@ body {
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0.5rem 0 0.25rem;
-  color: #E8ECF7;
+  color: #1A1C2B;
 }
 .logo-section p {
   font-size: 0.9rem;
-  color: #9AA0B7;
+  color: #646A85;
   margin: 0;
 }
 .logo-img {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
 }
 
-.card {
-  width: min(420px, 100%);
-  background: #121735;
-  border-radius: 18px;
-  padding: 40px;
-  padding-right: 60px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
-}
-
+/* Encabezado principal */
 h1 {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-size: 1.4rem;
+  color: #1A1C2B;
+  text-align: center;
 }
 
+/* Etiquetas */
 label {
   display: block;
   margin: 10px 0 4px;
   font-weight: 600;
+  color: #1A1C2B;
+  text-align: left;
 }
 
+/* Campos de entrada */
 input {
   width: 100%;
   padding: 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: #0f1430;
-  color: #E8ECF7;
+  border: 1px solid rgba(0, 0, 0, .1);
+  background: #FAFBFF;
+  color: #1A1C2B;
+  transition: all 0.2s ease;
+}
+input:focus {
+  outline: none;
+  border-color: #6B63FF;
+  box-shadow: 0 0 0 3px rgba(107, 99, 255, 0.15);
+}
+input::placeholder {
+  color: #A0A5BA;
 }
 
+/* Botón principal */
 .btn {
   width: 100%;
   padding: 12px;
@@ -68,17 +86,26 @@ input {
   border: none;
   font-weight: 700;
   cursor: pointer;
-  background: linear-gradient(135deg, #635BFF, #22D3EE);
+  background: linear-gradient(135deg, #6B63FF, #22C1EE);
   color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 193, 238, 0.3);
 }
 
+/* Texto inferior */
 p {
   margin-top: 16px;
-  font-size: .9rem;
-  color: #9AA0B7;
+  font-size: 0.9rem;
+  color: #646A85;
 }
-
 a {
-  color: #22D3EE;
+  color: #6B63FF;
   text-decoration: none;
+  font-weight: 600;
+}
+a:hover {
+  text-decoration: underline;
 }
