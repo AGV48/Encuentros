@@ -5,6 +5,7 @@ import { Home } from './fearues/pages/home/home';
 import { Chats } from './fearues/pages/chats/chats';
 import { Account } from './fearues/pages/account/account';
 import { Notifications } from './fearues/pages/notifications/notifications';
+import { Search } from './fearues/pages/search/search';
 
 export const routes: Routes = [
     {
@@ -35,6 +36,12 @@ export const routes: Routes = [
     {
         path: "notifications",
         component: Notifications,
+        pathMatch: "full"
+    }
+    ,
+    {
+        path: "search",
+        component: Search,
         pathMatch: "full"
     }
 ];

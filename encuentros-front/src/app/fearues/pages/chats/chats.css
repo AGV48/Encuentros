@@ -163,7 +163,7 @@ nav.bottom {
 .nav-wrap {
   width: min(820px, 94%);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   background: #ffffffcc;
   backdrop-filter: blur(10px);
   border: 1px solid #e2e8f0;

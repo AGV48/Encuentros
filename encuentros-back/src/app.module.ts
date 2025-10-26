@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { EncuentroModule } from './encuentro/encuentro.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -17,7 +19,9 @@ import { UsersModule } from './users/users.module';
       synchronize: false,
       migrationsRun: true,
     }),
-    UsersModule
+    UsersModule,
+    EncuentroModule,
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService],

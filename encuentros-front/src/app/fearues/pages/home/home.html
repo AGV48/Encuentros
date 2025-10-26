@@ -5,18 +5,42 @@
         <div class="logo">💬</div>
         <div class="month">{{month}}</div>
       </div>
-      <form action="create-event.html">
-        <button class="btn-create">➕ Crear encuentro</button>
-      </form>
+      <button class="btn-create" (click)="toggleCreate()">➕ Crear encuentro</button>
     </div>
   </header>
+
+  <!-- Formulario creación de encuentro -->
+  <section *ngIf="showCreate" class="create-section">
+    <form (ngSubmit)="createEncuentro()" class="create-form">
+      <div>
+        <label>Título</label>
+        <input name="titulo" [(ngModel)]="newEncuentro.titulo" required />
+      </div>
+      <div>
+        <label>Descripción</label>
+        <textarea name="descripcion" [(ngModel)]="newEncuentro.descripcion" required></textarea>
+      </div>
+      <div>
+        <label>Lugar</label>
+        <input name="lugar" [(ngModel)]="newEncuentro.lugar" required />
+      </div>
+      <div>
+        <label>Fecha y hora</label>
+        <input type="datetime-local" name="fecha" [(ngModel)]="newEncuentro.fecha" required />
+      </div>
+      <div class="actions">
+        <button type="submit" [disabled]="creating">Crear</button>
+        <button type="button" (click)="toggleCreate()">Cancelar</button>
+      </div>
+    </form>
+  </section>
 
   <main class="container">
     <!-- KPI -->
     <section class="kpi" aria-label="Resumen">
-      <div class="item"><div class="big">3</div><div>Encuentros hoy</div></div>
-      <div class="item"><div class="big">12</div><div>Este mes</div></div>
-      <div class="item"><div class="big">2</div><div>Pendientes</div></div>
+      <div class="item"><div class="big">{{encuentrosHoy}}</div><div>Encuentros hoy</div></div>
+      <div class="item"><div class="big">{{encuentrosMes}}</div><div>Este mes</div></div>
+      <div class="item"><div class="big">{{encuentrosPendientes}}</div><div>Pendientes</div></div>
     </section>
 
     <!-- Calendario -->
@@ -27,23 +51,20 @@
       <div class="cal-grid">
         <div class="day" *ngFor="let d of days">
           <div class="dnum">{{ d }}</div>
+          <div class="dot" *ngIf="daysWithEncuentros.has(d)"></div>
         </div>
       </div>
     </section>
 
     <!-- Lista de próximos -->
     <section class="list" aria-label="Próximos encuentros">
-      <div class="card">
-        <div><strong>Almuerzo equipo</strong><br><span class="muted">Hoy • 12:30 PM • Laureles</span></div>
-        <div class="chip">Grupo</div>
-      </div>
-      <div class="card">
-        <div><strong>Fútbol</strong><br><span class="muted">Jue 8 • 7:00 PM • Unidad Deportiva</span></div>
-        <div class="chip">Deporte</div>
-      </div>
-      <div class="card">
-        <div><strong>Cine</strong><br><span class="muted">Vie 16 • 6:45 PM • Viva Envigado</span></div>
-        <div class="chip">Amigos</div>
+      <div *ngIf="upcoming && upcoming.length === 0" class="muted">No hay próximos encuentros</div>
+      <div class="card" *ngFor="let e of upcoming">
+        <div>
+          <strong>{{ e.titulo }}</strong><br>
+          <span class="muted">{{ e.displayWhen }}</span>
+          <div class="small muted">{{ e.descripcion }}</div>
+        </div>
       </div>
     </section>
   </main>
@@ -53,6 +74,7 @@
     <div class="nav-wrap">
       <a class="tab active" routerLink="/home">🗓️ <span>Calendario</span></a>
       <a class="tab" routerLink="/chats">💬 <span>Chats</span></a>
+      <a class="tab" routerLink="/search">🔎 <span>Buscar</span></a>
       <a class="tab" routerLink="/account">⚙️ <span>Cuenta</span></a>
       <a class="tab" routerLink="/notifications">🔔 <span>Notificaciones</span></a>
     </div>

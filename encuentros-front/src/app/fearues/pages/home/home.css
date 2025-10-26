@@ -146,6 +146,20 @@ header {
   transition: background 0.2s ease;
 }
 
+.day { position: relative; }
+
+.day .dot {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg,#6366f1,#22d3ee);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 8px rgba(99,102,241,0.18);
+}
+
 .day:hover {
   background: #e0f2fe;
 }
@@ -211,7 +225,7 @@ nav.bottom {
 .nav-wrap {
   width: min(820px, 94%);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   background: #ffffffcc;
   backdrop-filter: blur(10px);
   border: 1px solid #e2e8f0;
@@ -262,4 +276,82 @@ nav.bottom {
   .btn-create {
     font-size: 0.9rem;
   }
+}
+
+/* =========================
+   MODAL / FORM CREACIÓN
+========================= */
+.create-section {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.45); /* semi-opaque backdrop */
+  z-index: 120; /* above nav */
+  padding: 20px;
+}
+
+.create-form {
+  width: min(720px, 98%);
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 18px;
+  box-shadow: 0 12px 40px rgba(2,6,23,0.4);
+  border: 1px solid #e6e9ef;
+  display: grid;
+  gap: 12px;
+}
+
+.create-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1f2937;
+}
+
+.create-form input[type="text"],
+.create-form input[type="datetime-local"],
+.create-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e6e9ef;
+  background: #fbfdff;
+  font-size: 0.95rem;
+  color: #0f1724;
+  outline: none;
+}
+
+.create-form textarea { min-height: 100px; resize: vertical; }
+
+.create-form .actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.create-form button[type="submit"] {
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.create-form button[type="button"] {
+  background: transparent;
+  color: #334155;
+  border: 1px solid #e6e9ef;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .create-form { padding: 14px; }
+  .create-form .actions { flex-direction: column-reverse; }
+  .create-form button { width: 100%; }
 }
