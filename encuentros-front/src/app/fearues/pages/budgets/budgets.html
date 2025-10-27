@@ -1,3 +1,100 @@
-<!-- Presupuestos -->
+<body>
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🧾</div>
+        <div>
+          <h1 class="title">Presupuesto del encuentro</h1>
+          <p class="subtitle">Organiza el dinero estimado antes de repartirlo en bolsillos</p>
+        </div>
+      </div>
+      <button *ngIf="budget" type="button" class="btn-secondary" (click)="goToPockets()">
+        Ir a bolsillos
+      </button>
+    </div>
+  </header>
 
-<p>budgets works!</p>
+  <main class="container">
+    <ng-container *ngIf="!budget; else budgetSummary">
+      <section class="card empty-state" aria-live="polite">
+        <h2>Sin presupuesto configurado</h2>
+        <p>
+          Define el monto total que esperas utilizar en este encuentro. Podrás repartirlo en
+          bolsillos y registrar aportes más adelante.
+        </p>
+
+        <form class="budget-form" [formGroup]="budgetForm" (ngSubmit)="onCreateBudget()">
+          <label for="budget-name">Nombre del presupuesto</label>
+          <input
+            id="budget-name"
+            type="text"
+            formControlName="nombre"
+            placeholder="Ej. Presupuesto general del viaje"
+            maxlength="200"
+            autocomplete="off"
+            aria-describedby="budget-name-hint"
+          />
+          <small id="budget-name-hint" class="hint">Máximo 200 caracteres</small>
+          <div
+            class="error"
+            *ngIf="nombreControl?.invalid && (nombreControl?.dirty || nombreControl?.touched)"
+          >
+            <span *ngIf="nombreControl?.errors?.['required']">El nombre es obligatorio.</span>
+          </div>
+
+          <label for="budget-amount">Monto estimado total</label>
+          <div class="amount-input">
+            <span class="prefix">$</span>
+            <input
+              id="budget-amount"
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="monto"
+              placeholder="0.00"
+              aria-describedby="budget-amount-hint"
+            />
+          </div>
+          <small id="budget-amount-hint" class="hint"
+            >Puedes actualizarlo cuando conectemos con el backend.</small
+          >
+          <div
+            class="error"
+            *ngIf="montoControl?.invalid && (montoControl?.dirty || montoControl?.touched)"
+          >
+            <span *ngIf="montoControl?.errors?.['required']"
+              >El monto estimado es obligatorio.</span
+            >
+            <span *ngIf="montoControl?.errors?.['min']">El monto debe ser mayor a 0.</span>
+          </div>
+
+          <button class="btn-primary" type="submit" [disabled]="submitting || budgetForm.invalid">
+            Crear presupuesto
+          </button>
+
+          <p *ngIf="errorMessage" class="feedback" role="alert">{{ errorMessage }}</p>
+        </form>
+      </section>
+    </ng-container>
+
+    <ng-template #budgetSummary>
+      <section class="card budget-summary">
+        <h2>{{ budget?.nombre }}</h2>
+        <p class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</p>
+        <p class="muted">Este es el monto de referencia para los bolsillos y los aportes.</p>
+        <button type="button" class="btn-primary" (click)="goToPockets()">
+          Administrar bolsillos
+        </button>
+      </section>
+    </ng-template>
+  </main>
+
+  <nav class="bottom" aria-label="Flujo de presupuesto">
+    <div class="nav-wrap">
+      <a class="tab active" routerLink="/budgets">🧾 <span>Presupuesto</span></a>
+      <a class="tab" routerLink="/pockets">🪙 <span>Bolsillos</span></a>
+      <a class="tab" routerLink="/contributions">🤝 <span>Aportes</span></a>
+      <a class="tab" routerLink="/costs">💸 <span>Gastos</span></a>
+    </div>
+  </nav>
+</body>
