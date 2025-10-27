@@ -16,8 +16,8 @@
     </div>
     <div class="budget-pill" *ngIf="budget">
       <span class="label">Presupuesto actual:</span>
-      <strong>{{ budget!.nombre }}</strong>
-      <span class="amount">{{ budget!.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span>
+      <strong>{{ budget?.nombre }}</strong>
+      <span class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span>
     </div>
   </header>
 
@@ -56,7 +56,7 @@
             *ngIf="nombreControl?.invalid && (nombreControl?.dirty || nombreControl?.touched)"
           >
             <span *ngIf="nombreControl?.errors?.['required']">El nombre es obligatorio.</span>
-            <span *ngIf="nombreControl?.errors?.['maxlength']">Máximo 200 caracteres.</span>
+            <span *ngIf="nombreControl?.errors?.['maxLength']">Máximo 200 caracteres.</span>
           </div>
 
           <button class="btn-primary" type="submit" [disabled]="submitting || pocketForm.invalid">
