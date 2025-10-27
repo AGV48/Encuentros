@@ -12,9 +12,15 @@ import { ChatModule } from './chat/chat.module';
       type: 'oracle',
       host: 'localhost',
       port: 1521,
-      username: 'ENCUENTROS_ADMIN',
+      // En el caso de la mayoría deben poner:
+      // username: 'C##ENCUENTROS_ADMIN',
+      username: 'ENCUENTROS_ADMIN', // Yo: Tomas
       password: 'admin',
-      serviceName: 'XEPDB1',
+      // Pueden verlo en SqlDeveloper, en propiedades de cada conexión, en este caso en
+      // XE_ENCUENTROS, allí ven si se conectan por SID o ServiceName y si es: XE o XEPDB1
+      // En el caso de la mayoría deben poner:
+      // sid: 'XE',
+      serviceName: 'XEPDB1', // Yo: Tomas
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: false,
       migrationsRun: true,
