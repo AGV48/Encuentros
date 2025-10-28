@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { EncuentroModule } from './encuentro/encuentro.module';
 import { ChatModule } from './chat/chat.module';
+import { ParticipantesEncuentroModule } from './participantes-encuentro/participantes-encuentro.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ChatModule } from './chat/chat.module';
     UsersModule,
     EncuentroModule,
     ChatModule,
+    ParticipantesEncuentroModule,
   ],
   controllers: [AppController],
   providers: [AppService],

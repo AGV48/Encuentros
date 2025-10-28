@@ -19,9 +19,48 @@
   <!-- Modal para agregar amigos -->
   <div class="modal-overlay" *ngIf="showAddFriends" (click)="toggleAddFriends()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-      <h3>Agregar amigos al encuentro</h3>
-      <p class="modal-subtitle">Esta funcionalidad estará disponible próximamente</p>
-      <div class="modal-actions">
+      <div class="modal-header">
+        <h3>👥 Agregar Participantes</h3>
+        <button class="btn-close-modal" (click)="toggleAddFriends()">✕</button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Estado de carga -->
+        <div *ngIf="loadingFriends" class="loading-state">
+          <div class="spinner">⏳</div>
+          <p>Cargando amigos...</p>
+        </div>
+
+        <!-- Lista de amigos -->
+        <div *ngIf="!loadingFriends && friends.length > 0" class="friends-list">
+          <div *ngFor="let friend of friends" class="friend-item">
+            <div class="friend-avatar">
+              {{ friend.nombre?.substring(0, 1).toUpperCase() }}{{ friend.apellido?.substring(0, 1).toUpperCase() }}
+            </div>
+            <div class="friend-info">
+              <div class="friend-name">{{ friend.nombre }} {{ friend.apellido }}</div>
+              <div class="friend-email">{{ friend.email }}</div>
+            </div>
+            <button 
+              class="btn-add-friend" 
+              (click)="addParticipante(friend)"
+              [disabled]="friend.isParticipante"
+            >
+              <span *ngIf="!friend.isParticipante">➕ Agregar</span>
+              <span *ngIf="friend.isParticipante">✓ Agregado</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Estado vacío -->
+        <div *ngIf="!loadingFriends && friends.length === 0" class="empty-friends">
+          <div class="empty-icon">👤</div>
+          <p>No tienes amigos para agregar</p>
+          <small>Agrega amigos desde la sección de búsqueda</small>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
         <button class="btn-cancel" (click)="toggleAddFriends()">Cerrar</button>
       </div>
     </div>

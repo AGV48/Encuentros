@@ -27,9 +27,9 @@ export class UsersController {
           try {
             const friendSql = `
               SELECT COUNT(*) as CNT FROM AMISTADES a
-              WHERE (a.USUARIO1 = :1 AND a.USUARIO2 = :2) OR (a.USUARIO1 = :2 AND a.USUARIO2 = :1)
+              WHERE (a.USUARIO1 = :1 AND a.USUARIO2 = :2) OR (a.USUARIO1 = :3 AND a.USUARIO2 = :4)
             `;
-            const friendRes = await this.dataSource.query(friendSql, [cur, Number(otherId)]);
+            const friendRes = await this.dataSource.query(friendSql, [cur, Number(otherId), Number(otherId), cur]);
             isFriend = friendRes && friendRes[0] && Number(friendRes[0].CNT ?? friendRes[0].COUNT ?? 0) > 0;
           } catch (e) {
             // If AMISTADES doesn't exist or query fails, fallback to false and log for debugging
@@ -91,9 +91,9 @@ export class UsersController {
       try {
         const friendCheckSql = `
           SELECT COUNT(*) as CNT FROM AMISTADES a
-          WHERE (a.USUARIO1 = :1 AND a.USUARIO2 = :2) OR (a.USUARIO1 = :2 AND a.USUARIO2 = :1)
+          WHERE (a.USUARIO1 = :1 AND a.USUARIO2 = :2) OR (a.USUARIO1 = :3 AND a.USUARIO2 = :4)
         `;
-        const friendCheck = await this.dataSource.query(friendCheckSql, [from, to]);
+        const friendCheck = await this.dataSource.query(friendCheckSql, [from, to, to, from]);
         const isFriend = friendCheck && friendCheck[0] && Number(friendCheck[0].CNT ?? friendCheck[0].COUNT ?? 0) > 0;
         if (isFriend) {
           throw new HttpException('Ya son amigos', 400);
@@ -219,9 +219,9 @@ export class UsersController {
       try {
         const friendCheckSql = `
           SELECT COUNT(*) as CNT FROM AMISTADES a
-          WHERE (a.USUARIO1 = :1 AND a.USUARIO2 = :2) OR (a.USUARIO1 = :2 AND a.USUARIO2 = :1)
+          WHERE (a.USUARIO1 = :1 AND a.USUARIO2 = :2) OR (a.USUARIO1 = :3 AND a.USUARIO2 = :4)
         `;
-        const friendCheck = await this.dataSource.query(friendCheckSql, [usuario_origen, usuario_destino]);
+        const friendCheck = await this.dataSource.query(friendCheckSql, [usuario_origen, usuario_destino, usuario_destino, usuario_origen]);
         const alreadyFriend = friendCheck && friendCheck[0] && Number(friendCheck[0].CNT ?? friendCheck[0].COUNT ?? 0) > 0;
         if (alreadyFriend) {
           // marcar la relación como aceptada (si no lo está) para mantener consistencia
@@ -352,6 +352,47 @@ export class UsersController {
       return { success: true };
     } catch (error) {
       return { success: false, message: error.message };
+    }
+  }
+
+  @Get('friends/:userId')
+  async getFriends(@Query('userId') userId: string) {
+    try {
+      const userIdNum = Number(userId);
+      if (isNaN(userIdNum)) {
+        throw new BadRequestException('userId debe ser un número válido');
+      }
+
+      // Consultar la tabla AMISTADES para obtener los amigos del usuario
+      // Simplificamos la consulta usando UNION para evitar problemas con CASE
+      const friendsSql = `
+        SELECT DISTINCT
+          u.ID_USUARIO as id,
+          u.NOMBRE as nombre,
+          u.APELLIDO as apellido,
+          u.EMAIL as email,
+          u.IMAGEN_PERFIL as imagenPerfil
+        FROM AMISTADES a
+        JOIN USUARIOS u ON u.ID_USUARIO = a.USUARIO2
+        WHERE a.USUARIO1 = :1
+        UNION
+        SELECT DISTINCT
+          u.ID_USUARIO as id,
+          u.NOMBRE as nombre,
+          u.APELLIDO as apellido,
+          u.EMAIL as email,
+          u.IMAGEN_PERFIL as imagenPerfil
+        FROM AMISTADES a
+        JOIN USUARIOS u ON u.ID_USUARIO = a.USUARIO1
+        WHERE a.USUARIO2 = :2
+      `;
+
+      const friends = await this.dataSource.query(friendsSql, [userIdNum, userIdNum]);
+      
+      return { success: true, friends };
+    } catch (error) {
+      console.error('Error obteniendo amigos', error);
+      throw new HttpException('Error obteniendo lista de amigos', 500);
     }
   }
 }
