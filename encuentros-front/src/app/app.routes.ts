@@ -59,6 +59,11 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'budgets/:id',
+    component: Budgets,
+    pathMatch: 'full',
+  },
+  {
     path: 'pockets',
     component: Pockets,
     pathMatch: 'full',
