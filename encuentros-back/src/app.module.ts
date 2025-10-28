@@ -8,6 +8,7 @@ import { ChatModule } from './chat/chat.module';
 import { ParticipantesEncuentroModule } from './participantes-encuentro/participantes-encuentro.module';
 import { PresupuestoModule } from './presupuesto/presupuesto.module';
 import { BolsilloModule } from './bolsillo/bolsillo.module';
+import { AporteModule } from './aporte/aporte.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { BolsilloModule } from './bolsillo/bolsillo.module';
     ParticipantesEncuentroModule,
     PresupuestoModule,
     BolsilloModule,
+    AporteModule,
   ],
   controllers: [AppController],
   providers: [AppService],

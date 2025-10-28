@@ -188,10 +188,10 @@
 
   <nav class="bottom" aria-label="Flujo de presupuesto">
     <div class="nav-wrap">
-      <a class="tab" routerLink="/budgets">🧾 <span>Presupuesto</span></a>
-      <a class="tab" routerLink="/pockets">🪙 <span>Bolsillos</span></a>
-      <a class="tab" routerLink="/contributions">🤝 <span>Aportes</span></a>
-      <a class="tab active" routerLink="/costs">💸 <span>Gastos</span></a>
+      <a class="tab" [routerLink]="['/budgets', encuentroId]">🧾 <span>Presupuesto</span></a>
+      <a class="tab" [routerLink]="['/pockets', encuentroId]">🪙 <span>Bolsillos</span></a>
+      <a class="tab" [routerLink]="['/contributions', encuentroId]">🤝 <span>Aportes</span></a>
+      <a class="tab active" [routerLink]="['/costs', encuentroId]">💸 <span>Gastos</span></a>
     </div>
   </nav>
 </body>

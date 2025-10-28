@@ -1,44 +1,32 @@
 import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
-interface BudgetDetails {
-  nombre: string;
-  monto: number;
-}
-
 interface PocketDetails {
-  id: string;
+  id: number;
   nombre: string;
   saldoActual: number;
-  gastos: number;
 }
 
-interface StoredPocketState {
-  budgetName: string;
-  budgetAmount: number;
-  pockets: PocketDetails[];
-}
-
-interface ContributionEntry {
-  userId: number;
-  userName: string;
-  amount: number;
-  updatedAt: string;
-}
-
-interface PocketContributionState {
-  pocketId: string;
-  pocketName: string;
-  entries: ContributionEntry[];
+interface AporteEntry {
+  id?: number;
+  idBolsillo?: number;
+  idUsuario?: number;
+  monto: number;
+  fechaAporte?: Date;
+  usuario?: {
+    nombre: string;
+    apellido?: string;
+  };
 }
 
 interface PocketSummary extends PocketDetails {
   totalContributions: number;
   myContribution: number;
-  otherEntries: ContributionEntry[];
+  otherEntries: AporteEntry[];
 }
 
 interface StoredUser {
@@ -48,8 +36,6 @@ interface StoredUser {
   email: string;
 }
 
-type ContributionsStorage = Record<string, PocketContributionState[]>;
-
 @Component({
   selector: 'app-contributions',
   standalone: true,
@@ -57,30 +43,22 @@ type ContributionsStorage = Record<string, PocketContributionState[]>;
   templateUrl: './contributions.html',
   styleUrl: './contributions.css',
 })
-export default class Contributions {
+export default class Contributions implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly http = inject(HttpClient);
 
-  private readonly budgetStorageKey = 'encuentros:selected-budget';
-  private readonly pocketsStorageKey = 'encuentros:pockets';
-  private readonly contributionsStorageKey = 'encuentros:contributions';
-
-  budget: BudgetDetails | null = null;
-  pockets: PocketDetails[] = [];
-  pocketSummaries: PocketSummary[] = [];
+  encuentroId: string | null = null;
   currentUser: StoredUser | null = null;
-
-  private contributionState: PocketContributionState[] = [];
-  private pocketForms = new Map<string, FormGroup>();
-  submittingPocketId: string | null = null;
-
-  constructor() {
-    this.loadBudget();
-    this.loadCurrentUser();
-    this.loadPockets();
-    this.loadContributions();
-    this.buildPocketSummaries();
-  }
+  pockets: PocketDetails[] = [];
+  aportes: AporteEntry[] = [];
+  pocketForms = new Map<number, FormGroup>();
+  submitting = false;
+  loading = true;
+  budget: any = null;
+  pocketSummaries: PocketSummary[] = [];
+  submittingPocketId: number | null = null;
 
   get hasBudget(): boolean {
     return !!this.budget;
@@ -105,31 +83,170 @@ export default class Contributions {
     return this.pocketSummaries.reduce((acc, pocket) => acc + pocket.myContribution, 0);
   }
 
-  getPocketForm(pocketId: string): FormGroup {
-    let form = this.pocketForms.get(pocketId);
-    if (!form) {
-      form = this.fb.group({
-        amount: [
-          this.getStoredContributionAmount(pocketId),
-          [Validators.required, Validators.min(0.01)],
-        ],
+  ngOnInit() {
+    // Obtener el ID del encuentro de los parámetros de la ruta
+    this.encuentroId = this.route.snapshot.paramMap.get('id');
+
+    if (this.encuentroId) {
+      this.loadCurrentUser();
+      this.loadBudget();
+      this.loadPockets();
+      this.loadAportes();
+    } else {
+      this.loading = false;
+      Swal.fire({
+        icon: 'warning',
+        title: 'Sin encuentro',
+        text: 'No se especificó un encuentro para los aportes',
       });
-      this.pocketForms.set(pocketId, form);
     }
-    return form;
   }
 
-  trackPocketById(index: number, pocket: PocketSummary): string {
-    return pocket.id ?? `${index}`;
+  private loadCurrentUser(): void {
+    const raw = localStorage.getItem('currentUser');
+    if (raw) {
+      this.currentUser = JSON.parse(raw) as StoredUser;
+    }
   }
 
-  async confirmContribution(pocketId: string): Promise<void> {
-    if (!this.hasBudget) {
-      this.router.navigate(['/budgets']);
+  private loadBudget(): void {
+    if (!this.encuentroId) return;
+
+    this.http
+      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .subscribe({
+        next: (presupuesto) => {
+          if (presupuesto) {
+            this.budget = {
+              id: presupuesto.id,
+              nombre: presupuesto.nombreItem,
+              monto: presupuesto.montoItem,
+            };
+          }
+        },
+        error: (err) => {
+          console.error('Error cargando presupuesto', err);
+        },
+      });
+  }
+
+  private loadPockets(): void {
+    if (!this.encuentroId) return;
+
+    this.http.get<any[]>(`http://localhost:3000/bolsillo?encuentro=${this.encuentroId}`).subscribe({
+      next: (bolsillos) => {
+        this.pockets = bolsillos.map((b) => ({
+          id: b.id,
+          nombre: b.nombre,
+          saldoActual: b.saldoActual,
+        }));
+      },
+      error: (err) => {
+        console.error('Error cargando bolsillos', err);
+      },
+    });
+  }
+
+  private loadAportes(): void {
+    if (!this.encuentroId) return;
+
+    this.http.get<any[]>(`http://localhost:3000/aporte?encuentro=${this.encuentroId}`).subscribe({
+      next: (aportes) => {
+        this.aportes = aportes.map((a) => ({
+          id: a.id,
+          idBolsillo: a.idBolsillo,
+          idUsuario: a.idUsuario,
+          monto: a.monto,
+          fechaAporte: a.fechaAporte,
+          usuario: a.usuario,
+        }));
+
+        // Inicializar formularios para cada bolsillo
+        this.pockets.forEach((pocket) => {
+          this.ensureFormForPocket(pocket.id);
+        });
+
+        // Calcular summaries
+        this.calculatePocketSummaries();
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando aportes', err);
+        this.loading = false;
+      },
+    });
+  }
+
+  private calculatePocketSummaries(): void {
+    this.pocketSummaries = this.pockets.map((pocket) => {
+      const pocketAportes = this.aportes.filter((a) => a.idBolsillo === pocket.id);
+      const totalContributions = pocketAportes.reduce((sum, a) => sum + a.monto, 0);
+      const myContribution = pocketAportes
+        .filter((a) => a.idUsuario === this.currentUser?.id)
+        .reduce((sum, a) => sum + a.monto, 0);
+      const otherEntries = pocketAportes.filter((a) => a.idUsuario !== this.currentUser?.id);
+
+      return {
+        ...pocket,
+        totalContributions,
+        myContribution,
+        otherEntries,
+      };
+    });
+  }
+
+  getPocketSummaries(): PocketSummary[] {
+    return this.pockets.map((pocket) => {
+      const pocketAportes = this.aportes.filter((a) => a.idBolsillo === pocket.id);
+      const totalContributions = pocketAportes.reduce((sum, a) => sum + a.monto, 0);
+      const myContribution = pocketAportes
+        .filter((a) => a.idUsuario === this.currentUser?.id)
+        .reduce((sum, a) => sum + a.monto, 0);
+      const otherEntries = pocketAportes.filter((a) => a.idUsuario !== this.currentUser?.id);
+
+      return {
+        ...pocket,
+        totalContributions,
+        myContribution,
+        otherEntries,
+      };
+    });
+  }
+
+  trackPocketById(index: number, pocket: PocketSummary): number {
+    return pocket.id ?? index;
+  }
+
+  private ensureFormForPocket(pocketId: number): void {
+    if (!this.pocketForms.has(pocketId)) {
+      const myAporte = this.aportes.find(
+        (a) => a.idBolsillo === pocketId && a.idUsuario === this.currentUser?.id
+      );
+      this.pocketForms.set(
+        pocketId,
+        this.fb.group({
+          amount: [myAporte?.monto ?? null, [Validators.required, Validators.min(0.01)]],
+        })
+      );
+    }
+  }
+
+  getPocketForm(pocketId: number): FormGroup | null {
+    return this.pocketForms.get(pocketId) ?? null;
+  }
+
+  async confirmContribution(pocketId: number): Promise<void> {
+    if (!this.encuentroId) {
+      await Swal.fire({
+        title: 'Error',
+        text: 'No se ha especificado un encuentro',
+        icon: 'error',
+      });
       return;
     }
 
-    if (!this.isLoggedIn) {
+    if (!this.currentUser) {
       await Swal.fire({
         title: 'Necesitas iniciar sesión',
         text: 'Inicia sesión para registrar o actualizar tu aporte.',
@@ -140,33 +257,33 @@ export default class Contributions {
     }
 
     const form = this.getPocketForm(pocketId);
-    if (form.invalid) {
-      form.markAllAsTouched();
-      return;
-    }
-
-    const rawAmount = form.value.amount;
-    const amount = this.parseAmount(rawAmount);
-    if (amount <= 0) {
-      form.get('amount')?.setErrors({ min: true });
-      return;
-    }
-
-    const pocket = this.pockets.find((item) => item.id === pocketId);
-    if (!pocket) {
+    if (!form || form.invalid) {
+      form?.markAllAsTouched();
       await Swal.fire({
-        title: 'Bolsillo no encontrado',
-        text: 'No pudimos identificar el bolsillo seleccionado. Intenta nuevamente.',
-        icon: 'error',
-        confirmButtonColor: '#dc2626',
+        title: 'Validación',
+        text: 'Por favor ingresa un monto válido mayor a 0',
+        icon: 'warning',
       });
       return;
     }
 
-    const formattedAmount = this.formatAmount(amount);
+    const monto = form.value.amount;
+    const pocket = this.pockets.find((p) => p.id === pocketId);
+
+    if (!pocket) {
+      await Swal.fire({
+        title: 'Error',
+        text: 'No se encontró el bolsillo seleccionado',
+        icon: 'error',
+      });
+      return;
+    }
+
     const result = await Swal.fire({
       title: 'Confirmar aporte',
-      text: `Registrarás ${formattedAmount} en "${pocket.nombre}". ¿Deseas continuar?`,
+      text: `Registrarás $${monto.toLocaleString('es-CO')} en "${
+        pocket.nombre
+      }". ¿Deseas continuar?`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: 'Sí, guardar',
@@ -181,304 +298,78 @@ export default class Contributions {
     }
 
     this.submittingPocketId = pocketId;
-    this.updateContributionState(pocketId, amount);
-    this.persistContributions();
-    this.buildPocketSummaries();
-    form.patchValue({ amount }, { emitEvent: false });
-    form.markAsPristine();
-    form.markAsUntouched();
-    this.submittingPocketId = null;
 
-    await Swal.fire({
-      title: 'Aporte registrado',
-      text: 'Actualizamos tu aporte y el total recaudado del bolsillo.',
-      icon: 'success',
-      confirmButtonColor: '#2563eb',
-    });
+    // Verificar si ya existe un aporte del usuario para este bolsillo
+    const existingAporte = this.aportes.find(
+      (a) => a.idBolsillo === pocketId && a.idUsuario === this.currentUser?.id
+    );
+
+    if (existingAporte && existingAporte.id) {
+      // Actualizar aporte existente
+      this.http.patch(`http://localhost:3000/aporte/${existingAporte.id}`, { monto }).subscribe({
+        next: () => {
+          this.submittingPocketId = null;
+          Swal.fire({
+            icon: 'success',
+            title: '¡Aporte actualizado!',
+            text: 'Tu aporte ha sido actualizado correctamente',
+            timer: 2000,
+          });
+          this.loadAportes();
+        },
+        error: (err) => {
+          this.submittingPocketId = null;
+          console.error('Error actualizando aporte', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el aporte',
+          });
+        },
+      });
+    } else {
+      // Crear nuevo aporte
+      const nuevoAporte = {
+        idBolsillo: pocketId,
+        idEncuentro: Number(this.encuentroId),
+        idUsuario: this.currentUser.id,
+        monto,
+      };
+
+      this.http.post('http://localhost:3000/aporte', nuevoAporte).subscribe({
+        next: () => {
+          this.submittingPocketId = null;
+          Swal.fire({
+            icon: 'success',
+            title: '¡Aporte registrado!',
+            text: 'Tu aporte ha sido registrado correctamente',
+            timer: 2000,
+          });
+          this.loadAportes();
+        },
+        error: (err) => {
+          this.submittingPocketId = null;
+          this.submitting = false;
+          console.error('Error creando aporte', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo registrar el aporte',
+          });
+        },
+      });
+    }
   }
 
   goToBudgets(): void {
-    this.router.navigate(['/budgets']);
+    this.router.navigate(['/budgets', this.encuentroId]);
   }
 
   goToPockets(): void {
-    this.router.navigate(['/pockets']);
+    this.router.navigate(['/pockets', this.encuentroId]);
   }
 
   goToCosts(): void {
-    this.router.navigate(['/costs']);
-  }
-
-  private getStoredContributionAmount(pocketId: string): number | null {
-    const pocketState = this.contributionState.find((entry) => entry.pocketId === pocketId);
-    const currentUserId = this.currentUser?.id;
-    if (!pocketState || currentUserId == null) {
-      return null;
-    }
-
-    const myEntry = pocketState.entries.find((item) => item.userId === currentUserId);
-    if (!myEntry) {
-      return null;
-    }
-
-    return myEntry.amount;
-  }
-
-  private parseAmount(value: unknown): number {
-    if (typeof value === 'number') {
-      return value;
-    }
-    if (typeof value === 'string') {
-      const normalized = value.replace(/,/g, '.');
-      return Number.parseFloat(normalized);
-    }
-    return 0;
-  }
-
-  private formatAmount(amount: number): string {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  }
-
-  private loadBudget(): void {
-    try {
-      const raw = localStorage.getItem(this.budgetStorageKey);
-      if (!raw) {
-        return;
-      }
-      const stored = JSON.parse(raw) as BudgetDetails | null;
-      if (stored && typeof stored.nombre === 'string' && typeof stored.monto === 'number') {
-        this.budget = stored;
-      }
-    } catch (error) {
-      console.warn('No se pudo recuperar el presupuesto seleccionado', error);
-    }
-  }
-
-  private loadCurrentUser(): void {
-    try {
-      const raw = localStorage.getItem('user');
-      if (!raw) {
-        return;
-      }
-      const stored = JSON.parse(raw) as StoredUser | null;
-      if (stored && typeof stored.id === 'number' && typeof stored.nombre === 'string') {
-        this.currentUser = stored;
-      }
-    } catch (error) {
-      console.warn('No se pudo recuperar la sesión de usuario', error);
-    }
-  }
-
-  private loadPockets(): void {
-    if (!this.budget) {
-      this.pockets = [];
-      return;
-    }
-
-    try {
-      const raw = localStorage.getItem(this.pocketsStorageKey);
-      if (!raw) {
-        this.pockets = [];
-        return;
-      }
-
-      const stored = JSON.parse(raw) as StoredPocketState | null;
-      if (!stored) {
-        this.pockets = [];
-        return;
-      }
-
-      if (stored.budgetName === this.budget.nombre && typeof stored.budgetAmount === 'number') {
-        this.pockets = Array.isArray(stored.pockets) ? stored.pockets : [];
-      } else {
-        this.pockets = [];
-      }
-    } catch (error) {
-      console.warn('No se pudieron recuperar los bolsillos almacenados', error);
-      this.pockets = [];
-    }
-  }
-
-  private loadContributions(): void {
-    if (!this.budget) {
-      this.contributionState = [];
-      return;
-    }
-
-    const storageKey = this.buildBudgetKey();
-    if (!storageKey) {
-      this.contributionState = [];
-      return;
-    }
-
-    try {
-      const raw = localStorage.getItem(this.contributionsStorageKey);
-      if (!raw) {
-        this.contributionState = [];
-        return;
-      }
-
-      const stored = JSON.parse(raw) as ContributionsStorage | null;
-      if (!stored || typeof stored !== 'object') {
-        this.contributionState = [];
-        return;
-      }
-
-      const entries = stored[storageKey];
-      if (Array.isArray(entries)) {
-        this.contributionState = entries;
-      } else {
-        this.contributionState = [];
-      }
-    } catch (error) {
-      console.warn('No se pudieron recuperar los aportes almacenados', error);
-      this.contributionState = [];
-    }
-  }
-
-  private persistContributions(): void {
-    const storageKey = this.buildBudgetKey();
-    if (!storageKey) {
-      return;
-    }
-
-    try {
-      const raw = localStorage.getItem(this.contributionsStorageKey);
-      const stored = raw ? (JSON.parse(raw) as ContributionsStorage) : {};
-      stored[storageKey] = this.contributionState;
-      localStorage.setItem(this.contributionsStorageKey, JSON.stringify(stored));
-    } catch (error) {
-      console.warn('No se pudieron guardar los aportes', error);
-    }
-  }
-
-  private buildPocketSummaries(): void {
-    if (!this.hasBudget) {
-      this.pocketSummaries = [];
-      this.pocketForms.clear();
-      return;
-    }
-
-    const validPocketIds = new Set(this.pockets.map((pocket) => pocket.id));
-    this.contributionState = this.contributionState.filter((state) =>
-      validPocketIds.has(state.pocketId)
-    );
-
-    this.pocketSummaries = this.pockets.map((pocket) => {
-      const state = this.contributionState.find((entry) => entry.pocketId === pocket.id);
-      const total =
-        state?.entries.reduce(
-          (acc, item) => acc + (Number.isFinite(item.amount) ? item.amount : 0),
-          0
-        ) ?? 0;
-
-      const myEntry = state?.entries.find((entry) => entry.userId === this.currentUser?.id) ?? null;
-      const others = (state?.entries ?? []).filter(
-        (entry) => entry.userId !== this.currentUser?.id
-      );
-
-      this.ensureFormForPocket(pocket.id, myEntry?.amount ?? null);
-
-      return {
-        ...pocket,
-        totalContributions: total,
-        myContribution: myEntry?.amount ?? 0,
-        otherEntries: others,
-      } satisfies PocketSummary;
-    });
-
-    this.syncPocketForms(validPocketIds);
-  }
-
-  private ensureFormForPocket(pocketId: string, amount: number | null): void {
-    const form = this.pocketForms.get(pocketId);
-    if (!form) {
-      const group = this.fb.group({
-        amount: [amount ?? null, [Validators.required, Validators.min(0.01)]],
-      });
-      this.pocketForms.set(pocketId, group);
-      return;
-    }
-
-    const normalizedAmount = amount ?? null;
-    const currentValue = this.parseAmount(form.value.amount);
-
-    if (normalizedAmount === null) {
-      form.reset({ amount: null }, { emitEvent: false });
-      form.markAsPristine();
-      form.markAsUntouched();
-      return;
-    }
-
-    if (normalizedAmount !== currentValue) {
-      form.patchValue({ amount: normalizedAmount }, { emitEvent: false });
-      form.markAsPristine();
-    }
-  }
-
-  private syncPocketForms(validPocketIds: Set<string>): void {
-    for (const pocketId of Array.from(this.pocketForms.keys())) {
-      if (!validPocketIds.has(pocketId)) {
-        this.pocketForms.delete(pocketId);
-      }
-    }
-  }
-
-  private updateContributionState(pocketId: string, amount: number): void {
-    if (!this.currentUser) {
-      return;
-    }
-
-    const pocket = this.pockets.find((item) => item.id === pocketId);
-    if (!pocket) {
-      return;
-    }
-
-    let pocketState = this.contributionState.find((entry) => entry.pocketId === pocketId);
-    if (!pocketState) {
-      pocketState = {
-        pocketId,
-        pocketName: pocket.nombre,
-        entries: [],
-      };
-      this.contributionState = [...this.contributionState, pocketState];
-    } else {
-      pocketState.pocketName = pocket.nombre;
-    }
-
-    const timestamp = new Date().toISOString();
-    const existing = pocketState.entries.find((entry) => entry.userId === this.currentUser?.id);
-
-    if (existing) {
-      existing.amount = amount;
-      existing.updatedAt = timestamp;
-      existing.userName = this.currentUser.nombre;
-    } else {
-      pocketState.entries = [
-        ...pocketState.entries,
-        {
-          userId: this.currentUser.id,
-          userName: this.currentUser.nombre,
-          amount,
-          updatedAt: timestamp,
-        },
-      ];
-    }
-
-    this.contributionState = this.contributionState.map((state) =>
-      state.pocketId === pocketId ? pocketState! : state
-    );
-  }
-
-  private buildBudgetKey(): string | null {
-    if (!this.budget) {
-      return null;
-    }
-    return `${this.budget.nombre}|${this.budget.monto}`;
+    this.router.navigate(['/costs', this.encuentroId]);
   }
 }
