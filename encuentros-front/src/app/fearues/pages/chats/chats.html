@@ -9,37 +9,27 @@
   </header>
 
   <main class="container">
-    <a class="chat" href="chat.html" aria-label="Abrir chat Almuerzo equipo">
-      <div class="avatar">AE</div>
-      <div class="chat-info">
-        <div class="name">Almuerzo equipo</div>
-        <div class="preview">Tú: Perfecto, nos vemos a las 12:30</div>
-      </div>
-      <div class="meta">
-        <small class="muted">11:02</small>
-        <div class="badge">3</div>
-      </div>
-    </a>
+    <!-- Mostrar mensaje cuando no hay chats -->
+    <div *ngIf="chats.length === 0" class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No hay chats</h3>
+      <p>Cuando crees un encuentro, aparecerá aquí como chat</p>
+    </div>
 
-    <a class="chat" href="chat.html" aria-label="Abrir chat Fútbol jueves">
-      <div class="avatar">FJ</div>
+    <!-- Lista de chats dinámicos -->
+    <a 
+      *ngFor="let chat of chats" 
+      class="chat" 
+      [routerLink]="['/chat-detail', chat.id]" 
+      [attr.aria-label]="'Abrir chat ' + chat.titulo"
+    >
+      <div class="avatar">{{ chat.initials }}</div>
       <div class="chat-info">
-        <div class="name">Fútbol jueves</div>
-        <div class="preview">Sofi: llevo los guantes 🧤</div>
+        <div class="name">{{ chat.titulo }}</div>
+        <div class="preview">{{ chat.lastMessage }}</div>
       </div>
       <div class="meta">
-        <small class="muted">Ayer</small>
-      </div>
-    </a>
-
-    <a class="chat" href="chat.html" aria-label="Abrir chat Cine viernes">
-      <div class="avatar">CV</div>
-      <div class="chat-info">
-        <div class="name">Cine viernes</div>
-        <div class="preview">Juan: compré las entradas 🎟️</div>
-      </div>
-      <div class="meta">
-        <small class="muted">Lun</small>
+        <small class="muted">{{ chat.timeLabel }}</small>
       </div>
     </a>
   </main>

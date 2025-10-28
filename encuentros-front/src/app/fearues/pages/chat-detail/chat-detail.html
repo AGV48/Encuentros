@@ -1,0 +1,64 @@
+<body>
+  <!-- Header tipo WhatsApp -->
+  <header class="chat-header">
+    <button class="back-btn" (click)="goBack()" aria-label="Volver a chats">
+      ←
+    </button>
+    <div class="chat-info">
+      <div class="avatar-small">{{ encuentro?.titulo?.substring(0, 2).toUpperCase() || 'EN' }}</div>
+      <div class="info-text">
+        <div class="chat-title">{{ encuentro?.titulo || 'Chat' }}</div>
+        <div class="chat-subtitle">{{ encuentro?.lugar || 'Encuentro' }}</div>
+      </div>
+    </div>
+    <button class="add-friends-btn" (click)="toggleAddFriends()" aria-label="Agregar amigos">
+      👥+
+    </button>
+  </header>
+
+  <!-- Modal para agregar amigos -->
+  <div class="modal-overlay" *ngIf="showAddFriends" (click)="toggleAddFriends()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Agregar amigos al encuentro</h3>
+      <p class="modal-subtitle">Esta funcionalidad estará disponible próximamente</p>
+      <div class="modal-actions">
+        <button class="btn-cancel" (click)="toggleAddFriends()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Área de mensajes (simulada) -->
+  <main class="chat-messages">
+    <div class="empty-state">
+      <div class="empty-icon">💬</div>
+      <h3>Chat del encuentro</h3>
+      <p>Este es un chat simulado para tu encuentro "{{ encuentro?.titulo }}"</p>
+      <p class="muted">Los mensajes aparecerán aquí cuando la funcionalidad esté completa</p>
+    </div>
+  </main>
+
+  <!-- Barra inferior para enviar mensajes -->
+  <footer class="chat-footer">
+    <div class="message-input-container">
+      <button class="attach-btn" aria-label="Adjuntar archivo">
+        📎
+      </button>
+      <input 
+        type="text" 
+        class="message-input" 
+        placeholder="Escribe un mensaje..."
+        [(ngModel)]="messageText"
+        (keyup.enter)="sendMessage()"
+        aria-label="Escribe un mensaje"
+      >
+      <button 
+        class="send-btn" 
+        (click)="sendMessage()"
+        [disabled]="!messageText.trim()"
+        aria-label="Enviar mensaje"
+      >
+        📤
+      </button>
+    </div>
+  </footer>
+</body>

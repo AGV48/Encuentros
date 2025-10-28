@@ -129,9 +129,10 @@ export class Home {
 
     this.creating = true;
     this.http.post('http://localhost:3000/encuentro', payload, { responseType: 'json' }).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.creating = false;
         this.showCreate = false;
+        
         // limpiar formulario
         this.newEncuentro.titulo = '';
         this.newEncuentro.descripcion = '';
@@ -140,7 +141,7 @@ export class Home {
         Swal.fire({
           icon: 'success',
           title: 'Encuentro creado',
-          text: 'El encuentro ha sido creado correctamente'
+          text: 'El encuentro ha sido creado correctamente y está disponible en Chats'
         });
         // refrescar lista de encuentros
         if (this.currentUserId) this.loadEncuentros();

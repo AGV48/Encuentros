@@ -10,27 +10,67 @@
   </header>
 
   <!-- Formulario creación de encuentro -->
-  <section *ngIf="showCreate" class="create-section">
-    <form (ngSubmit)="createEncuentro()" class="create-form">
-      <div>
-        <label>Título</label>
-        <input name="titulo" [(ngModel)]="newEncuentro.titulo" required />
+  <section *ngIf="showCreate" class="create-section" (click)="toggleCreate()">
+    <form (ngSubmit)="createEncuentro()" class="create-form" (click)="$event.stopPropagation()">
+      <div class="form-header">
+        <h2>✨ Crear Nuevo Encuentro</h2>
+        <button type="button" class="btn-close" (click)="toggleCreate()" aria-label="Cerrar">✕</button>
       </div>
-      <div>
-        <label>Descripción</label>
-        <textarea name="descripcion" [(ngModel)]="newEncuentro.descripcion" required></textarea>
+      
+      <div class="form-body">
+        <div class="form-group">
+          <label for="titulo">📌 Título del encuentro</label>
+          <input 
+            id="titulo"
+            name="titulo" 
+            [(ngModel)]="newEncuentro.titulo" 
+            placeholder="Ej: Reunión con el equipo"
+            required 
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="descripcion">📝 Descripción</label>
+          <textarea 
+            id="descripcion"
+            name="descripcion" 
+            [(ngModel)]="newEncuentro.descripcion"
+            placeholder="Describe los detalles del encuentro..."
+            required
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="lugar">📍 Lugar</label>
+          <input 
+            id="lugar"
+            name="lugar" 
+            [(ngModel)]="newEncuentro.lugar"
+            placeholder="Ej: Cafetería Central"
+            required 
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="fecha">🗓️ Fecha y hora</label>
+          <input 
+            id="fecha"
+            type="datetime-local" 
+            name="fecha" 
+            [(ngModel)]="newEncuentro.fecha" 
+            required 
+          />
+        </div>
       </div>
-      <div>
-        <label>Lugar</label>
-        <input name="lugar" [(ngModel)]="newEncuentro.lugar" required />
-      </div>
-      <div>
-        <label>Fecha y hora</label>
-        <input type="datetime-local" name="fecha" [(ngModel)]="newEncuentro.fecha" required />
-      </div>
-      <div class="actions">
-        <button type="submit" [disabled]="creating">Crear</button>
-        <button type="button" (click)="toggleCreate()">Cancelar</button>
+      
+      <div class="form-footer">
+        <button type="button" class="btn-secondary" (click)="toggleCreate()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="creating">
+          <span *ngIf="!creating">✓ Crear Encuentro</span>
+          <span *ngIf="creating">⏳ Creando...</span>
+        </button>
       </div>
     </form>
   </section>
