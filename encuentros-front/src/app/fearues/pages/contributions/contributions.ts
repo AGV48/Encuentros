@@ -57,7 +57,7 @@ type ContributionsStorage = Record<string, PocketContributionState[]>;
   templateUrl: './contributions.html',
   styleUrl: './contributions.css',
 })
-export class Contributions {
+export default class Contributions {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
 

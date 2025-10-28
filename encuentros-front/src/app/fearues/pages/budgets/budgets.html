@@ -15,7 +15,13 @@
   </header>
 
   <main class="container">
-    <ng-container *ngIf="!budget; else budgetSummary">
+    <!-- Estado de carga -->
+    <section *ngIf="loading" class="card empty-state" aria-live="polite">
+      <div class="spinner">⏳</div>
+      <p>Cargando presupuesto...</p>
+    </section>
+
+    <ng-container *ngIf="!loading && !budget">
       <section class="card empty-state" aria-live="polite">
         <h2>Sin presupuesto configurado</h2>
         <p>
@@ -77,16 +83,14 @@
       </section>
     </ng-container>
 
-    <ng-template #budgetSummary>
-      <section class="card budget-summary">
-        <h2>{{ budget?.nombre }}</h2>
-        <p class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</p>
-        <p class="muted">Este es el monto de referencia para los bolsillos y los aportes.</p>
-        <button type="button" class="btn-primary" (click)="goToPockets()">
-          Administrar bolsillos
-        </button>
-      </section>
-    </ng-template>
+    <section *ngIf="!loading && budget" class="card budget-summary">
+      <h2>{{ budget?.nombre }}</h2>
+      <p class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</p>
+      <p class="muted">Este es el monto de referencia para los bolsillos y los aportes.</p>
+      <button type="button" class="btn-primary" (click)="goToPockets()">
+        Administrar bolsillos
+      </button>
+    </section>
   </main>
 
   <nav class="bottom" aria-label="Flujo de presupuesto">

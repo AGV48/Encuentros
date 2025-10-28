@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { EncuentroModule } from './encuentro/encuentro.module';
 import { ChatModule } from './chat/chat.module';
 import { ParticipantesEncuentroModule } from './participantes-encuentro/participantes-encuentro.module';
+import { PresupuestoModule } from './presupuesto/presupuesto.module';
+import { BolsilloModule } from './bolsillo/bolsillo.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { ParticipantesEncuentroModule } from './participantes-encuentro/particip
     EncuentroModule,
     ChatModule,
     ParticipantesEncuentroModule,
+    PresupuestoModule,
+    BolsilloModule,
   ],
   controllers: [AppController],
   providers: [AppService],

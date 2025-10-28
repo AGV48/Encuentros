@@ -87,6 +87,21 @@ header {
 	line-height: 1.45;
 }
 
+.spinner {
+	font-size: 3rem;
+	margin-bottom: 16px;
+	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 .budget-form {
 	display: grid;
 	gap: 14px;

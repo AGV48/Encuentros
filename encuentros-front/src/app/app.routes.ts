@@ -9,7 +9,7 @@ import { Notifications } from './fearues/pages/notifications/notifications';
 import { Search } from './fearues/pages/search/search';
 import { Budgets } from './fearues/pages/budgets/budgets';
 import { Pockets } from './fearues/pages/pockets/pockets';
-import { Contributions } from './fearues/pages/contributions/contributions';
+import ContributionsComponent from './fearues/pages/contributions/contributions';
 import { Costs } from './fearues/pages/costs/costs';
 
 export const routes: Routes = [
@@ -69,12 +69,27 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'pockets/:id',
+    component: Pockets,
+    pathMatch: 'full',
+  },
+  {
     path: 'contributions',
-    component: Contributions,
+    component: ContributionsComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'contributions/:id',
+    component: ContributionsComponent,
     pathMatch: 'full',
   },
   {
     path: 'costs',
+    component: Costs,
+    pathMatch: 'full',
+  },
+  {
+    path: 'costs/:id',
     component: Costs,
     pathMatch: 'full',
   },
