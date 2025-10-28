@@ -1,0 +1,119 @@
+<body>
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🪙</div>
+        <div>
+          <h1 class="title">Bolsillos del presupuesto</h1>
+          <p class="subtitle">
+            Agrupa el dinero en categorías para controlar aportes y gastos del encuentro.
+          </p>
+        </div>
+      </div>
+      <button type="button" class="btn-secondary" routerLink="/budgets">
+        Volver a presupuesto
+      </button>
+    </div>
+    <div class="budget-pill" *ngIf="budget">
+      <span class="label">Presupuesto actual:</span>
+      <strong>{{ budget?.nombre }}</strong>
+      <span class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section *ngIf="!hasBudget" class="card empty-state" aria-live="polite">
+      <h2>No hay presupuesto configurado</h2>
+      <p>
+        Antes de crear bolsillos necesitas definir un presupuesto general. Regresa a la pantalla de
+        presupuesto para crear uno.
+      </p>
+      <button type="button" class="btn-primary" (click)="goToBudgets()">Crear presupuesto</button>
+    </section>
+
+    <ng-container *ngIf="hasBudget">
+      <section class="card create-pocket">
+        <div>
+          <h2>Crea un nuevo bolsillo</h2>
+          <p class="muted">
+            Usa bolsillos para separar el dinero estimado en categorías: transporte, comida,
+            souvenirs, etc.
+          </p>
+        </div>
+
+        <form class="pocket-form" [formGroup]="pocketForm" (ngSubmit)="onCreatePocket()">
+          <label for="pocket-name">Nombre del bolsillo</label>
+          <input
+            id="pocket-name"
+            type="text"
+            maxlength="200"
+            formControlName="nombre"
+            placeholder="Ej. Transporte"
+            autocomplete="off"
+          />
+          <div
+            class="error"
+            *ngIf="nombreControl?.invalid && (nombreControl?.dirty || nombreControl?.touched)"
+          >
+            <span *ngIf="nombreControl?.errors?.['required']">El nombre es obligatorio.</span>
+            <span *ngIf="nombreControl?.errors?.['maxLength']">Máximo 200 caracteres.</span>
+          </div>
+
+          <button class="btn-primary" type="submit" [disabled]="submitting || pocketForm.invalid">
+            Crear bolsillo
+          </button>
+        </form>
+      </section>
+
+      <section class="card pocket-list">
+        <header class="list-head">
+          <h2>Bolsillos creados</h2>
+          <span class="counter" aria-live="polite">{{ pockets.length }} en total</span>
+        </header>
+
+        <ng-container *ngIf="pockets.length; else emptyPockets">
+          <div class="pockets-grid">
+            <article class="pocket" *ngFor="let pocket of pockets; trackBy: trackPocketById">
+              <header>
+                <h3>{{ pocket.nombre }}</h3>
+              </header>
+              <dl>
+                <div>
+                  <dt>Saldo actual</dt>
+                  <dd>{{ pocket.saldoActual | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</dd>
+                </div>
+                <div>
+                  <dt>Gastos realizados</dt>
+                  <dd>{{ pocket.gastos | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</dd>
+                </div>
+              </dl>
+              <footer>
+                <p class="footnote">
+                  Actualizaremos estos montos cuando conectemos aportes y gastos desde el backend.
+                </p>
+              </footer>
+            </article>
+          </div>
+        </ng-container>
+
+        <ng-template #emptyPockets>
+          <div class="empty-pockets" aria-live="polite">
+            <p>Aún no hay bolsillos creados para este presupuesto.</p>
+            <button type="button" class="btn-secondary" (click)="pocketForm.reset()">
+              Limpiar formulario
+            </button>
+          </div>
+        </ng-template>
+      </section>
+    </ng-container>
+  </main>
+
+  <nav class="bottom" aria-label="Flujo de presupuesto">
+    <div class="nav-wrap">
+      <a class="tab" routerLink="/budgets">🧾 <span>Presupuesto</span></a>
+      <a class="tab active" routerLink="/pockets">🪙 <span>Bolsillos</span></a>
+      <a class="tab" routerLink="/contributions">🤝 <span>Aportes</span></a>
+      <a class="tab" routerLink="/costs">💸 <span>Gastos</span></a>
+    </div>
+  </nav>
+</body>
