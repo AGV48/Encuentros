@@ -10,9 +10,14 @@
           </p>
         </div>
       </div>
-      <button type="button" class="btn-secondary" (click)="goToPockets()">
-        Volver a bolsillos
-      </button>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn-secondary" (click)="goToEncuentro()">
+          ← Volver al encuentro
+        </button>
+        <button type="button" class="btn-secondary" (click)="goToPockets()">
+          Volver a bolsillos
+        </button>
+      </div>
     </div>
 
     <div class="budget-pill" *ngIf="budget">
@@ -43,6 +48,16 @@
 
     <ng-container *ngIf="hasBudget && hasPockets">
       <section class="card summary">
+        <div class="summary-item highlight">
+          <span class="summary-label">Aporte sugerido por persona</span>
+          <strong class="summary-value suggested">
+            {{ participantes.aportePorPersona | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}
+          </strong>
+          <small class="summary-note"
+            >Basado en {{ participantes.totalParticipantes }} participantes</small
+          >
+        </div>
+
         <div class="summary-item">
           <span class="summary-label">Total recaudado</span>
           <strong class="summary-value">
@@ -76,8 +91,8 @@
             <header class="pocket-head">
               <h3>{{ pocket.nombre }}</h3>
               <span class="badge"
-                >Recaudado
-                {{ pocket.totalContributions | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span
+                >Saldo actual
+                {{ pocket.saldoActual | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span
               >
             </header>
 
@@ -101,9 +116,9 @@
               <h4>Últimos aportes</h4>
               <ul>
                 <li *ngFor="let entry of pocket.otherEntries">
-                  <span class="user">{{ entry.userName }}</span>
+                  <span class="user">{{ entry.usuario?.nombre || 'Anónimo' }}</span>
                   <span class="amount">{{
-                    entry.amount | currency : 'COP' : 'symbol-narrow' : '1.0-2'
+                    entry.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2'
                   }}</span>
                 </li>
               </ul>
@@ -160,10 +175,12 @@
 
   <nav class="bottom" aria-label="Flujo de presupuesto">
     <div class="nav-wrap">
-      <a class="tab" routerLink="/budgets">🧾 <span>Presupuesto</span></a>
-      <a class="tab" routerLink="/pockets">🪙 <span>Bolsillos</span></a>
-      <a class="tab active" routerLink="/contributions">🤝 <span>Aportes</span></a>
-      <a class="tab" routerLink="/costs">💸 <span>Gastos</span></a>
+      <a class="tab" [routerLink]="['/budgets', encuentroId]">🧾 <span>Presupuesto</span></a>
+      <a class="tab" [routerLink]="['/pockets', encuentroId]">🪙 <span>Bolsillos</span></a>
+      <a class="tab active" [routerLink]="['/contributions', encuentroId]"
+        >🤝 <span>Aportes</span></a
+      >
+      <a class="tab" [routerLink]="['/costs', encuentroId]">💸 <span>Gastos</span></a>
     </div>
   </nav>
 </body>

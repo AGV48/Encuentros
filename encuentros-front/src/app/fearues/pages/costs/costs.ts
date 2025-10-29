@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe, NgFor, NgIf } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 
 interface BudgetDetails {
@@ -69,15 +69,17 @@ type CostsStorage = Record<string, PocketCostState[]>;
   templateUrl: './costs.html',
   styleUrl: './costs.css',
 })
-export class Costs {
+export class Costs implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   private readonly budgetStorageKey = 'encuentros:selected-budget';
   private readonly pocketsStorageKey = 'encuentros:pockets';
   private readonly contributionsStorageKey = 'encuentros:contributions';
   private readonly costsStorageKey = 'encuentros:costs';
 
+  encuentroId: string | null = null;
   budget: BudgetDetails | null = null;
   pockets: PocketDetails[] = [];
   pocketSummaries: PocketCostSummary[] = [];
@@ -95,6 +97,10 @@ export class Costs {
     this.loadContributions();
     this.loadCosts();
     this.buildPocketSummaries();
+  }
+
+  ngOnInit(): void {
+    this.encuentroId = this.route.snapshot.paramMap.get('id');
   }
 
   get hasBudget(): boolean {
@@ -221,15 +227,19 @@ export class Costs {
   }
 
   goToBudgets(): void {
-    this.router.navigate(['/budgets']);
+    this.router.navigate(['/budgets', this.encuentroId]);
   }
 
   goToPockets(): void {
-    this.router.navigate(['/pockets']);
+    this.router.navigate(['/pockets', this.encuentroId]);
   }
 
   goToContributions(): void {
-    this.router.navigate(['/contributions']);
+    this.router.navigate(['/contributions', this.encuentroId]);
+  }
+
+  goToEncuentro(): void {
+    this.router.navigate(['/chat-detail', this.encuentroId]);
   }
 
   private parseAmount(value: unknown): number {

@@ -18,6 +18,12 @@ export class EncuentroController {
     return this.encuentroService.findAll(id);
   }
 
+  @Get('resumen')
+  findAllWithResumen(@Query('creador') creador?: string) {
+    const id = creador ? +creador : undefined;
+    return this.encuentroService.findAllWithResumen(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.encuentroService.findOne(+id);

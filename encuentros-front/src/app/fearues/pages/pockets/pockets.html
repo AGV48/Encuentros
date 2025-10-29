@@ -10,28 +10,25 @@
           </p>
         </div>
       </div>
-      <button type="button" class="btn-secondary" routerLink="/budgets">
-        Volver a presupuesto
-      </button>
-    </div>
-    <div class="budget-pill" *ngIf="budget">
-      <span class="label">Presupuesto actual:</span>
-      <strong>{{ budget?.nombre }}</strong>
-      <span class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn-secondary" (click)="goToEncuentro()">
+          ← Volver al encuentro
+        </button>
+        <button type="button" class="btn-secondary" (click)="goToBudgets()">
+          Volver a presupuesto
+        </button>
+      </div>
     </div>
   </header>
 
   <main class="container">
-    <section *ngIf="!hasBudget" class="card empty-state" aria-live="polite">
-      <h2>No hay presupuesto configurado</h2>
-      <p>
-        Antes de crear bolsillos necesitas definir un presupuesto general. Regresa a la pantalla de
-        presupuesto para crear uno.
-      </p>
-      <button type="button" class="btn-primary" (click)="goToBudgets()">Crear presupuesto</button>
+    <!-- Estado de carga -->
+    <section *ngIf="loading" class="card empty-state" aria-live="polite">
+      <div class="spinner">⏳</div>
+      <p>Cargando bolsillos...</p>
     </section>
 
-    <ng-container *ngIf="hasBudget">
+    <ng-container *ngIf="!loading">
       <section class="card create-pocket">
         <div>
           <h2>Crea un nuevo bolsillo</h2>
@@ -82,10 +79,6 @@
                   <dt>Saldo actual</dt>
                   <dd>{{ pocket.saldoActual | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</dd>
                 </div>
-                <div>
-                  <dt>Gastos realizados</dt>
-                  <dd>{{ pocket.gastos | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</dd>
-                </div>
               </dl>
               <footer>
                 <p class="footnote">
@@ -110,10 +103,10 @@
 
   <nav class="bottom" aria-label="Flujo de presupuesto">
     <div class="nav-wrap">
-      <a class="tab" routerLink="/budgets">🧾 <span>Presupuesto</span></a>
-      <a class="tab active" routerLink="/pockets">🪙 <span>Bolsillos</span></a>
-      <a class="tab" routerLink="/contributions">🤝 <span>Aportes</span></a>
-      <a class="tab" routerLink="/costs">💸 <span>Gastos</span></a>
+      <a class="tab" [routerLink]="['/budgets', encuentroId]">🧾 <span>Presupuesto</span></a>
+      <a class="tab active" [routerLink]="['/pockets', encuentroId]">🪙 <span>Bolsillos</span></a>
+      <a class="tab" [routerLink]="['/contributions', encuentroId]">🤝 <span>Aportes</span></a>
+      <a class="tab" [routerLink]="['/costs', encuentroId]">💸 <span>Gastos</span></a>
     </div>
   </nav>
 </body>

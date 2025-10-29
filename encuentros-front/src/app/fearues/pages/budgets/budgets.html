@@ -5,96 +5,132 @@
         <div class="logo" aria-hidden="true">🧾</div>
         <div>
           <h1 class="title">Presupuesto del encuentro</h1>
-          <p class="subtitle">Organiza el dinero estimado antes de repartirlo en bolsillos</p>
+          <p class="subtitle">Define el presupuesto inicial agregando productos y sus montos estimados</p>
         </div>
       </div>
-      <button *ngIf="budget" type="button" class="btn-secondary" (click)="goToPockets()">
-        Ir a bolsillos
-      </button>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn-secondary" (click)="goToEncuentro()">
+          ← Volver al encuentro
+        </button>
+        <button *ngIf="budget" type="button" class="btn-secondary" (click)="goToPockets()">
+          Ir a bolsillos
+        </button>
+      </div>
     </div>
   </header>
 
   <main class="container">
-    <ng-container *ngIf="!budget; else budgetSummary">
+    <!-- Estado de carga -->
+    <section *ngIf="loading" class="card empty-state" aria-live="polite">
+      <div class="spinner">⏳</div>
+      <p>Cargando presupuesto...</p>
+    </section>
+
+    <!-- Si no hay presupuesto (error o no existe el encuentro) -->
+    <ng-container *ngIf="!loading && !budget">
       <section class="card empty-state" aria-live="polite">
-        <h2>Sin presupuesto configurado</h2>
+        <h2>No se encontró el presupuesto</h2>
         <p>
-          Define el monto total que esperas utilizar en este encuentro. Podrás repartirlo en
-          bolsillos y registrar aportes más adelante.
+          No se pudo cargar el presupuesto para este encuentro. Verifica que el encuentro exista o recarga la página.
         </p>
-
-        <form class="budget-form" [formGroup]="budgetForm" (ngSubmit)="onCreateBudget()">
-          <label for="budget-name">Nombre del presupuesto</label>
-          <input
-            id="budget-name"
-            type="text"
-            formControlName="nombre"
-            placeholder="Ej. Presupuesto general del viaje"
-            maxlength="200"
-            autocomplete="off"
-            aria-describedby="budget-name-hint"
-          />
-          <small id="budget-name-hint" class="hint">Máximo 200 caracteres</small>
-          <div
-            class="error"
-            *ngIf="nombreControl?.invalid && (nombreControl?.dirty || nombreControl?.touched)"
-          >
-            <span *ngIf="nombreControl?.errors?.['required']">El nombre es obligatorio.</span>
-          </div>
-
-          <label for="budget-amount">Monto estimado total</label>
-          <div class="amount-input">
-            <span class="prefix">$</span>
-            <input
-              id="budget-amount"
-              type="number"
-              min="0"
-              step="0.01"
-              formControlName="monto"
-              placeholder="0.00"
-              aria-describedby="budget-amount-hint"
-            />
-          </div>
-          <small id="budget-amount-hint" class="hint"
-            >Lo tenemos que actualizar cuando conectemos con backend.</small
-          >
-          <div
-            class="error"
-            *ngIf="montoControl?.invalid && (montoControl?.dirty || montoControl?.touched)"
-          >
-            <span *ngIf="montoControl?.errors?.['required']"
-              >El monto estimado es obligatorio.</span
-            >
-            <span *ngIf="montoControl?.errors?.['min']">El monto debe ser mayor a 0.</span>
-          </div>
-
-          <button class="btn-primary" type="submit" [disabled]="submitting || budgetForm.invalid">
-            Crear presupuesto
-          </button>
-
-          <p *ngIf="errorMessage" class="feedback" role="alert">{{ errorMessage }}</p>
-        </form>
       </section>
     </ng-container>
 
-    <ng-template #budgetSummary>
-      <section class="card budget-summary">
-        <h2>{{ budget?.nombre }}</h2>
-        <p class="amount">{{ budget?.monto | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</p>
-        <p class="muted">Este es el monto de referencia para los bolsillos y los aportes.</p>
+    <!-- Presupuesto con tabla de items -->
+    <section *ngIf="!loading && budget" class="card budget-details">
+      <div class="budget-header">
+        <h2>Presupuesto del Encuentro</h2>
+        <div class="total-amount">
+          <span class="label">Total presupuestado:</span>
+          <span class="amount">{{ budget.presupuestoTotal | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Formulario para agregar item -->
+      <form class="item-form" [formGroup]="itemForm" (ngSubmit)="onAddItem()">
+        <div class="form-row">
+          <div class="form-field">
+            <label for="item-name">Nombre del producto</label>
+            <input
+              id="item-name"
+              type="text"
+              formControlName="nombreItem"
+              placeholder="Ej. Transporte, Alojamiento, Comida"
+              maxlength="200"
+              autocomplete="off"
+            />
+            <div
+              class="error"
+              *ngIf="nombreItemControl?.invalid && (nombreItemControl?.dirty || nombreItemControl?.touched)"
+            >
+              <span *ngIf="nombreItemControl?.errors?.['required']">El nombre es obligatorio.</span>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="item-amount">Monto estimado</label>
+            <div class="amount-input">
+              <span class="prefix">$</span>
+              <input
+                id="item-amount"
+                type="number"
+                min="0"
+                step="0.01"
+                formControlName="montoItem"
+                placeholder="0.00"
+              />
+            </div>
+            <div
+              class="error"
+              *ngIf="montoItemControl?.invalid && (montoItemControl?.dirty || montoItemControl?.touched)"
+            >
+              <span *ngIf="montoItemControl?.errors?.['required']">El monto es obligatorio.</span>
+              <span *ngIf="montoItemControl?.errors?.['min']">El monto debe ser mayor a 0.</span>
+            </div>
+          </div>
+
+          <button class="btn-add" type="submit" [disabled]="addingItem || itemForm.invalid">
+            ➕ Agregar
+          </button>
+        </div>
+      </form>
+
+      <!-- Tabla de items -->
+      <div class="items-table-container">
+        <table class="items-table" *ngIf="budget.items && budget.items.length > 0">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="text-right">Monto estimado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of budget.items">
+              <td>{{ item.nombreItem }}</td>
+              <td class="text-right">{{ item.montoItem | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-items" *ngIf="!budget.items || budget.items.length === 0">
+          <p class="muted">No hay items agregados aún. Usa el formulario de arriba para agregar productos al presupuesto.</p>
+        </div>
+      </div>
+
+      <div class="actions">
         <button type="button" class="btn-primary" (click)="goToPockets()">
-          Administrar bolsillos
+          Continuar a bolsillos →
         </button>
-      </section>
-    </ng-template>
+      </div>
+    </section>
   </main>
 
   <nav class="bottom" aria-label="Flujo de presupuesto">
     <div class="nav-wrap">
-      <a class="tab active" routerLink="/budgets">🧾 <span>Presupuesto</span></a>
-      <a class="tab" routerLink="/pockets">🪙 <span>Bolsillos</span></a>
-      <a class="tab" routerLink="/contributions">🤝 <span>Aportes</span></a>
-      <a class="tab" routerLink="/costs">💸 <span>Gastos</span></a>
+      <a class="tab active" [routerLink]="['/budgets', encuentroId]">🧾 <span>Presupuesto</span></a>
+      <a class="tab" [routerLink]="['/pockets', encuentroId]">🪙 <span>Bolsillos</span></a>
+      <a class="tab" [routerLink]="['/contributions', encuentroId]">🤝 <span>Aportes</span></a>
+      <a class="tab" [routerLink]="['/costs', encuentroId]">💸 <span>Gastos</span></a>
     </div>
   </nav>
 </body>

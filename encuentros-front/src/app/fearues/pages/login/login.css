@@ -26,6 +26,17 @@
 .logo-section {
   margin-bottom: 1.5rem;
 }
+.logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  color: white;
+  margin: 0 auto 0.5rem;
+}
 .logo-section h1 {
   font-size: 1.6rem;
   font-weight: 700;
@@ -36,10 +47,6 @@
   font-size: 0.9rem;
   color: #646A85;
   margin: 0;
-}
-.logo-img {
-  width: 52px;
-  height: 52px;
 }
 
 /* Inputs */

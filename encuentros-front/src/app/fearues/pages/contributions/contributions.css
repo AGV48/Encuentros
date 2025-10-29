@@ -130,6 +130,28 @@ header {
 	gap: 10px;
 }
 
+.summary-item.highlight {
+	background: linear-gradient(145deg, #10b981, #059669);
+	color: #fff;
+	border: 2px solid #047857;
+	box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+
+.summary-item.highlight .summary-label {
+	color: #d1fae5;
+}
+
+.summary-item.highlight .summary-value {
+	color: #fff;
+	font-size: 1.8rem;
+}
+
+.summary-item.highlight .summary-note {
+	color: #d1fae5;
+	font-size: 0.82rem;
+	margin-top: 4px;
+}
+
 .summary-label {
 	text-transform: uppercase;
 	font-size: 0.75rem;
