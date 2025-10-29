@@ -19,10 +19,29 @@ export class ChatDetail implements OnInit {
   messageText: string = '';
   showAddFriends: boolean = false;
   showEncuentroDetails: boolean = false;
+  showParticipantes: boolean = false;
   currentUserId: number | null = null;
   friends: Array<any> = [];
   loadingFriends: boolean = false;
   participantes: Array<any> = [];
+  participantesDetalle: Array<{
+    idEncuentro: number;
+    tituloEncuentro: string;
+    fecha: Date;
+    idUsuario: number;
+    nombreCompleto: string;
+    rol: string;
+  }> = [];
+  participantesAportes: Array<{
+    idEncuentro: number;
+    nombreEncuentro: string;
+    idUsuario: number;
+    nombreUsuario: string;
+    apellidoUsuario: string;
+    nombreCompleto: string;
+    rol: string;
+    totalAportes: number;
+  }> = [];
 
   constructor(private route: ActivatedRoute, private router: Router) {
     // Obtener el usuario actual
@@ -75,6 +94,7 @@ export class ChatDetail implements OnInit {
   loadParticipantes() {
     if (!this.encuentroId) return;
 
+    // Cargar participantes básicos (para compatibilidad)
     this.http
       .get<any[]>(`http://localhost:3000/participantes-encuentro?encuentro=${this.encuentroId}`)
       .subscribe({
@@ -83,6 +103,32 @@ export class ChatDetail implements OnInit {
         },
         error: (err) => {
           console.error('Error cargando participantes', err);
+        },
+      });
+    
+    // Cargar participantes desde la vista con información detallada
+    this.http
+      .get<any[]>(`http://localhost:3000/participantes-encuentro/vista/detalle?encuentro=${this.encuentroId}`)
+      .subscribe({
+        next: (participantes) => {
+          this.participantesDetalle = participantes;
+          console.log('Participantes detalle:', this.participantesDetalle);
+        },
+        error: (err) => {
+          console.error('Error cargando participantes detalle', err);
+        },
+      });
+    
+    // Cargar participantes con aportes desde la vista VISTAPARTICIPANTESAPORTES
+    this.http
+      .get<any[]>(`http://localhost:3000/participantes-encuentro/aportes/resumen?encuentro=${this.encuentroId}`)
+      .subscribe({
+        next: (aportes) => {
+          this.participantesAportes = aportes;
+          console.log('Participantes con aportes:', this.participantesAportes);
+        },
+        error: (err) => {
+          console.error('Error cargando aportes de participantes', err);
         },
       });
   }
@@ -195,6 +241,10 @@ export class ChatDetail implements OnInit {
     this.showEncuentroDetails = !this.showEncuentroDetails;
   }
 
+  toggleParticipantes() {
+    this.showParticipantes = !this.showParticipantes;
+  }
+
   goToBudgets() {
     this.router.navigate(['/budgets', this.encuentroId]);
   }
@@ -210,5 +260,10 @@ export class ChatDetail implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  getAporteByUsuario(idUsuario: number): number | null {
+    const participante = this.participantesAportes.find(p => p.idUsuario === idUsuario);
+    return participante ? participante.totalAportes : null;
   }
 }

@@ -1,21 +1,27 @@
-import { CurrencyPipe, NgIf } from '@angular/common';
+import { CurrencyPipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
 
+interface ItemPresupuesto {
+  id: number;
+  nombreItem: string;
+  montoItem: number;
+}
+
 interface BudgetDetails {
   id?: number;
-  nombre: string;
-  monto: number;
+  presupuestoTotal: number;
   idEncuentro?: number;
+  items?: ItemPresupuesto[];
 }
 
 @Component({
   selector: 'app-budgets',
   standalone: true,
-  imports: [NgIf, RouterLink, ReactiveFormsModule, CurrencyPipe],
+  imports: [NgIf, NgFor, RouterLink, ReactiveFormsModule, CurrencyPipe],
   templateUrl: './budgets.html',
   styleUrl: './budgets.css',
 })
@@ -30,10 +36,11 @@ export class Budgets implements OnInit {
   errorMessage: string | null = null;
   budget: BudgetDetails | null = null;
   loading = true;
+  addingItem = false;
 
-  budgetForm = this.fb.group({
-    nombre: ['', [Validators.required, Validators.maxLength(200)]],
-    monto: ['', [Validators.required, Validators.min(0.01)]],
+  itemForm = this.fb.group({
+    nombreItem: ['', [Validators.required, Validators.maxLength(200)]],
+    montoItem: ['', [Validators.required, Validators.min(0.01)]],
   });
 
   ngOnInit() {
@@ -61,13 +68,17 @@ export class Budgets implements OnInit {
       .subscribe({
         next: (presupuesto) => {
           this.loading = false;
-          if (presupuesto) {
+          // Si existe el presupuesto (aunque sea solo con id), mostrarlo
+          if (presupuesto && presupuesto.id) {
             this.budget = {
               id: presupuesto.id,
-              nombre: presupuesto.nombreItem,
-              monto: presupuesto.montoItem,
+              presupuestoTotal: presupuesto.presupuestoTotal || 0,
               idEncuentro: presupuesto.idEncuentro,
+              items: presupuesto.items || [],
             };
+            console.log('Presupuesto cargado:', this.budget);
+          } else {
+            console.log('No se encontró presupuesto para este encuentro');
           }
         },
         error: (err) => {
@@ -78,56 +89,58 @@ export class Budgets implements OnInit {
       });
   }
 
-  get nombreControl() {
-    return this.budgetForm.get('nombre');
+  get nombreItemControl() {
+    return this.itemForm.get('nombreItem');
   }
 
-  get montoControl() {
-    return this.budgetForm.get('monto');
+  get montoItemControl() {
+    return this.itemForm.get('montoItem');
   }
 
-  onCreateBudget(): void {
-    if (this.submitting || this.budgetForm.invalid || !this.encuentroId) {
-      this.budgetForm.markAllAsTouched();
+  onAddItem(): void {
+    if (this.addingItem || this.itemForm.invalid || !this.budget?.id || !this.encuentroId) {
+      this.itemForm.markAllAsTouched();
       return;
     }
 
-    this.submitting = true;
-    this.errorMessage = null;
-
-    const { nombre, monto } = this.budgetForm.value;
-    const parsedAmount = Number(monto);
+    this.addingItem = true;
+    const { nombreItem, montoItem } = this.itemForm.value;
 
     const payload = {
+      idPresupuesto: this.budget.id,
       idEncuentro: Number(this.encuentroId),
-      nombreItem: (nombre ?? '').trim(),
-      montoItem: Number.isFinite(parsedAmount) ? parsedAmount : 0,
+      nombreItem: (nombreItem ?? '').trim(),
+      montoItem: Number(montoItem),
     };
 
-    this.http.post<any>('http://localhost:3000/presupuesto', payload).subscribe({
-      next: (presupuesto) => {
-        this.submitting = false;
-        this.budget = {
-          id: presupuesto.id,
-          nombre: presupuesto.nombreItem,
-          monto: presupuesto.montoItem,
-          idEncuentro: presupuesto.idEncuentro,
-        };
+    this.http.post<any>('http://localhost:3000/presupuesto/item', payload).subscribe({
+      next: (item) => {
+        this.addingItem = false;
+        
+        // Agregar el item a la lista
+        if (this.budget) {
+          if (!this.budget.items) {
+            this.budget.items = [];
+          }
+          this.budget.items.push(item);
+          this.budget.presupuestoTotal += item.montoItem;
+        }
+
+        // Limpiar el formulario
+        this.itemForm.reset();
 
         Swal.fire({
           icon: 'success',
-          title: '¡Presupuesto creado!',
-          text: 'El presupuesto ha sido creado exitosamente',
-          timer: 2000,
+          title: 'Item agregado',
+          text: 'El item ha sido agregado al presupuesto',
+          timer: 1500,
           showConfirmButton: false,
         });
-
-        this.router.navigate(['/pockets', this.encuentroId]);
       },
       error: (err) => {
-        this.submitting = false;
-        console.error('Error creando presupuesto', err);
-        const errorMsg = err.error?.message || 'Error al crear el presupuesto';
+        this.addingItem = false;
+        console.error('Error agregando item', err);
+        const errorMsg = err.error?.message || 'Error al agregar el item';
 
         Swal.fire({
           icon: 'error',
@@ -140,5 +153,9 @@ export class Budgets implements OnInit {
 
   goToPockets(): void {
     this.router.navigate(['/pockets', this.encuentroId]);
+  }
+
+  goToEncuentro(): void {
+    this.router.navigate(['/chat-detail', this.encuentroId]);
   }
 }

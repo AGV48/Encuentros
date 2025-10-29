@@ -918,3 +918,117 @@ body {
     width: 100%;
   }
 }
+
+/* =========================
+   MODAL PARTICIPANTES (Vista)
+========================= */
+.modal-participantes {
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.participantes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.participante-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  animation: slideUp 0.3s ease;
+}
+
+.participante-item:hover {
+  border-color: #6366f1;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.participante-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: white;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  border: 3px solid white;
+  flex-shrink: 0;
+}
+
+.participante-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.participante-name {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.participante-rol {
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.participante-aporte {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #10b981;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #d1fae5;
+  padding: 4px 10px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.empty-participantes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.empty-participantes .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-participantes p {
+  color: #64748b;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.empty-participantes small {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}

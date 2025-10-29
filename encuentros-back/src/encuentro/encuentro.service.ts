@@ -3,6 +3,7 @@ import { CreateEncuentroDto } from './dto/create-encuentro.dto';
 import { UpdateEncuentroDto } from './dto/update-encuentro.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Encuentro } from './entities/encuentro.entity';
+import { EncuentroResumen } from './entities/encuentro-resumen.entity';
 import { Repository, DataSource } from 'typeorm';
 
 @Injectable()
@@ -10,6 +11,8 @@ export class EncuentroService {
   constructor(
       @InjectRepository(Encuentro)
       private encuentrosRepository: Repository<Encuentro>,
+      @InjectRepository(EncuentroResumen)
+      private encuentroResumenRepository: Repository<EncuentroResumen>,
       private dataSource: DataSource,
     ) {}
   async create(createEncuentroDto: CreateEncuentroDto) {
@@ -66,6 +69,93 @@ export class EncuentroService {
 
   findOne(id: number) {
     return this.encuentrosRepository.findOne({ where: { id } });
+  }
+
+  async findAllWithResumen(creadorId?: number) {
+    // Consulta simplificada: solo usa la vista para participantes y presupuesto
+    // Evita duplicados por múltiples bolsillos usando DISTINCT o agrupando
+    if (creadorId) {
+      const sql = `
+        SELECT DISTINCT
+          e.ID_ENCUENTRO,
+          e.ID_CREADOR,
+          e.TITULO,
+          TO_CHAR(e.DESCRIPCION) as DESCRIPCION,
+          e.LUGAR,
+          e.FECHA,
+          e.FECHA_CREACION,
+          NVL(p.ID_PRESUPUESTO, NULL) AS ID_PRESUPUESTO,
+          NVL(p.PRESUPUESTO_TOTAL, 0) AS PRESUPUESTO_TOTAL,
+          NVL((
+            SELECT COUNT(*) 
+            FROM PARTICIPANTES_ENCUENTRO pe2 
+            WHERE pe2.ID_ENCUENTRO = e.ID_ENCUENTRO
+          ), 0) AS CANT_PARTICIPANTES
+        FROM ENCUENTROS e
+        LEFT JOIN PRESUPUESTOS p ON e.ID_ENCUENTRO = p.ID_ENCUENTRO
+        WHERE e.ID_ENCUENTRO IN (
+          SELECT e2.ID_ENCUENTRO 
+          FROM ENCUENTROS e2 
+          WHERE e2.ID_CREADOR = :1
+          UNION
+          SELECT pe.ID_ENCUENTRO 
+          FROM PARTICIPANTES_ENCUENTRO pe 
+          WHERE pe.ID_USUARIO = :2
+        )
+        ORDER BY e.FECHA DESC
+      `;
+      
+      const result = await this.dataSource.query(sql, [creadorId, creadorId]);
+      
+      // Normalizar las propiedades de Oracle (mayúsculas) a camelCase
+      return result.map((row: any) => ({
+        id: row.ID_ENCUENTRO,
+        idCreador: row.ID_CREADOR,
+        titulo: row.TITULO,
+        descripcion: row.DESCRIPCION,
+        lugar: row.LUGAR,
+        fecha: row.FECHA,
+        fechaCreacion: row.FECHA_CREACION,
+        idPresupuesto: row.ID_PRESUPUESTO,
+        presupuestoTotal: row.PRESUPUESTO_TOTAL,
+        cantParticipantes: row.CANT_PARTICIPANTES
+      }));
+    }
+    
+    // Si no hay filtro, devolver todos los registros
+    const result = await this.dataSource.query(`
+      SELECT DISTINCT
+        e.ID_ENCUENTRO,
+        e.ID_CREADOR,
+        e.TITULO,
+        TO_CHAR(e.DESCRIPCION) as DESCRIPCION,
+        e.LUGAR,
+        e.FECHA,
+        e.FECHA_CREACION,
+        NVL(p.ID_PRESUPUESTO, NULL) AS ID_PRESUPUESTO,
+        NVL(p.PRESUPUESTO_TOTAL, 0) AS PRESUPUESTO_TOTAL,
+        NVL((
+          SELECT COUNT(*) 
+          FROM PARTICIPANTES_ENCUENTRO pe 
+          WHERE pe.ID_ENCUENTRO = e.ID_ENCUENTRO
+        ), 0) AS CANT_PARTICIPANTES
+      FROM ENCUENTROS e
+      LEFT JOIN PRESUPUESTOS p ON e.ID_ENCUENTRO = p.ID_ENCUENTRO
+      ORDER BY e.FECHA DESC
+    `);
+    
+    return result.map((row: any) => ({
+      id: row.ID_ENCUENTRO,
+      idCreador: row.ID_CREADOR,
+      titulo: row.TITULO,
+      descripcion: row.DESCRIPCION,
+      lugar: row.LUGAR,
+      fecha: row.FECHA,
+      fechaCreacion: row.FECHA_CREACION,
+      idPresupuesto: row.ID_PRESUPUESTO,
+      presupuestoTotal: row.PRESUPUESTO_TOTAL,
+      cantParticipantes: row.CANT_PARTICIPANTES
+    }));
   }
 
   update(id: number, updateEncuentroDto: UpdateEncuentroDto) {

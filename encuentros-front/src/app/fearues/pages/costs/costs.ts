@@ -227,15 +227,19 @@ export class Costs implements OnInit {
   }
 
   goToBudgets(): void {
-    this.router.navigate(['/budgets']);
+    this.router.navigate(['/budgets', this.encuentroId]);
   }
 
   goToPockets(): void {
-    this.router.navigate(['/pockets']);
+    this.router.navigate(['/pockets', this.encuentroId]);
   }
 
   goToContributions(): void {
-    this.router.navigate(['/contributions']);
+    this.router.navigate(['/contributions', this.encuentroId]);
+  }
+
+  goToEncuentro(): void {
+    this.router.navigate(['/chat-detail', this.encuentroId]);
   }
 
   private parseAmount(value: unknown): number {

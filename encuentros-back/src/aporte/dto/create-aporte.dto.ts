@@ -1,17 +1,17 @@
-import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, Min } from 'class-validator';
 
 export class CreateAporteDto {
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
-  idBolsillo?: number;
+  idBolsillo: number;
 
   @IsNotEmpty()
   @IsNumber()
   idEncuentro: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
-  idUsuario?: number;
+  idUsuario: number;
 
   @IsNotEmpty()
   @IsNumber()

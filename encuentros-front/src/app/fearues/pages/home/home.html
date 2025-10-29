@@ -104,6 +104,16 @@
           <strong>{{ e.titulo }}</strong><br>
           <span class="muted">{{ e.displayWhen }}</span>
           <div class="small muted">{{ e.descripcion }}</div>
+          
+          <!-- Información adicional: solo participantes y presupuesto -->
+          <div class="resumen-info" style="margin-top: 8px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <span class="badge" *ngIf="e.cantParticipantes !== undefined && e.cantParticipantes > 0" style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+              👥 {{ e.cantParticipantes }} participante{{ e.cantParticipantes !== 1 ? 's' : '' }}
+            </span>
+            <span class="badge" *ngIf="e.presupuestoTotal !== undefined && e.presupuestoTotal > 0" style="background: #2196F3; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+              💰 ${{ e.presupuestoTotal | number:'1.0-0' }}
+            </span>
+          </div>
         </div>
       </div>
     </section>

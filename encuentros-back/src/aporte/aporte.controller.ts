@@ -18,7 +18,8 @@ export class AporteController {
 
   @Post()
   create(@Body() createAporteDto: CreateAporteDto) {
-    return this.aporteService.create(createAporteDto);
+    // Usar el método que llama al procedimiento almacenado
+    return this.aporteService.agregarAporte(createAporteDto);
   }
 
   @Get()

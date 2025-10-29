@@ -11,6 +11,7 @@ import {
 import { PresupuestoService } from './presupuesto.service';
 import { CreatePresupuestoDto } from './dto/create-presupuesto.dto';
 import { UpdatePresupuestoDto } from './dto/update-presupuesto.dto';
+import { CreateItemPresupuestoDto } from './dto/create-item-presupuesto.dto';
 
 @Controller('presupuesto')
 export class PresupuestoController {
@@ -45,5 +46,15 @@ export class PresupuestoController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.presupuestoService.remove(+id);
+  }
+
+  @Post('item')
+  agregarItem(@Body() createItemDto: CreateItemPresupuestoDto) {
+    return this.presupuestoService.agregarItem(createItemDto);
+  }
+
+  @Get(':id/items')
+  getItems(@Param('id') id: string) {
+    return this.presupuestoService.getItems(+id);
   }
 }

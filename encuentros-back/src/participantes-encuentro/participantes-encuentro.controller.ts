@@ -26,6 +26,28 @@ export class ParticipantesEncuentroController {
     return this.participantesEncuentroService.findAll();
   }
 
+  // Endpoint para consultar la vista V_PARTICIPANTES_ENCUENTRO
+  @Get('vista/detalle')
+  findAllFromView(
+    @Query('encuentro') encuentro?: string,
+    @Query('usuario') usuario?: string,
+  ) {
+    const idEncuentro = encuentro ? +encuentro : undefined;
+    const idUsuario = usuario ? +usuario : undefined;
+    return this.participantesEncuentroService.findAllFromView(idEncuentro, idUsuario);
+  }
+
+  // Endpoint para consultar la vista VISTAPARTICIPANTESAPORTES
+  @Get('aportes/resumen')
+  findParticipantesConAportes(
+    @Query('encuentro') encuentro?: string,
+    @Query('usuario') usuario?: string,
+  ) {
+    const idEncuentro = encuentro ? +encuentro : undefined;
+    const idUsuario = usuario ? +usuario : undefined;
+    return this.participantesEncuentroService.findParticipantesConAportes(idEncuentro, idUsuario);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.participantesEncuentroService.findOne(+id);

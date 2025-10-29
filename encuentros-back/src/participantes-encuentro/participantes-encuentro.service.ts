@@ -4,6 +4,8 @@ import { Repository, DataSource } from 'typeorm';
 import { CreateParticipanteDto } from './dto/create-participante.dto';
 import { UpdateParticipanteDto } from './dto/update-participante.dto';
 import { ParticipanteEncuentro } from './entities/participante-encuentro.entity';
+import { ParticipantesEncuentroView } from './entities/participantes-encuentro-view.entity';
+import { VistaParticipantesAportes } from './entities/vista-participantes-aportes.entity';
 import { Encuentro } from '../encuentro/entities/encuentro.entity';
 
 @Injectable()
@@ -11,6 +13,10 @@ export class ParticipantesEncuentroService {
   constructor(
     @InjectRepository(ParticipanteEncuentro)
     private participanteRepository: Repository<ParticipanteEncuentro>,
+    @InjectRepository(ParticipantesEncuentroView)
+    private participantesViewRepository: Repository<ParticipantesEncuentroView>,
+    @InjectRepository(VistaParticipantesAportes)
+    private participantesAportesRepository: Repository<VistaParticipantesAportes>,
     @InjectRepository(Encuentro)
     private encuentroRepository: Repository<Encuentro>,
     private dataSource: DataSource,
@@ -129,5 +135,106 @@ export class ParticipantesEncuentroService {
 
     await this.participanteRepository.remove(participante);
     return { message: 'Participante eliminado correctamente' };
+  }
+
+  // Métodos para consultar la vista V_PARTICIPANTES_ENCUENTRO
+  async findAllFromView(idEncuentro?: number, idUsuario?: number) {
+    let sql = `
+      SELECT 
+        ID_ENCUENTRO,
+        TITULO_ENCUENTRO,
+        FECHA,
+        ID_USUARIO,
+        NOMBRE_COMPLETO,
+        ROL
+      FROM V_PARTICIPANTES_ENCUENTRO
+      WHERE 1=1
+    `;
+    
+    const params: any[] = [];
+    
+    if (idEncuentro) {
+      sql += ` AND ID_ENCUENTRO = :1`;
+      params.push(idEncuentro);
+    }
+    
+    if (idUsuario) {
+      const paramIndex = params.length + 1;
+      sql += ` AND ID_USUARIO = :${paramIndex}`;
+      params.push(idUsuario);
+    }
+    
+    sql += ` ORDER BY FECHA DESC, TITULO_ENCUENTRO`;
+    
+    const result = await this.dataSource.query(sql, params);
+    
+    return result.map((row: any) => ({
+      idEncuentro: row.ID_ENCUENTRO,
+      tituloEncuentro: row.TITULO_ENCUENTRO,
+      fecha: row.FECHA,
+      idUsuario: row.ID_USUARIO,
+      nombreCompleto: row.NOMBRE_COMPLETO,
+      rol: row.ROL
+    }));
+  }
+
+  async findParticipantesByEncuentroFromView(idEncuentro: number) {
+    return this.findAllFromView(idEncuentro, undefined);
+  }
+
+  async findEncuentrosByUsuarioFromView(idUsuario: number) {
+    return this.findAllFromView(undefined, idUsuario);
+  }
+
+  // Métodos para consultar la vista VISTAPARTICIPANTESAPORTES
+  async findParticipantesConAportes(idEncuentro?: number, idUsuario?: number) {
+    let sql = `
+      SELECT 
+        ID_ENCUENTRO,
+        NOMBRE_ENCUENTRO,
+        ID_USUARIO,
+        NOMBRE_USUARIO,
+        APELLIDO_USUARIO,
+        ROL,
+        TOTAL_APORTES
+      FROM VISTAPARTICIPANTESAPORTES
+      WHERE 1=1
+    `;
+    
+    const params: any[] = [];
+    
+    if (idEncuentro) {
+      sql += ` AND ID_ENCUENTRO = :1`;
+      params.push(idEncuentro);
+    }
+    
+    if (idUsuario) {
+      const paramIndex = params.length + 1;
+      sql += ` AND ID_USUARIO = :${paramIndex}`;
+      params.push(idUsuario);
+    }
+    
+    sql += ` ORDER BY TOTAL_APORTES DESC, NOMBRE_USUARIO`;
+    
+    const result = await this.dataSource.query(sql, params);
+    
+    return result.map((row: any) => ({
+      idEncuentro: row.ID_ENCUENTRO,
+      nombreEncuentro: row.NOMBRE_ENCUENTRO,
+      idUsuario: row.ID_USUARIO,
+      nombreUsuario: row.NOMBRE_USUARIO,
+      apellidoUsuario: row.APELLIDO_USUARIO,
+      nombreCompleto: `${row.NOMBRE_USUARIO} ${row.APELLIDO_USUARIO}`,
+      rol: row.ROL,
+      totalAportes: row.TOTAL_APORTES || 0
+    }));
+  }
+
+  async findAportesByEncuentro(idEncuentro: number) {
+    return this.findParticipantesConAportes(idEncuentro, undefined);
+  }
+
+  async findAportesByUsuario(idUsuario: number) {
+    return this.findParticipantesConAportes(undefined, idUsuario);
   }
 }

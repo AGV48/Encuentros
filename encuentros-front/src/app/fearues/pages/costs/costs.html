@@ -11,7 +11,12 @@
           </p>
         </div>
       </div>
-      <button type="button" class="btn-secondary" (click)="goToContributions()">Ver aportes</button>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn-secondary" (click)="goToEncuentro()">
+          ← Volver al encuentro
+        </button>
+        <button type="button" class="btn-secondary" (click)="goToContributions()">Ver aportes</button>
+      </div>
     </div>
 
     <div class="budget-pill" *ngIf="budget">

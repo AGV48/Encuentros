@@ -36,6 +36,11 @@ interface StoredUser {
   email: string;
 }
 
+interface ParticipanteSummary {
+  totalParticipantes: number;
+  aportePorPersona: number;
+}
+
 @Component({
   selector: 'app-contributions',
   standalone: true,
@@ -59,6 +64,10 @@ export default class Contributions implements OnInit {
   budget: any = null;
   pocketSummaries: PocketSummary[] = [];
   submittingPocketId: number | null = null;
+  participantes: ParticipanteSummary = {
+    totalParticipantes: 0,
+    aportePorPersona: 0,
+  };
 
   get hasBudget(): boolean {
     return !!this.budget;
@@ -90,6 +99,7 @@ export default class Contributions implements OnInit {
     if (this.encuentroId) {
       this.loadCurrentUser();
       this.loadBudget();
+      this.loadParticipantes();
       this.loadPockets();
       this.loadAportes();
     } else {
@@ -103,10 +113,39 @@ export default class Contributions implements OnInit {
   }
 
   private loadCurrentUser(): void {
-    const raw = localStorage.getItem('currentUser');
+    const raw = localStorage.getItem('user'); // Cambiar de 'currentUser' a 'user'
     if (raw) {
-      this.currentUser = JSON.parse(raw) as StoredUser;
+      try {
+        this.currentUser = JSON.parse(raw) as StoredUser;
+        console.log('Usuario cargado desde localStorage:', this.currentUser);
+      } catch (error) {
+        console.error('Error al parsear el usuario:', error);
+        this.currentUser = null;
+      }
+    } else {
+      console.warn('No se encontró user en localStorage');
     }
+  }
+
+  private loadParticipantes(): void {
+    if (!this.encuentroId) return;
+
+    this.http
+      .get<any[]>(`http://localhost:3000/participantes-encuentro?encuentro=${this.encuentroId}`)
+      .subscribe({
+        next: (participantes) => {
+          this.participantes.totalParticipantes = participantes.length;
+          // Calcular aporte por persona cuando tengamos el presupuesto
+          if (this.budget && this.participantes.totalParticipantes > 0) {
+            this.participantes.aportePorPersona =
+              this.budget.monto / this.participantes.totalParticipantes;
+          }
+          console.log('Participantes cargados:', this.participantes);
+        },
+        error: (err) => {
+          console.error('Error cargando participantes', err);
+        },
+      });
   }
 
   private loadBudget(): void {
@@ -119,9 +158,15 @@ export default class Contributions implements OnInit {
           if (presupuesto) {
             this.budget = {
               id: presupuesto.id,
-              nombre: presupuesto.nombreItem,
-              monto: presupuesto.montoItem,
+              nombre: 'Presupuesto del Encuentro',
+              monto: presupuesto.presupuestoTotal || 0,
             };
+            // Calcular aporte por persona si ya tenemos participantes
+            if (this.participantes.totalParticipantes > 0) {
+              this.participantes.aportePorPersona =
+                this.budget.monto / this.participantes.totalParticipantes;
+            }
+            console.log('Presupuesto cargado:', this.budget);
           }
         },
         error: (err) => {
@@ -237,6 +282,11 @@ export default class Contributions implements OnInit {
   }
 
   async confirmContribution(pocketId: number): Promise<void> {
+    console.log('confirmContribution llamado para pocketId:', pocketId);
+    console.log('encuentroId:', this.encuentroId);
+    console.log('currentUser:', this.currentUser);
+    console.log('isLoggedIn:', this.isLoggedIn);
+
     if (!this.encuentroId) {
       await Swal.fire({
         title: 'Error',
@@ -247,6 +297,7 @@ export default class Contributions implements OnInit {
     }
 
     if (!this.currentUser) {
+      console.warn('Usuario no encontrado en localStorage');
       await Swal.fire({
         title: 'Necesitas iniciar sesión',
         text: 'Inicia sesión para registrar o actualizar tu aporte.',
@@ -345,16 +396,19 @@ export default class Contributions implements OnInit {
             text: 'Tu aporte ha sido registrado correctamente',
             timer: 2000,
           });
+          // Recargar tanto aportes como bolsillos para actualizar saldos
           this.loadAportes();
+          this.loadPockets();
         },
         error: (err) => {
           this.submittingPocketId = null;
           this.submitting = false;
           console.error('Error creando aporte', err);
+          const errorMsg = err.error?.message || 'No se pudo registrar el aporte';
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No se pudo registrar el aporte',
+            text: errorMsg,
           });
         },
       });
@@ -371,5 +425,9 @@ export default class Contributions implements OnInit {
 
   goToCosts(): void {
     this.router.navigate(['/costs', this.encuentroId]);
+  }
+
+  goToEncuentro(): void {
+    this.router.navigate(['/chat-detail', this.encuentroId]);
   }
 }

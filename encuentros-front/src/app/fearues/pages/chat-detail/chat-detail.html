@@ -9,6 +9,9 @@
         <div class="chat-subtitle">{{ encuentro?.lugar || 'Encuentro' }}</div>
       </div>
     </div>
+    <button class="add-friends-btn" (click)="toggleParticipantes()" aria-label="Ver participantes" style="margin-right: 8px;">
+      👥
+    </button>
     <button class="add-friends-btn" (click)="toggleAddFriends()" aria-label="Agregar amigos">
       👥+
     </button>
@@ -61,6 +64,49 @@
 
       <div class="modal-footer">
         <button class="btn-cancel" (click)="toggleAddFriends()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para ver participantes (usando la vista) -->
+  <div class="modal-overlay" *ngIf="showParticipantes" (click)="toggleParticipantes()">
+    <div class="modal-content modal-participantes" (click)="$event.stopPropagation()">
+      <div class="modal-header-friends">
+        <h3>👥 Participantes del Encuentro</h3>
+        <button class="btn-close-modal" (click)="toggleParticipantes()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Lista de participantes -->
+        <div *ngIf="participantesDetalle.length > 0" class="participantes-list">
+          <div *ngFor="let participante of participantesDetalle" class="participante-item">
+            <div class="participante-avatar">
+              {{ (participante.nombreCompleto || 'NN').substring(0, 2).toUpperCase() }}
+            </div>
+            <div class="participante-info">
+              <div class="participante-name">{{ participante.nombreCompleto || 'Sin nombre' }}</div>
+              <div class="participante-rol" 
+                   [style.color]="participante.rol === 'organizador' ? '#2196F3' : '#666'">
+                {{ participante.rol === 'organizador' ? '⭐ Organizador' : '👤 Participante' }}
+              </div>
+              <!-- Mostrar aporte si existe -->
+              <div class="participante-aporte" *ngIf="getAporteByUsuario(participante.idUsuario) !== null">
+                💰 Aportó: ${{ getAporteByUsuario(participante.idUsuario) | number:'1.0-0' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado vacío -->
+        <div *ngIf="participantesDetalle.length === 0" class="empty-participantes">
+          <div class="empty-icon">👥</div>
+          <p>No hay participantes aún</p>
+          <small>Agrega participantes usando el botón 👥+</small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="toggleParticipantes()">Cerrar</button>
       </div>
     </div>
   </div>

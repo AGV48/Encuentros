@@ -169,6 +169,10 @@ export class Pockets implements OnInit {
     this.router.navigate(['/costs', this.encuentroId]);
   }
 
+  goToEncuentro(): void {
+    this.router.navigate(['/chat-detail', this.encuentroId]);
+  }
+
   trackPocketById(index: number, pocket: PocketDetails): string {
     return pocket.id?.toString() ?? `${index}`;
   }

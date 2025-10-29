@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
-  imports: [NgFor, NgIf, RouterLink, FormsModule],
+  imports: [NgFor, NgIf, CommonModule, RouterLink, FormsModule],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -24,13 +24,17 @@ export class Home {
   // lista de encuentros traídos del backend
   encuentros: Array<{
     id: number;
-    idCreador: number;
+    idCreador?: number;
     titulo: string;
-    descripcion: string;
+    descripcion?: string;
     lugar: string;
-    fecha: string | Date;
-    fechaCreacion?: string | Date;
+    fecha: string | Date | null;
+    fechaCreacion?: string | Date | null;
     displayWhen?: string;
+    // Campos adicionales: solo presupuesto y participantes
+    idPresupuesto?: number | null;
+    presupuestoTotal?: number;
+    cantParticipantes?: number;
   }> = [];
 
   // métricas
@@ -176,7 +180,7 @@ export class Home {
     }
     console.log('Loading encuentros for userId:', this.currentUserId);
     this.http
-      .get<any[]>(`http://localhost:3000/encuentro?creador=${this.currentUserId}`)
+      .get<any[]>(`http://localhost:3000/encuentro/resumen?creador=${this.currentUserId}`)
       .subscribe({
         next: (res) => {
           console.log('Encuentros received from API:', res);
@@ -206,10 +210,18 @@ export class Home {
               }
             }
             return {
-              ...r,
+              id: r.idEncuentro || r.id,
+              idCreador: r.idCreador,
+              titulo: r.titulo,
+              descripcion: r.descripcion,
+              lugar: r.lugar,
               fecha: fechaObj,
               fechaCreacion: r.fechaCreacion ? new Date(r.fechaCreacion) : null,
               displayWhen,
+              // Solo presupuesto y participantes
+              idPresupuesto: r.idPresupuesto,
+              presupuestoTotal: r.presupuestoTotal || 0,
+              cantParticipantes: r.cantParticipantes || 0,
             };
           });
           console.log('Processed encuentros:', this.encuentros);
@@ -243,7 +255,11 @@ export class Home {
     // upcoming: próximos encuentros (futuros) ordenados
     this.upcoming = this.encuentros
       .filter((e) => e.fecha && new Date(e.fecha) >= now)
-      .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime())
+      .sort((a, b) => {
+        const dateA = a.fecha ? new Date(a.fecha).getTime() : 0;
+        const dateB = b.fecha ? new Date(b.fecha).getTime() : 0;
+        return dateA - dateB;
+      })
       .slice(0, 6);
 
     // calcular días con encuentros para el mes actualmente mostrado

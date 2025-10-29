@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { CreateAporteDto } from './dto/create-aporte.dto';
 import { UpdateAporteDto } from './dto/update-aporte.dto';
 import { Aporte } from './entities/aporte.entity';
@@ -10,6 +11,8 @@ export class AporteService {
   constructor(
     @InjectRepository(Aporte)
     private aporteRepository: Repository<Aporte>,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
   ) {}
 
   create(createAporteDto: CreateAporteDto) {
@@ -58,5 +61,42 @@ export class AporteService {
 
   remove(id: number) {
     return this.aporteRepository.delete(id);
+  }
+
+  async agregarAporte(createAporteDto: CreateAporteDto): Promise<Aporte> {
+    // Validar que todos los campos requeridos estén presentes
+    if (!createAporteDto.idBolsillo || !createAporteDto.idUsuario) {
+      throw new Error(
+        'Los campos idBolsillo e idUsuario son requeridos para agregar un aporte',
+      );
+    }
+
+    // Llamar al procedimiento almacenado
+    await this.dataSource.query(
+      `BEGIN agregar_aporte(:p_id_bolsillo, :p_id_encuentro, :p_id_usuario, :p_monto); END;`,
+      [
+        createAporteDto.idBolsillo,
+        createAporteDto.idEncuentro,
+        createAporteDto.idUsuario,
+        createAporteDto.monto,
+      ],
+    );
+
+    // Obtener el aporte recién creado
+    const aporte = await this.aporteRepository.findOne({
+      where: {
+        idBolsillo: createAporteDto.idBolsillo,
+        idUsuario: createAporteDto.idUsuario,
+        idEncuentro: createAporteDto.idEncuentro,
+      },
+      relations: ['bolsillo', 'usuario', 'encuentro'],
+      order: { id: 'DESC' },
+    });
+
+    if (!aporte) {
+      throw new NotFoundException('No se pudo crear el aporte');
+    }
+
+    return aporte;
   }
 }

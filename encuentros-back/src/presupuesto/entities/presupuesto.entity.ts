@@ -3,9 +3,11 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { Encuentro } from '../../encuentro/entities/encuentro.entity';
+import { ItemPresupuesto } from './item-presupuesto.entity';
 
 @Entity('PRESUPUESTOS')
 export class Presupuesto {
@@ -16,23 +18,18 @@ export class Presupuesto {
   idEncuentro: number;
 
   @Column({
-    name: 'NOMBRE_ITEM',
-    type: 'varchar2',
-    length: 200,
-    nullable: true,
-  })
-  nombreItem: string;
-
-  @Column({
-    name: 'MONTO_ITEM',
+    name: 'PRESUPUESTO_TOTAL',
     type: 'number',
     precision: 15,
     scale: 2,
-    nullable: true,
+    default: 0,
   })
-  montoItem: number;
+  presupuestoTotal: number;
 
   @ManyToOne(() => Encuentro)
   @JoinColumn({ name: 'ID_ENCUENTRO' })
   encuentro: Encuentro;
+
+  @OneToMany(() => ItemPresupuesto, (item) => item.presupuesto)
+  items: ItemPresupuesto[];
 }
