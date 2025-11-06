@@ -89,6 +89,9 @@
         <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div>
       </div>
       <div class="cal-grid">
+        <!-- Celdas vacías antes del día 1 -->
+        <div class="day empty" *ngFor="let empty of emptyDays"></div>
+        <!-- Días del mes -->
         <div class="day" *ngFor="let d of days">
           <div class="dnum">{{ d }}</div>
           <div class="dot" *ngIf="daysWithEncuentros.has(d)"></div>

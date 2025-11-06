@@ -16,6 +16,7 @@ export class Home {
   http = inject(HttpClient);
   month: string;
   days: number[] = [];
+  emptyDays: number[] = []; // Celdas vacías antes del día 1
   showCreate = false;
   currentUserId: number | null = null;
   currentMonthIndex: number | null = null;
@@ -97,6 +98,14 @@ export class Home {
     this.month = today.toLocaleString('default', { month: 'long', year: 'numeric' });
     const lastDay = new Date(year, monthIndex + 1, 0).getDate();
     this.days = Array.from({ length: lastDay }, (_, i) => i + 1);
+    
+    // Calcular el día de la semana en que comienza el mes (0=domingo, 1=lunes, etc.)
+    const firstDayOfMonth = new Date(year, monthIndex, 1).getDay();
+    // Ajustar para que lunes sea 0 (el calendario muestra Lun, Mar, Mié, etc.)
+    const firstDayAdjusted = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+    // Crear array de celdas vacías
+    this.emptyDays = Array.from({ length: firstDayAdjusted }, (_, i) => i);
+    
     // carga inicial de encuentros para el usuario
     if (this.currentUserId) {
       this.loadEncuentros();
