@@ -1,4 +1,4 @@
-# Encuentros — Entrega 2 (Instrucciones)
+# Encuentros — (Instrucciones)
 
 # ¿Qué es Encuentros?
 
