@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,6 +15,7 @@ export class Account {
   fb = inject(FormBuilder);
   router = inject(Router)
   http = inject(HttpClient);
+  authService = inject(AuthService);
   name = ''
   email = ''
   apellido = ''
@@ -55,8 +57,16 @@ export class Account {
   });
 
   onLogout() {
-    localStorage.setItem('isLogged', 'false');
-    this.router.navigate(['/']);
+    this.authService.logout();
+    Swal.fire({
+      icon: 'success',
+      title: 'Sesión cerrada',
+      text: '¡Hasta pronto!',
+      timer: 1500,
+      showConfirmButton: false
+    }).then(() => {
+      this.router.navigate(['/']);
+    });
   }
 
   saveProfile() {

@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { EncuentroService } from './encuentro.service';
 import { CreateEncuentroDto } from './dto/create-encuentro.dto';
 import { UpdateEncuentroDto } from './dto/update-encuentro.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('encuentro')
+@UseGuards(JwtAuthGuard) // Protege todos los endpoints de encuentros
 export class EncuentroController {
   constructor(private readonly encuentroService: EncuentroService) {}
 

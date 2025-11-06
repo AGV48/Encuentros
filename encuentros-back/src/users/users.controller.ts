@@ -1,12 +1,14 @@
-import { Controller, Post, Body, BadRequestException, Get, Query, HttpException } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, Get, Query, HttpException, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { DataSource } from 'typeorm';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('users') // Agrupa estos endpoints bajo "users" en Swagger
 @Controller('users')
+@UseGuards(JwtAuthGuard) // Protege todos los endpoints de usuarios
 export class UsersController {
   constructor(private readonly usersService: UsersService, private dataSource: DataSource) {}
 

@@ -7,13 +7,16 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PresupuestoService } from './presupuesto.service';
 import { CreatePresupuestoDto } from './dto/create-presupuesto.dto';
 import { UpdatePresupuestoDto } from './dto/update-presupuesto.dto';
 import { CreateItemPresupuestoDto } from './dto/create-item-presupuesto.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('presupuesto')
+@UseGuards(JwtAuthGuard)
 export class PresupuestoController {
   constructor(private readonly presupuestoService: PresupuestoService) {}
 

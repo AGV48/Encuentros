@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../services/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 export class SignUp {
   fb = inject(FormBuilder);
   route = inject(Router);
-  http = inject(HttpClient);
+  authService = inject(AuthService);
 
   signUpForm = this.fb.group({
     nombre: ['', [Validators.required]],
@@ -35,26 +35,21 @@ export class SignUp {
         return;
       }
 
-      const payload = {
-        nombre: value.nombre,
-        apellido: value.apellido,
-        email: value.email,
-        contrasena: value.contrasena
-      };
-
-      this.http.post('http://localhost:3000/users', payload).subscribe({
-        next: (response: any) => {
-          // Guardar usuario en localStorage y marcar sesión como iniciada
-          try {
-            localStorage.setItem('user', JSON.stringify(response));
-            localStorage.setItem('isLogged', 'true');
-          } catch (e) {
-            console.warn('No se pudo guardar en localStorage', e);
-          }
-
-          Swal.fire({ icon: 'success', title: 'Cuenta creada', text: 'Tu cuenta ha sido creada exitosamente' });
-          // Redirigir directamente a la pantalla de cuenta para ver/editar perfil
-          this.route.navigate(['/']);
+      this.authService.register(
+        value.nombre,
+        value.email,
+        value.contrasena,
+        value.apellido
+      ).subscribe({
+        next: (response) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Cuenta creada',
+            text: '¡Bienvenido a Encuentros!',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          this.route.navigate(['/home']);
         },
         error: (err) => {
           console.error(err);

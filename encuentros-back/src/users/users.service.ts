@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,10 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { email } });
   }
 
+  async findById(id: number): Promise<User | null> {
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
   async updateUser(email: string, updateData: Partial<User>): Promise<User> {
     const user = await this.findByEmail(email);
     if (!user) {
@@ -43,12 +48,13 @@ export class UsersService {
     if (!user) {
       throw new Error('User not found');
     }
-    // Nota: actualmente las contraseñas se almacenan en texto plano en este proyecto.
-    // Aquí validamos la contraseña actual y la sobrescribimos por la nueva.
-    if (user.contrasena !== currentPassword) {
+    // Verificar la contraseña actual con bcrypt
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.contrasena);
+    if (!isPasswordValid) {
       throw new Error('Contraseña actual incorrecta');
     }
-    user.contrasena = newPassword;
+    // Cifrar la nueva contraseña
+    user.contrasena = await bcrypt.hash(newPassword, 10);
     const saved = await this.usersRepository.save(user);
     // No devolver la contraseña en la respuesta (caller puede filtrar)
     (saved as any).contrasena = undefined;

@@ -11,6 +11,7 @@ import { Budgets } from './fearues/pages/budgets/budgets';
 import { Pockets } from './fearues/pages/pockets/pockets';
 import ContributionsComponent from './fearues/pages/contributions/contributions';
 import { Costs } from './fearues/pages/costs/costs';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -27,70 +28,84 @@ export const routes: Routes = [
     path: 'home',
     component: Home,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'chats',
     component: Chats,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'chat-detail/:id',
     component: ChatDetail,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'account',
     component: Account,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'notifications',
     component: Notifications,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'search',
     component: Search,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'budgets',
     component: Budgets,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'budgets/:id',
     component: Budgets,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'pockets',
     component: Pockets,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'pockets/:id',
     component: Pockets,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'contributions',
     component: ContributionsComponent,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'contributions/:id',
     component: ContributionsComponent,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'costs',
     component: Costs,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
   {
     path: 'costs/:id',
     component: Costs,
     pathMatch: 'full',
+    canActivate: [authGuard], // Proteger ruta
   },
 ];
