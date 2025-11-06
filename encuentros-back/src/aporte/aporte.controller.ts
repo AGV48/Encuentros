@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AporteService } from './aporte.service';
 import { CreateAporteDto } from './dto/create-aporte.dto';
 import { UpdateAporteDto } from './dto/update-aporte.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('aporte')
+@UseGuards(JwtAuthGuard)
 export class AporteController {
   constructor(private readonly aporteService: AporteService) {}
 

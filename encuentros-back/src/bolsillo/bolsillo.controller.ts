@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { BolsilloService } from './bolsillo.service';
 import { CreateBolsilloDto } from './dto/create-bolsillo.dto';
 import { UpdateBolsilloDto } from './dto/update-bolsillo.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('bolsillo')
+@UseGuards(JwtAuthGuard)
 export class BolsilloController {
   constructor(private readonly bolsilloService: BolsilloService) {}
 

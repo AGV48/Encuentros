@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../services/auth.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 export class Login {
   fb = inject(FormBuilder);
   router = inject(Router);
-  http = inject(HttpClient);
+  authService = inject(AuthService);
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -25,27 +25,33 @@ export class Login {
     if (this.loginForm.valid) {
       const userLogin = this.loginForm.value;
 
-      this.http
-        .post<any>('http://localhost:3000/users/login', {
-          email: userLogin.email,
-          contrasena: userLogin.password,
-        })
+      this.authService
+        .login(userLogin.email!, userLogin.password!)
         .subscribe({
           next: (res) => {
-            console.log('Login response:', res); // Debug
-            if (res.success) {
-              console.log('User data to save:', res.user); // Debug
-              localStorage.setItem('isLogged', 'true');
-              localStorage.setItem('user', JSON.stringify(res.user));
-              console.log('Saved to localStorage'); // Debug
+            console.log('Login exitoso:', res);
+            console.log('Token guardado:', localStorage.getItem('access_token'));
+            console.log('Usuario guardado:', localStorage.getItem('currentUser'));
+            
+            Swal.fire({
+              icon: 'success',
+              title: '¡Bienvenido!',
+              text: `Hola ${res.user.nombre}`,
+              timer: 1500,
+              showConfirmButton: false
+            }).then(() => {
+              // Navegar después de cerrar el alert
               this.router.navigate(['/home']);
-            } else {
-              Swal.fire({ icon: 'error', title: 'Error', text: res.message });
-            }
+            });
           },
           error: (err) => {
             console.error('Login error:', err);
-            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo conectar al servidor' });
+            const errorMessage = err.error?.message || 'Credenciales inválidas';
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al iniciar sesión',
+              text: errorMessage
+            });
           },
         });
     }

@@ -9,6 +9,7 @@ import { ParticipantesEncuentroModule } from './participantes-encuentro/particip
 import { PresupuestoModule } from './presupuesto/presupuesto.module';
 import { BolsilloModule } from './bolsillo/bolsillo.module';
 import { AporteModule } from './aporte/aporte.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AporteModule } from './aporte/aporte.module';
       synchronize: false,
       migrationsRun: true,
     }),
+    AuthModule,
     UsersModule,
     EncuentroModule,
     ChatModule,
