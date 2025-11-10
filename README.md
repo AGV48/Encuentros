@@ -126,13 +126,13 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
     exit
 
 4.  Reiniciar el contenedor del backend para asegurar la conexión:
+
     docker restart encuentros_back
 
 5.  Verificar que todo funcione correctamente:
 
     - Frontend: http://localhost/
     - Backend API: http://localhost:3000/
-    - Swagger (Documentación API): http://localhost:3000/api
 
 6.  Probar la aplicación:
     - Registrar un nuevo usuario
