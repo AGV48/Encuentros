@@ -60,16 +60,6 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
       2. Click en "Code" > "Download ZIP"
       3. Extraer la carpeta
 
-## Opción 3 - Descargar desde DockerHub:
-
-      1. Abrir la terminal de preferencia
-
-      --> Ejecutar en terminal los siguientes comandos:
-
-      2. docker pull gvenzl/oracle-xe:21-slim
-      3. docker pull tomasra98/encuentros-backend:latest
-      4. docker pull tomasra98/encuentros-frontend:latest
-
 # Ejecución de la aplicación
 
 --> Estar en la carpeta raiz de la aplicación
