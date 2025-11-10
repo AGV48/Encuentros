@@ -75,6 +75,7 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
 --> Estar en la carpeta raiz de la aplicación
 
 1.  Construir y levantar todo:
+
     docker-compose up --build -d
 
 2.  Esperar a que Oracle DB esté completamente inicializada:
@@ -85,12 +86,15 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
 3.  Configurar la base de datos ejecutando los scripts SQL:
 
     a) Conectarse al contenedor de Oracle:
+
     docker exec -it encuentros_db bash
 
     b) Conectarse a SQL\*Plus como SYSTEM:
+
     sqlplus system/admin@localhost:1521/XE
 
     c) Ejecutar el script de creación de usuario:
+
     @/container-entrypoint-initdb.d/01-create-user.sql
 
     d) Si estás en el contenedor de Oracle, se ve así:
@@ -108,9 +112,11 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
     EXIT;
 
     e) Conectarse nuevamente como el usuario ENCUENTROS_ADMIN:
+
     sqlplus ENCUENTROS_ADMIN/admin@localhost:1521/XEPDB1
 
     f) Ejecutar el script del esquema (tablas, secuencias, procedimientos):
+
     @/container-entrypoint-initdb.d/02-schema.sql
 
     g) Salir de SQL\*Plus:
