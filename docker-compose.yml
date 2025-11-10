@@ -16,8 +16,7 @@ services:
     restart: always
 
   backend:
-    build:
-      context: ./encuentros-back
+    image: tomasra98/encuentros-backend:latest
     container_name: encuentros_back
     environment:
       DB_HOST: db
@@ -33,8 +32,7 @@ services:
     restart: on-failure
 
   frontend:
-    build:
-      context: ./encuentros-front
+    image: tomasra98/encuentros-frontend:latest
     container_name: encuentros_front
     ports:
       - "80:80"
