@@ -45,6 +45,16 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
       - Angular CLI 20.x (npm install -g @angular/cli)
       - NestJS CLI 11.x (npm install -g @nestjs/cli)
 
+# Enlaces de las Imágenes en DockerHub
+
+Backend:
+
+      https://hub.docker.com/r/tomasra98/encuentros-backend
+
+Frontend:
+
+      https://hub.docker.com/r/tomasra98/encuentros-frontend
+
 # ¿Cómo descargar la aplicación?
 
 ## Opción 1 - Clonar desde GitHub:
@@ -66,7 +76,7 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
 
 1.  Construir y levantar todo:
 
-    docker-compose up --build -d
+        docker-compose up --build -d
 
 2.  Esperar a que Oracle DB esté completamente inicializada:
 
@@ -77,50 +87,52 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
 
     a) Conectarse al contenedor de Oracle:
 
-    docker exec -it encuentros_db bash
+        docker exec -it encuentros_db bash
 
     b) Conectarse a SQL\*Plus como SYSTEM:
 
-    sqlplus system/admin@localhost:1521/XE
+        sqlplus system/admin@localhost:1521/XE
 
     c) Ejecutar el script de creación de usuario:
 
-    @/container-entrypoint-initdb.d/01-create-user.sql
+        @/container-entrypoint-initdb.d/01-create-user.sql
 
     d) Si estás en el contenedor de Oracle, se ve así:
 
-    bash-4.4$
+        bash-4.4$
 
     Si te encuentras ahí, pasa al paso e)
 
     Si sigues viendo que en la terminal aparece:
 
-    SQL>
+        SQL>
 
     Debes salir de SQL\*Plus:
 
-    EXIT;
+        EXIT;
 
     e) Conectarse nuevamente como el usuario ENCUENTROS_ADMIN:
 
-    sqlplus ENCUENTROS_ADMIN/admin@localhost:1521/XEPDB1
+        sqlplus ENCUENTROS_ADMIN/admin@localhost:1521/XEPDB1
 
     f) Ejecutar el script del esquema (tablas, secuencias, procedimientos):
 
-    @/container-entrypoint-initdb.d/02-schema.sql
+        @/container-entrypoint-initdb.d/02-schema.sql
 
     g) Salir de SQL\*Plus:
-    EXIT;
+
+        EXIT;
 
     h) Salir del contenedor:
-    exit
 
-4.  Verificar que todo funcione correctamente:
+        exit
+
+5.  Verificar que todo funcione correctamente:
 
     - Frontend: http://localhost/
     - Backend API: http://localhost:3000/ (Debe mostrar Hello World!)
 
-5.  Probar la aplicación:
+6.  Probar la aplicación:
     - Registrar un nuevo usuario
     - Iniciar sesión
     - Crear encuentros y usar todas las funcionalidades
