@@ -135,13 +135,6 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
     - Iniciar sesión
     - Crear encuentros y usar todas las funcionalidades
 
-Push a DockerHub (si quieres subir imágenes):
-
-1.  docker build -t <usuario>/encuentros-back:latest ./encuentros-back
-2.  docker push <usuario>/encuentros-back:latest
-3.  docker build -t <usuario>/encuentros-front:latest ./encuentros-front
-4.  docker push <usuario>/encuentros-front:latest
-
 Notas importantes:
 
 - Oracle XE (imagen) puede tardar varios minutos en inicializar la primera vez.
