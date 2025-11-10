@@ -119,7 +119,9 @@ async function ensureSchema(connectString: string, username: string, password: s
     const statements = splitSqlStatements(sqlContent);
 
     let executed = 0;
-    for (const statement of statements) {
+    let skipped = 0;
+    for (let i = 0; i < statements.length; i++) {
+      const statement = statements[i];
       try {
         if (!statement.trim()) continue;
         await connection.execute(statement, [], { autoCommit: false });
@@ -134,15 +136,21 @@ async function ensureSchema(connectString: string, username: string, password: s
           message.includes('ORA-01408') ||
           message.includes('ORA-02260') ||
           message.includes('ORA-01430') ||
-          message.includes('ORA-00001')
+          message.includes('ORA-00001') ||
+          message.includes('ORA-02264')
         ) {
           // Mensajes esperados cuando ya existe algo – ignoramos
+          skipped++;
           continue;
         }
 
-        console.log(`⚠️ [DB Init] Error ejecutando statement: ${message}`);
+        console.log(`⚠️ [DB Init] Error ejecutando statement ${i + 1}/${statements.length}:`);
+        console.log(`   Error: ${message}`);
+        console.log(`   Statement preview: ${statement.substring(0, 100)}...`);
       }
     }
+
+    console.log(`   [DB Init] Ejecutados: ${executed}, Omitidos: ${skipped}, Total: ${statements.length}`);
 
     await connection.commit();
     console.log(`✅ [DB Init] Script 02-schema.sql ejecutado (${executed} statements)`);
@@ -175,7 +183,7 @@ function splitSqlStatements(sql: string): string[] {
       continue;
     }
 
-    if (/^(CREATE|CREATE OR REPLACE)\s+(PROCEDURE|FUNCTION|PACKAGE|TRIGGER)/i.test(trimmed)) {
+    if (/^(CREATE|CREATE OR REPLACE)\s+(EDITIONABLE\s+)?(PROCEDURE|FUNCTION|PACKAGE(\s+BODY)?|TRIGGER)/i.test(trimmed)) {
       inPlSqlBlock = true;
     }
 

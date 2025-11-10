@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { EnvironmentService } from './environment.service';
 
 export interface User {
   id: number;
@@ -20,11 +21,15 @@ export interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth';
+  private apiUrl: string;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private environmentService: EnvironmentService
+  ) {
+    this.apiUrl = `${this.environmentService.getApiUrl()}/auth`;
     // Cargar usuario del localStorage al iniciar
     // Buscar en 'currentUser' (nuevo) o 'user' (legacy)
     const storedUser = localStorage.getItem('currentUser') || localStorage.getItem('user');
