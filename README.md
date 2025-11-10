@@ -67,8 +67,8 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
       --> Ejecutar en terminal los siguientes comandos:
 
       2. docker pull gvenzl/oracle-xe:21-slim
-      3. docker pull <usuario>/encuentros-back:latest
-      4. docker pull <usuario>/encuentros-front:latest
+      3. docker pull tomasra98/encuentros-backend:latest
+      4. docker pull tomasra98/encuentros-frontend:latest
 
 # Ejecución de la aplicación
 
@@ -125,16 +125,12 @@ Sirve para personas que desean mejorar la planificación de sus encuentros grupa
     h) Salir del contenedor:
     exit
 
-4.  Reiniciar el contenedor del backend para asegurar la conexión:
-
-    docker restart encuentros_back
-
-5.  Verificar que todo funcione correctamente:
+4.  Verificar que todo funcione correctamente:
 
     - Frontend: http://localhost/
-    - Backend API: http://localhost:3000/
+    - Backend API: http://localhost:3000/ (Debe mostrar Hello World!)
 
-6.  Probar la aplicación:
+5.  Probar la aplicación:
     - Registrar un nuevo usuario
     - Iniciar sesión
     - Crear encuentros y usar todas las funcionalidades
