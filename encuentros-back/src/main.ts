@@ -1,8 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { initializeDatabase } from './database/seeder.service';
 
 async function bootstrap() {
+  await initializeDatabase();
+
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({

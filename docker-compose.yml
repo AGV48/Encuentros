@@ -1,18 +1,14 @@
-version: "3.8"
 services:
   db:
-    image: gvenzl/oracle-xe:21-slim
+    image: gvenzl/oracle-xe:21-slim  # Otra opción gvenzl/oracle-free!
     container_name: encuentros_db
     environment:
       ORACLE_PASSWORD: admin
       ORACLE_DATABASE: XEPDB1
-      APP_USER: ENCUENTROS_ADMIN
-      APP_USER_PASSWORD: admin
     ports:
       - "1521:1521"
     volumes:
       - oracle_data:/opt/oracle/oradata
-      - ./init-db:/container-entrypoint-initdb.d
     restart: always
 
   backend:
@@ -26,8 +22,11 @@ services:
       DB_PASSWORD: admin
       DB_SERVICE_NAME: XEPDB1
       PORT: "3000"
+      ORACLE_SYS_PASSWORD: admin
     ports:
       - "3000:3000"
+    volumes:
+      - ./init-db:/app/init-db
     depends_on:
       - db
     restart: on-failure
