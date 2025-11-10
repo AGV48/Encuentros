@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 @Component({
   selector: 'app-notifications',
@@ -12,6 +13,8 @@ import Swal from 'sweetalert2';
 })
 export class Notifications {
   http = inject(HttpClient);
+  env = inject(EnvironmentService);
+  apiUrl = this.env.getApiUrl();
   notifications: Array<any> = [];
   accepted: Array<any> = [];
   loading = false;
@@ -30,7 +33,7 @@ export class Notifications {
   loadNotifications() {
     if (!this.currentUserId) return;
     this.loading = true;
-    this.http.get<any>(`http://localhost:3000/users/notifications?userId=${this.currentUserId}`).subscribe({
+    this.http.get<any>(`${this.apiUrl}/users/notifications?userId=${this.currentUserId}`).subscribe({
       next: res => {
         // backend devuelve { pending: [...], accepted: [...] }
         this.notifications = (res && Array.isArray(res.pending)) ? res.pending : [];
@@ -46,7 +49,7 @@ export class Notifications {
       Swal.fire({ icon: 'warning', title: 'No autorizado', text: 'Inicia sesión' });
       return;
     }
-    this.http.post('http://localhost:3000/users/accept-request', { id_relacion_amistad: id_relacion, userId: this.currentUserId }).subscribe({
+    this.http.post('${this.apiUrl}/users/accept-request', { id_relacion_amistad: id_relacion, userId: this.currentUserId }).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Solicitud aceptada' });
         // remover notificación aceptada (admitir distintos nombres de propiedad según driver)
@@ -66,7 +69,7 @@ export class Notifications {
       Swal.fire({ icon: 'warning', title: 'No autorizado', text: 'Inicia sesión' });
       return;
     }
-    this.http.post('http://localhost:3000/users/reject-request', { id_relacion_amistad: id_relacion, userId: this.currentUserId }).subscribe({
+    this.http.post('${this.apiUrl}/users/reject-request', { id_relacion_amistad: id_relacion, userId: this.currentUserId }).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Solicitud rechazada' });
         // remover notificación rechazada

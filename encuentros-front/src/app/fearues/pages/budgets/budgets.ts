@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 interface ItemPresupuesto {
   id: number;
@@ -30,6 +31,8 @@ export class Budgets implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+  private readonly env = inject(EnvironmentService);
+  private readonly apiUrl = this.env.getApiUrl();
 
   encuentroId: string | null = null;
   submitting = false;
@@ -64,7 +67,7 @@ export class Budgets implements OnInit {
 
     this.loading = true;
     this.http
-      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .get<any>(`${this.apiUrl}/presupuesto?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (presupuesto) => {
           this.loading = false;
@@ -113,7 +116,7 @@ export class Budgets implements OnInit {
       montoItem: Number(montoItem),
     };
 
-    this.http.post<any>('http://localhost:3000/presupuesto/item', payload).subscribe({
+    this.http.post<any>('${this.apiUrl}/presupuesto/item', payload).subscribe({
       next: (item) => {
         this.addingItem = false;
         

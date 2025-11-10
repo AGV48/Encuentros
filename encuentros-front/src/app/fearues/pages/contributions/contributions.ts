@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 interface PocketDetails {
   id: number;
@@ -53,6 +54,8 @@ export default class Contributions implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+  private readonly env = inject(EnvironmentService);
+  private readonly apiUrl = this.env.getApiUrl();
 
   encuentroId: string | null = null;
   currentUser: StoredUser | null = null;
@@ -131,7 +134,7 @@ export default class Contributions implements OnInit {
     if (!this.encuentroId) return;
 
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro?encuentro=${this.encuentroId}`)
+      .get<any[]>(`${this.apiUrl}/participantes-encuentro?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (participantes) => {
           this.participantes.totalParticipantes = participantes.length;
@@ -152,7 +155,7 @@ export default class Contributions implements OnInit {
     if (!this.encuentroId) return;
 
     this.http
-      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .get<any>(`${this.apiUrl}/presupuesto?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (presupuesto) => {
           if (presupuesto) {
@@ -178,7 +181,7 @@ export default class Contributions implements OnInit {
   private loadPockets(): void {
     if (!this.encuentroId) return;
 
-    this.http.get<any[]>(`http://localhost:3000/bolsillo?encuentro=${this.encuentroId}`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/bolsillo?encuentro=${this.encuentroId}`).subscribe({
       next: (bolsillos) => {
         this.pockets = bolsillos.map((b) => ({
           id: b.id,
@@ -195,7 +198,7 @@ export default class Contributions implements OnInit {
   private loadAportes(): void {
     if (!this.encuentroId) return;
 
-    this.http.get<any[]>(`http://localhost:3000/aporte?encuentro=${this.encuentroId}`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/aporte?encuentro=${this.encuentroId}`).subscribe({
       next: (aportes) => {
         this.aportes = aportes.map((a) => ({
           id: a.id,
@@ -357,7 +360,7 @@ export default class Contributions implements OnInit {
 
     if (existingAporte && existingAporte.id) {
       // Actualizar aporte existente
-      this.http.patch(`http://localhost:3000/aporte/${existingAporte.id}`, { monto }).subscribe({
+      this.http.patch(`${this.apiUrl}/aporte/${existingAporte.id}`, { monto }).subscribe({
         next: () => {
           this.submittingPocketId = null;
           Swal.fire({
@@ -387,7 +390,7 @@ export default class Contributions implements OnInit {
         monto,
       };
 
-      this.http.post('http://localhost:3000/aporte', nuevoAporte).subscribe({
+      this.http.post(`${this.apiUrl}/aporte`, nuevoAporte).subscribe({
         next: () => {
           this.submittingPocketId = null;
           Swal.fire({

@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,8 @@ import Swal from 'sweetalert2';
 export class Home {
   router = inject(Router);
   http = inject(HttpClient);
+  env = inject(EnvironmentService);
+  apiUrl = this.env.getApiUrl();
   month: string;
   days: number[] = [];
   emptyDays: number[] = []; // Celdas vacías antes del día 1
@@ -152,7 +155,7 @@ export class Home {
     };
 
     this.creating = true;
-    this.http.post('http://localhost:3000/encuentro', payload, { responseType: 'json' }).subscribe({
+    this.http.post('${this.apiUrl}/encuentro', payload, { responseType: 'json' }).subscribe({
       next: (res: any) => {
         this.creating = false;
         this.showCreate = false;
@@ -189,7 +192,7 @@ export class Home {
     }
     console.log('Loading encuentros for userId:', this.currentUserId);
     this.http
-      .get<any[]>(`http://localhost:3000/encuentro/resumen?creador=${this.currentUserId}`)
+      .get<any[]>(`${this.apiUrl}/encuentro/resumen?creador=${this.currentUserId}`)
       .subscribe({
         next: (res) => {
           console.log('Encuentros received from API:', res);

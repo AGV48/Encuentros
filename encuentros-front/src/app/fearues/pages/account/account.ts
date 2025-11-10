@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 @Component({
   selector: 'app-account',
@@ -16,6 +17,8 @@ export class Account {
   router = inject(Router)
   http = inject(HttpClient);
   authService = inject(AuthService);
+  env = inject(EnvironmentService);
+  apiUrl = this.env.getApiUrl();
   name = ''
   email = ''
   apellido = ''
@@ -78,7 +81,7 @@ export class Account {
       return;
     }
 
-    this.http.post('http://localhost:3000/users/update', { email: this.email, updateData }).subscribe({
+    this.http.post('${this.apiUrl}/users/update', { email: this.email, updateData }).subscribe({
       next: (res: any) => {
         if (res?.success) {
           const updated = res.user;
@@ -125,7 +128,7 @@ export class Account {
       return;
     }
 
-    this.http.post('http://localhost:3000/users/updatePassword', { email: this.email, currentPassword: current, newPassword: nueva }).subscribe({
+    this.http.post('${this.apiUrl}/users/updatePassword', { email: this.email, currentPassword: current, newPassword: nueva }).subscribe({
       next: (res: any) => {
         if (res?.success) {
           // Actualizar localStorage si backend devolvió usuario (sin contrasena)
@@ -164,7 +167,7 @@ export class Account {
     }).then((result) => {
       if (result.isConfirmed) {
         // Lógica para eliminar la cuenta
-        this.http.post('http://localhost:3000/users/delete', { email: this.email }).subscribe({
+        this.http.post('${this.apiUrl}/users/delete', { email: this.email }).subscribe({
           next: (res: any) => {
             if (res?.success) {
               Swal.fire({ icon: 'success', title: 'Cuenta eliminada', text: 'Tu cuenta ha sido eliminada correctamente' });

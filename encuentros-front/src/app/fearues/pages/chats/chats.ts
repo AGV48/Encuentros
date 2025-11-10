@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { EnvironmentService } from '../../../services/environment.service';
 
 @Component({
   selector: 'app-chats',
@@ -11,6 +12,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class Chats implements OnInit {
   http = inject(HttpClient);
+  env = inject(EnvironmentService);
+  apiUrl = this.env.getApiUrl();
   currentUserId: number | null = null;
   
   chats: Array<{
@@ -50,7 +53,7 @@ export class Chats implements OnInit {
     }
 
     // Cargar encuentros desde el backend
-    this.http.get<any[]>(`http://localhost:3000/encuentro?creador=${this.currentUserId}`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/encuentro?creador=${this.currentUserId}`).subscribe({
       next: (encuentros) => {
         this.chats = encuentros
           .filter((encuentro: any) => encuentro && encuentro.titulo) // Filtrar encuentros vacíos o sin título

@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 interface PocketDetails {
   id?: number;
@@ -25,6 +26,8 @@ export class Pockets implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+  private readonly env = inject(EnvironmentService);
+  private readonly apiUrl = this.env.getApiUrl();
 
   encuentroId: string | null = null;
   presupuestoId: number | null = null;
@@ -57,7 +60,7 @@ export class Pockets implements OnInit {
     if (!this.encuentroId) return;
 
     this.http
-      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .get<any>(`${this.apiUrl}/presupuesto?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (presupuesto) => {
           if (presupuesto) {
@@ -74,7 +77,7 @@ export class Pockets implements OnInit {
     if (!this.encuentroId) return;
 
     this.loading = true;
-    this.http.get<any[]>(`http://localhost:3000/bolsillo?encuentro=${this.encuentroId}`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/bolsillo?encuentro=${this.encuentroId}`).subscribe({
       next: (bolsillos) => {
         this.loading = false;
         this.pockets = bolsillos.map((b) => ({
@@ -117,7 +120,7 @@ export class Pockets implements OnInit {
       saldoActual: 0,
     };
 
-    this.http.post<any>('http://localhost:3000/bolsillo', payload).subscribe({
+    this.http.post<any>('${this.apiUrl}/bolsillo', payload).subscribe({
       next: (bolsillo) => {
         this.submitting = false;
         this.pockets = [

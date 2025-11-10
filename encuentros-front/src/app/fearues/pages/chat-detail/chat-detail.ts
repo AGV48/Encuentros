@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 @Component({
   selector: 'app-chat-detail',
@@ -14,6 +15,8 @@ import Swal from 'sweetalert2';
 })
 export class ChatDetail implements OnInit {
   http = inject(HttpClient);
+  env = inject(EnvironmentService);
+  apiUrl = this.env.getApiUrl();
   encuentroId: string | null = null;
   encuentro: any = null;
   messageText: string = '';
@@ -75,7 +78,7 @@ export class ChatDetail implements OnInit {
     if (!this.encuentroId) return;
 
     // Cargar el encuentro desde el backend
-    this.http.get<any>(`http://localhost:3000/encuentro/${this.encuentroId}`).subscribe({
+    this.http.get<any>(`${this.apiUrl}/encuentro/${this.encuentroId}`).subscribe({
       next: (encuentro) => {
         if (encuentro) {
           this.encuentro = encuentro;
@@ -96,7 +99,7 @@ export class ChatDetail implements OnInit {
 
     // Cargar participantes básicos (para compatibilidad)
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro?encuentro=${this.encuentroId}`)
+      .get<any[]>(`${this.apiUrl}/participantes-encuentro?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (participantes) => {
           this.participantes = participantes;
@@ -108,7 +111,7 @@ export class ChatDetail implements OnInit {
     
     // Cargar participantes desde la vista con información detallada
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro/vista/detalle?encuentro=${this.encuentroId}`)
+      .get<any[]>(`${this.apiUrl}/participantes-encuentro/vista/detalle?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (participantes) => {
           this.participantesDetalle = participantes;
@@ -121,7 +124,7 @@ export class ChatDetail implements OnInit {
     
     // Cargar participantes con aportes desde la vista VISTAPARTICIPANTESAPORTES
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro/aportes/resumen?encuentro=${this.encuentroId}`)
+      .get<any[]>(`${this.apiUrl}/participantes-encuentro/aportes/resumen?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (aportes) => {
           this.participantesAportes = aportes;
@@ -162,7 +165,7 @@ export class ChatDetail implements OnInit {
     this.loadingFriends = true;
     this.http
       .get<any>(
-        `http://localhost:3000/users/friends/${this.currentUserId}?userId=${this.currentUserId}`
+        `${this.apiUrl}/users/friends/${this.currentUserId}?userId=${this.currentUserId}`
       )
       .subscribe({
         next: (response) => {
@@ -209,7 +212,7 @@ export class ChatDetail implements OnInit {
       rol: 'participante',
     };
 
-    this.http.post('http://localhost:3000/participantes-encuentro', payload).subscribe({
+    this.http.post('${this.apiUrl}/participantes-encuentro', payload).subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',

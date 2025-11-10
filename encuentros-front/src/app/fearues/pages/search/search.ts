@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EnvironmentService } from '../../../services/environment.service';
 
 @Component({
   selector: 'app-search',
@@ -13,6 +14,8 @@ import Swal from 'sweetalert2';
 })
 export class Search {
   http = inject(HttpClient);
+  env = inject(EnvironmentService);
+  apiUrl = this.env.getApiUrl();
   searchTerm = '';
   results: Array<any> = [];
   loading = false;
@@ -46,7 +49,7 @@ export class Search {
       const q = encodeURIComponent(term);
   // Include currentUser so backend can annotate results with friendship/pending flags
   const currentParam = this.currentUserId ? `&currentUser=${this.currentUserId}` : '';
-  this.http.get<any>(`http://localhost:3000/users/search_user?q=${q}${currentParam}`).subscribe({
+  this.http.get<any>(`${this.apiUrl}/users/search_user?q=${q}${currentParam}`).subscribe({
         next: res => {
           if (Array.isArray(res)) {
             this.results = res;
@@ -98,7 +101,7 @@ export class Search {
     }
     this.requestsSent.add(toId);
     const payload = { from: this.currentUserId, to: toId };
-    this.http.post('http://localhost:3000/users/friend-request', payload).subscribe({
+    this.http.post('${this.apiUrl}/users/friend-request', payload).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Solicitud enviada' });
         // actualizar resultado local para reflejar que se envió la solicitud
