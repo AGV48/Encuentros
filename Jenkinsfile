@@ -18,6 +18,12 @@ pipeline {
         }
         
         stage('Build Backend') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    reuseNode true
+                }
+            }
             steps {
                 dir('encuentros-back') {
                     sh 'npm ci'
@@ -27,6 +33,12 @@ pipeline {
         }
         
         stage('Build Frontend') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    reuseNode true
+                }
+            }
             steps {
                 dir('encuentros-front') {
                     sh 'npm ci'
@@ -38,6 +50,12 @@ pipeline {
         stage('Unit Tests') {
             parallel {
                 stage('Backend Tests') {
+                    agent {
+                        docker {
+                            image 'node:20-alpine'
+                            reuseNode true
+                        }
+                    }
                     steps {
                         dir('encuentros-back') {
                             sh 'npm test -- --coverage --watchAll=false'
@@ -45,6 +63,12 @@ pipeline {
                     }
                 }
                 stage('Frontend Tests') {
+                    agent {
+                        docker {
+                            image 'node:20-alpine'
+                            reuseNode true
+                        }
+                    }
                     steps {
                         dir('encuentros-front') {
                             sh 'npm test -- --watch=false --browsers=ChromeHeadless'
@@ -58,22 +82,28 @@ pipeline {
             parallel {
                 stage('Build Backend Image') {
                     steps {
-                        dir('encuentros-back') {
-                            sh "docker build -t ${BACKEND_IMAGE}:${IMAGE_TAG} -t ${BACKEND_IMAGE}:latest ."
+                        script {
+                            dir('encuentros-back') {
+                                sh "docker build -t ${BACKEND_IMAGE}:${IMAGE_TAG} -t ${BACKEND_IMAGE}:latest ."
+                            }
                         }
                     }
                 }
                 stage('Build Frontend Image') {
                     steps {
-                        dir('encuentros-front') {
-                            sh "docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} -t ${FRONTEND_IMAGE}:latest ."
+                        script {
+                            dir('encuentros-front') {
+                                sh "docker build -t ${FRONTEND_IMAGE}:${IMAGE_TAG} -t ${FRONTEND_IMAGE}:latest ."
+                            }
                         }
                     }
                 }
                 stage('Build Database Image') {
                     steps {
-                        dir('database') {
-                            sh "docker build -t ${DATABASE_IMAGE}:${IMAGE_TAG} -t ${DATABASE_IMAGE}:latest ."
+                        script {
+                            dir('database') {
+                                sh "docker build -t ${DATABASE_IMAGE}:${IMAGE_TAG} -t ${DATABASE_IMAGE}:latest ."
+                            }
                         }
                     }
                 }
@@ -102,17 +132,19 @@ pipeline {
     
     post {
         success {
-            echo 'Pipeline ejecutado exitosamente!'
-            echo "Imágenes publicadas:"
-            echo "- ${BACKEND_IMAGE}:${IMAGE_TAG}"
-            echo "- ${FRONTEND_IMAGE}:${IMAGE_TAG}"
-            echo "- ${DATABASE_IMAGE}:${IMAGE_TAG}"
+            echo '✅ Pipeline ejecutado exitosamente!'
+            echo "📦 Imágenes publicadas:"
+            echo "   - ${BACKEND_IMAGE}:${IMAGE_TAG}"
+            echo "   - ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+            echo "   - ${DATABASE_IMAGE}:${IMAGE_TAG}"
         }
         failure {
-            echo 'Pipeline falló. Revisa los logs.'
+            echo '❌ Pipeline falló. Revisa los logs.'
         }
-        cleanup {
-            cleanWs()
+        always {
+            script {
+                deleteDir()
+            }
         }
     }
 }
