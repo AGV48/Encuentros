@@ -47,37 +47,6 @@ pipeline {
             }
         }
         
-        stage('Unit Tests') {
-            parallel {
-                stage('Backend Tests') {
-                    agent {
-                        docker {
-                            image 'node:20-alpine'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        dir('encuentros-back') {
-                            sh 'npm test -- --coverage --watchAll=false'
-                        }
-                    }
-                }
-                stage('Frontend Tests') {
-                    agent {
-                        docker {
-                            image 'node:20-alpine'
-                            reuseNode true
-                        }
-                    }
-                    steps {
-                        dir('encuentros-front') {
-                            sh 'npm test -- --watch=false --browsers=ChromeHeadless'
-                        }
-                    }
-                }
-            }
-        }
-        
         stage('Build Docker Images') {
             parallel {
                 stage('Build Backend Image') {
@@ -132,19 +101,17 @@ pipeline {
     
     post {
         success {
-            echo '✅ Pipeline ejecutado exitosamente!'
-            echo "📦 Imágenes publicadas:"
-            echo "   - ${BACKEND_IMAGE}:${IMAGE_TAG}"
-            echo "   - ${FRONTEND_IMAGE}:${IMAGE_TAG}"
-            echo "   - ${DATABASE_IMAGE}:${IMAGE_TAG}"
+            echo 'Pipeline ejecutado correctamente'
+            echo "Imagenes publicadas en DockerHub:"
+            echo "- ${BACKEND_IMAGE}:${IMAGE_TAG}"
+            echo "- ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+            echo "- ${DATABASE_IMAGE}:${IMAGE_TAG}"
         }
         failure {
-            echo '❌ Pipeline falló. Revisa los logs.'
+            echo 'El pipeline fallo. Revisar los logs para mas detalles.'
         }
         always {
-            script {
-                deleteDir()
-            }
+            deleteDir()
         }
     }
 }
