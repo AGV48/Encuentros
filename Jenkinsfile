@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('dockerHub')
         DOCKERHUB_USER = 'joshhd01'
         BACKEND_IMAGE = "${DOCKERHUB_USER}/encuentros-backend"
         FRONTEND_IMAGE = "${DOCKERHUB_USER}/encuentros-frontend"
@@ -82,25 +82,25 @@ pipeline {
         
         stage('Push to DockerHub') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                
-                sh "docker push ${BACKEND_IMAGE}:${IMAGE_TAG}"
-                sh "docker push ${BACKEND_IMAGE}:latest"
-                
-                sh "docker push ${FRONTEND_IMAGE}:${IMAGE_TAG}"
-                sh "docker push ${FRONTEND_IMAGE}:latest"
-                
-                sh "docker push ${DATABASE_IMAGE}:${IMAGE_TAG}"
-                sh "docker push ${DATABASE_IMAGE}:latest"
+                script {
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                    
+                    sh "docker push ${BACKEND_IMAGE}:${IMAGE_TAG}"
+                    sh "docker push ${BACKEND_IMAGE}:latest"
+                    
+                    sh "docker push ${FRONTEND_IMAGE}:${IMAGE_TAG}"
+                    sh "docker push ${FRONTEND_IMAGE}:latest"
+                    
+                    sh "docker push ${DATABASE_IMAGE}:${IMAGE_TAG}"
+                    sh "docker push ${DATABASE_IMAGE}:latest"
+                    
+                    sh 'docker logout'
+                }
             }
         }
     }
     
     post {
-        always {
-            sh 'docker logout'
-            cleanWs()
-        }
         success {
             echo 'Pipeline ejecutado exitosamente!'
             echo "Imágenes publicadas:"
@@ -110,6 +110,9 @@ pipeline {
         }
         failure {
             echo 'Pipeline falló. Revisa los logs.'
+        }
+        cleanup {
+            cleanWs()
         }
     }
 }
