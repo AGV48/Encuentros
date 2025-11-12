@@ -1,35 +1,46 @@
 version: "3.8"
 services:
-  db:
-    image: gvenzl/oracle-xe:21-slim
+  database:
+    build: ./database
+    image: tomasra98/encuentros-database:latest
     container_name: encuentros_db
     environment:
-      ORACLE_PASSWORD: admin
-      ORACLE_DATABASE: XEPDB1
-      APP_USER: ENCUENTROS_ADMIN
-      APP_USER_PASSWORD: admin
+      POSTGRES_DB: encuentros_db
+      POSTGRES_USER: encuentros_user
+      POSTGRES_PASSWORD: encuentros_pass
     ports:
-      - "15210:1521"
+      - "5432:5432"
     volumes:
-      - oracle_data:/opt/oracle/oradata
-      - ./init-db:/container-entrypoint-initdb.d
-    restart: always
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - encuentros-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U encuentros_user -d encuentros_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     image: tomasra98/encuentros-backend:latest
     container_name: encuentros_back
     environment:
-      DB_HOST: db
-      DB_PORT: "1521"
-      DB_USERNAME: ENCUENTROS_ADMIN
-      DB_PASSWORD: admin
-      DB_SERVICE_NAME: XEPDB1
+      DB_TYPE: postgres
+      DB_HOST: database
+      DB_PORT: "5432"
+      DB_USERNAME: encuentros_user
+      DB_PASSWORD: encuentros_pass
+      DB_DATABASE: encuentros_db
+      DB_SSL: "false"
       PORT: "3000"
     ports:
-      - "3010:3000"
+      - "3000:3000"
     depends_on:
-      - db
+      database:
+        condition: service_healthy
     restart: on-failure
+    networks:
+      - encuentros-net
 
   frontend:
     image: tomasra98/encuentros-frontend:latest
@@ -39,6 +50,8 @@ services:
     depends_on:
       - backend
     restart: on-failure
+    networks:
+      - encuentros-net
 
   loki:
     image: grafana/loki:2.9.3
@@ -50,6 +63,8 @@ services:
       - loki_data:/loki
     command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
+    networks:
+      - encuentros-net
 
   promtail:
     image: grafana/promtail:2.9.3
@@ -61,6 +76,8 @@ services:
     depends_on:
       - loki
     restart: unless-stopped
+    networks:
+      - encuentros-net
 
   grafana:
     image: grafana/grafana:10.2.3
@@ -71,6 +88,7 @@ services:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_NEWS_NEWS_FEED_ENABLED=false
     volumes:
       - grafana_data:/var/lib/grafana
       - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
@@ -78,6 +96,8 @@ services:
       - loki
       - prometheus
     restart: unless-stopped
+    networks:
+      - encuentros-net
 
   prometheus:
     image: prom/prometheus:v2.48.0
@@ -91,6 +111,8 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
     restart: unless-stopped
+    networks:
+      - encuentros-net
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
@@ -105,9 +127,15 @@ services:
       - //var/run/docker.sock:/var/run/docker.sock:ro
     privileged: true
     restart: unless-stopped
+    networks:
+      - encuentros-net
 
 volumes:
-  oracle_data:
+  db_data:
   loki_data:
   grafana_data:
   prometheus_data:
+
+networks:
+  encuentros-net:
+    driver: bridge
