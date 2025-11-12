@@ -1,0 +1,12 @@
+# Carpeta de evidencias generadas
+evidencias-k8s/
+
+# Capturas de pantalla
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Archivos de reporte
+reporte-*.txt
+evidencias-*.txt

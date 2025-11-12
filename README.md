@@ -72,6 +72,8 @@ Frontend:
 
 # Ejecución de la aplicación
 
+## Opción 1: Docker Compose (Recomendado para desarrollo local)
+
 --> Estar en la carpeta raiz de la aplicación
 
 1.  Construir y levantar todo:
@@ -127,12 +129,12 @@ Frontend:
 
         exit
 
-5.  Verificar que todo funcione correctamente:
+4.  Verificar que todo funcione correctamente:
 
     - Frontend: http://localhost/
     - Backend API: http://localhost:3000/ (Debe mostrar Hello World!)
 
-6.  Probar la aplicación:
+5.  Probar la aplicación:
     - Registrar un nuevo usuario
     - Iniciar sesión
     - Crear encuentros y usar todas las funcionalidades
@@ -144,3 +146,41 @@ Notas importantes:
 - El script 01-create-user.sql crea el usuario ENCUENTROS_ADMIN en la base de datos XEPDB1.
 - El script 02-schema.sql crea todas las tablas, secuencias, procedimientos almacenados y vistas necesarias.
 - Si tienes problemas de conexión, verifica los logs: docker logs encuentros_db
+
+## Opción 2: Kubernetes con Minikube (Recomendado para producción)
+
+### 🚀 Despliegue Rápido
+
+```powershell
+# 1. Iniciar Minikube
+minikube start --driver=docker --cpus=4 --memory=4096
+
+# 2. Desplegar (automatizado)
+.\deploy-k8s.ps1
+
+# 3. Acceder a la aplicación
+minikube service frontend-service -n encuentros
+```
+
+### 📚 Documentación Kubernetes
+
+| Documento                                                  | Descripción                                      |
+| ---------------------------------------------------------- | ------------------------------------------------ |
+| **[KUBERNETES-SETUP.md](./KUBERNETES-SETUP.md)**           | Instalación de Minikube y despliegue paso a paso |
+| **[KUBERNETES-EVIDENCIAS.md](./KUBERNETES-EVIDENCIAS.md)** | Generación de evidencias del despliegue          |
+| **[KUBERNETES.md](./KUBERNETES.md)**                       | Documentación técnica completa y troubleshooting |
+| **[kube/README.md](./kube/README.md)**                     | Detalles de manifiestos YAML                     |
+
+### 🔧 Scripts Disponibles
+
+- `.\deploy-k8s.ps1` - Despliegue automatizado
+- `.\generar-evidencias.ps1` - Generación de evidencias
+- `.\cleanup-k8s.ps1` - Limpieza de recursos
+
+### 🌐 Servicios Expuestos
+
+| Servicio   | Puerto | Acceso                                              |
+| ---------- | ------ | --------------------------------------------------- |
+| Frontend   | 30080  | `minikube service frontend-service -n encuentros`   |
+| Grafana    | 30030  | `minikube service grafana-service -n encuentros`    |
+| Prometheus | 30090  | `minikube service prometheus-service -n encuentros` |
