@@ -104,18 +104,7 @@ En **Manage Jenkins** → **Manage Plugins**, instalar:
 - Pipeline Plugin
 - Credentials Binding Plugin
 
-### Paso 3: Verificar Permisos de Docker
-
-```bash
-# Linux
-sudo usermod -aG docker jenkins
-sudo systemctl restart jenkins
-
-# Verificar
-sudo -u jenkins docker ps
-```
-
-### Paso 4: Crear el Job de Pipeline
+### Paso 3: Crear el Job de Pipeline
 
 1. **New Item** → Nombre: `Encuentros-CI-CD` → Tipo: **Pipeline**
 2. En **Pipeline**:
@@ -126,7 +115,7 @@ sudo -u jenkins docker ps
    - **Script Path**: `Jenkinsfile`
 3. **Save**
 
-### Paso 5: Ejecutar
+### Paso 4: Ejecutar
 
 Click en **Build Now** y observar el progreso.
 
