@@ -9,7 +9,7 @@ services:
       APP_USER: ENCUENTROS_ADMIN
       APP_USER_PASSWORD: admin
     ports:
-      - "1521:1521"
+      - "15210:1521"
     volumes:
       - oracle_data:/opt/oracle/oradata
       - ./init-db:/container-entrypoint-initdb.d
@@ -26,7 +26,7 @@ services:
       DB_SERVICE_NAME: XEPDB1
       PORT: "3000"
     ports:
-      - "3000:3000"
+      - "3010:3000"
     depends_on:
       - db
     restart: on-failure
@@ -35,7 +35,7 @@ services:
     image: tomasra98/encuentros-frontend:latest
     container_name: encuentros_front
     ports:
-      - "80:80"
+      - "8090:80"
     depends_on:
       - backend
     restart: on-failure
@@ -44,7 +44,7 @@ services:
     image: grafana/loki:2.9.3
     container_name: encuentros_loki
     ports:
-      - "3100:3100"
+      - "3110:3100"
     volumes:
       - ./observability/loki-config.yml:/etc/loki/local-config.yaml:ro
       - loki_data:/loki
@@ -66,7 +66,7 @@ services:
     image: grafana/grafana:10.2.3
     container_name: encuentros_grafana
     ports:
-      - "3001:3000"
+      - "3020:3000"
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
@@ -83,7 +83,7 @@ services:
     image: prom/prometheus:v2.48.0
     container_name: encuentros_prometheus
     ports:
-      - "9090:9090"
+      - "9095:9090"
     volumes:
       - ./observability/prometheus-config.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -96,7 +96,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: encuentros_cadvisor
     ports:
-      - "8081:8080"
+      - "8085:8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
