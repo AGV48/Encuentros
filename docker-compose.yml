@@ -96,7 +96,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: encuentros_cadvisor
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
