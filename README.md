@@ -1,146 +1,327 @@
-# Encuentros — (Instrucciones)
+# Encuentros
 
-# ¿Qué es Encuentros?
+<div align="center">
 
-Encuentros, una aplicación web tipo red social enfocada en facilitar la organización de salidas y reuniones sociales, educativas o laborales entre usuarios.
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)
 
-# ¿Para qué sirve?
+</div>
 
-Sirve para personas que desean mejorar la planificación de sus encuentros grupales, familiares o de trabajo, y buscan una herramienta centralizada donde puedan gestionar todos los aspectos de dichos eventos.
+## Descripción
 
-# Tecnologías principales:
+**Encuentros** es una aplicación web tipo red social diseñada para facilitar la organización de salidas y reuniones sociales, educativas o laborales entre usuarios. Permite gestionar todos los aspectos de eventos grupales de manera centralizada, incluyendo:
 
-## Backend:
+- Gestión de participantes
+- Control de presupuestos y aportes
+- Chat en tiempo real
+- Seguimiento de gastos compartidos
 
-      - Framework: NestJS (Node 20+)
-      - Lenguaje: TypeScript
-      - Base de datos: Oracle Database
-      - Ejecuta en el puerto 3000
+## Arquitectura del Sistema
 
-## Frontend:
+```
+┌─────────────────────────────────────────────────────────┐
+│                    USUARIOS                              │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│              FRONTEND (Angular)                          │
+│              Puerto: 8090                                │
+│              nginx:alpine                                │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│           BACKEND API (NestJS)                           │
+│           Puerto: 3000                                   │
+│           Node.js 20 + TypeScript                        │
+│           Swagger Docs: /api-docs                        │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────┐
+│         BASE DE DATOS (PostgreSQL 16)                    │
+│         Puerto: 5432                                     │
+│         Database: encuentros_db                          │
+└─────────────────────────────────────────────────────────┘
 
-      - Framework: Angular
-      - Lenguaje: TypeScript
-      - Ejecuta en el puerto 80
+┌─────────────────────────────────────────────────────────┐
+│              OBSERVABILIDAD                              │
+├─────────────────────────────────────────────────────────┤
+│  Grafana (3020)   │  Prometheus (9095)                   │
+│  Loki (3110)      │  cAdvisor (8085)                     │
+│  Promtail         │                                      │
+└─────────────────────────────────────────────────────────┘
+```
 
-## Base de datos:
+## Tecnologías Principales
 
-      - Imagen: gvenzl/oracle-xe
-      - Version: Oracle XE 21c
+### Backend
+- **Framework**: NestJS 10.x
+- **Lenguaje**: TypeScript
+- **Runtime**: Node.js 20+
+- **ORM**: TypeORM
+- **Puerto**: 3000
 
-# Prerrequisitos de la app
+### Frontend
+- **Framework**: Angular 19.x
+- **Lenguaje**: TypeScript
+- **Servidor**: Nginx Alpine
+- **Puerto**: 8090
 
-## Si se va a ejecutar con Docker:
+### Base de Datos
+- **Motor**: PostgreSQL 16 Alpine
+- **Puerto**: 5432
+- **Database**: encuentros_db
 
-      - Docker Desktop 4.x o superior (https://www.docker.com/products/docker-desktop/)
-      - Docker Engine 20.x o superior
-      - Docker Compose 2.x o superior
+### Observabilidad
+- **Grafana**: Dashboards y visualización (Puerto 3020)
+- **Prometheus**: Métricas del sistema (Puerto 9095)
+- **Loki**: Agregación de logs (Puerto 3110)
+- **cAdvisor**: Métricas de contenedores (Puerto 8085)
+- **Promtail**: Recolección de logs
 
-## Si se va a ejecurar Local:
+### CI/CD
+- **Jenkins**: Pipeline automatizado para build, test y deploy
+- **Docker**: Containerización de todos los servicios
+- **DockerHub**: Registro de imágenes
 
-      - NodeJS 20.x o superior (https://nodejs.org/en/download)
-      - npm 10.x o superior
-      - Oracle Database 21c (https://nodejs.org/en/download)
-      - Oracle Instant client
-      - Angular CLI 20.x (npm install -g @angular/cli)
-      - NestJS CLI 11.x (npm install -g @nestjs/cli)
+## Imágenes en DockerHub
 
-# Enlaces de las Imágenes en DockerHub
+Todas las imágenes están disponibles públicamente en DockerHub:
 
-Backend:
+- **Backend**: [joshhd01/encuentros-backend](https://hub.docker.com/r/joshhd01/encuentros-backend)
+- **Frontend**: [joshhd01/encuentros-frontend](https://hub.docker.com/r/joshhd01/encuentros-frontend)
+- **Database**: [joshhd01/encuentros-database](https://hub.docker.com/r/joshhd01/encuentros-database)
 
-      https://hub.docker.com/r/tomasra98/encuentros-backend
+## Pipeline CI/CD (Jenkins)
 
-Frontend:
+El proyecto incluye un pipeline Jenkins completo que automatiza:
 
-      https://hub.docker.com/r/tomasra98/encuentros-frontend
+1. **Checkout**: Clonación del repositorio
+2. **Build Backend**: Compilación con npm (Node.js 20-alpine)
+3. **Build Frontend**: Compilación con npm (Node.js 20-alpine)
+4. **Build Docker Images**: Construcción paralela de 3 imágenes
+5. **Push to DockerHub**: Publicación automática con tags
 
-# ¿Cómo descargar la aplicación?
+Ver [JENKINS_SETUP.md](./JENKINS_SETUP.md) para configuración detallada.
 
-## Opción 1 - Clonar desde GitHub:
+## Prerrequisitos
 
-      --> Hay que tener Git instalado (https://git-scm.com/downloads)
+## Prerrequisitos
 
-      1. Abrir la terminal de preferencia
-      2. Ejecutar el comando git clone https://github.com/AGV48/Encuentros
+### Para ejecución con Docker (Recomendado)
+- Docker Desktop 4.x+ o Docker Engine 20.x+
+- Docker Compose 2.x+
+- 4GB RAM mínimo (8GB recomendado)
+- 10GB espacio en disco
 
-## Opción 2 - Descargar ZIP desde GitHub:
+### Para desarrollo local
+- Node.js 20.x+
+- npm 10.x+
+- PostgreSQL 16+
+- Angular CLI 19.x: `npm install -g @angular/cli`
+- NestJS CLI 11.x: `npm install -g @nestjs/cli`
 
-      1. Ir a https://github.com/AGV48/Encuentros
-      2. Click en "Code" > "Download ZIP"
-      3. Extraer la carpeta
+## Inicio Rápido
 
-# Ejecución de la aplicación
+### Opción 1: Usando Docker Compose (Recomendado)
 
---> Estar en la carpeta raiz de la aplicación
+1. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/AGV48/Encuentros.git
+   cd Encuentros
+   ```
 
-1.  Construir y levantar todo:
+2. **Levantar todos los servicios**:
+   ```bash
+   docker-compose up -d
+   ```
 
-        docker-compose up --build -d
+3. **Verificar que los servicios estén corriendo**:
+   ```bash
+   docker-compose ps
+   ```
 
-2.  Esperar a que Oracle DB esté completamente inicializada:
+4. **Acceder a la aplicación**:
+   - Frontend: http://localhost:8090
+   - Backend API: http://localhost:3000
+   - API Docs (Swagger): http://localhost:3000/api-docs
+   - Grafana: http://localhost:3020 (admin/admin)
+   - Prometheus: http://localhost:9095
+   - cAdvisor: http://localhost:8085
 
-    - Oracle XE puede tardar 2-5 minutos en inicializar la primera vez
-    - Puedes verificar el estado con: docker logs encuentros_db
+### Opción 2: Descargar desde GitHub
 
-3.  Configurar la base de datos ejecutando los scripts SQL:
+1. Ir a https://github.com/AGV48/Encuentros
+2. Click en **"Code"** > **"Download ZIP"**
+3. Extraer la carpeta
+4. Seguir los pasos de Docker Compose
 
-    a) Conectarse al contenedor de Oracle:
+## Estructura del Proyecto
 
-        docker exec -it encuentros_db bash
+```
+Encuentros/
+├── encuentros-back/          # Backend NestJS
+│   ├── src/
+│   │   ├── auth/            # Autenticación JWT
+│   │   ├── users/           # Gestión de usuarios
+│   │   ├── encuentro/       # Gestión de encuentros
+│   │   ├── chat/            # Chat en tiempo real
+│   │   ├── presupuesto/     # Presupuestos
+│   │   ├── bolsillo/        # Bolsillos compartidos
+│   │   └── aporte/          # Aportes económicos
+│   ├── Dockerfile
+│   └── package.json
+│
+├── encuentros-front/         # Frontend Angular
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── features/   # Módulos por funcionalidad
+│   │   │   ├── services/   # Servicios HTTP
+│   │   │   ├── guards/     # Guards de autenticación
+│   │   │   └── interceptors/
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── package.json
+│
+├── database/                 # PostgreSQL
+│   ├── Dockerfile
+│   ├── init-schema.sql      # Esquema completo
+│   └── init.sh
+│
+├── observability/            # Stack de observabilidad
+│   ├── grafana/
+│   ├── loki-config.yml
+│   ├── prometheus-config.yml
+│   └── promtail-config.yml
+│
+├── docker-compose.yml        # Orquestación de servicios
+├── Jenkinsfile              # Pipeline CI/CD
+└── README.md
+```
 
-    b) Conectarse a SQL\*Plus como SYSTEM:
+## Comandos Útiles
 
-        sqlplus system/admin@localhost:1521/XE
+### Docker Compose
 
-    c) Ejecutar el script de creación de usuario:
+```bash
+# Levantar servicios
+docker-compose up -d
 
-        @/container-entrypoint-initdb.d/01-create-user.sql
+# Ver logs
+docker-compose logs -f [servicio]
 
-    d) Si estás en el contenedor de Oracle, se ve así:
+# Detener servicios
+docker-compose down
 
-        bash-4.4$
+# Rebuild y restart
+docker-compose up --build -d
 
-    Si te encuentras ahí, pasa al paso e)
+# Ver estado de servicios
+docker-compose ps
 
-    Si sigues viendo que en la terminal aparece:
+# Eliminar todo (incluyendo volúmenes)
+docker-compose down -v
+```
 
-        SQL>
+### Desarrollo Local
 
-    Debes salir de SQL\*Plus:
+```bash
+# Backend
+cd encuentros-back
+npm install
+npm run start:dev
 
-        EXIT;
+# Frontend
+cd encuentros-front
+npm install
+npm start
+```
 
-    e) Conectarse nuevamente como el usuario ENCUENTROS_ADMIN:
+## Variables de Entorno
 
-        sqlplus ENCUENTROS_ADMIN/admin@localhost:1521/XEPDB1
+Las principales variables están configuradas en `docker-compose.yml`:
 
-    f) Ejecutar el script del esquema (tablas, secuencias, procedimientos):
+### Backend
+- `DB_HOST`: database
+- `DB_PORT`: 5432
+- `DB_USERNAME`: encuentros_user
+- `DB_PASSWORD`: encuentros_pass
+- `DB_DATABASE`: encuentros_db
+- `JWT_SECRET`: your-secret-key
 
-        @/container-entrypoint-initdb.d/02-schema.sql
+### Database
+- `POSTGRES_DB`: encuentros_db
+- `POSTGRES_USER`: encuentros_user
+- `POSTGRES_PASSWORD`: encuentros_pass
 
-    g) Salir de SQL\*Plus:
+## Monitoreo y Observabilidad
 
-        EXIT;
+### Grafana
+- URL: http://localhost:3020
+- Usuario: `admin`
+- Contraseña: `admin`
 
-    h) Salir del contenedor:
+### Prometheus
+- URL: http://localhost:9095
+- Scrape interval: 15s
+- Targets: Backend, Database, cAdvisor
 
-        exit
+### Loki
+- Puerto: 3110
+- Integrado con Promtail para agregación de logs
 
-5.  Verificar que todo funcione correctamente:
+## Testing
 
-    - Frontend: http://localhost/
-    - Backend API: http://localhost:3000/ (Debe mostrar Hello World!)
+```bash
+# Backend unit tests
+cd encuentros-back
+npm test
 
-6.  Probar la aplicación:
-    - Registrar un nuevo usuario
-    - Iniciar sesión
-    - Crear encuentros y usar todas las funcionalidades
+# Backend e2e tests
+npm run test:e2e
 
-Notas importantes:
+# Frontend tests
+cd encuentros-front
+npm test
+```
 
-- Oracle XE (imagen) puede tardar varios minutos en inicializar la primera vez.
-- Los scripts SQL DEBEN ejecutarse en el orden indicado (primero 01-create-user.sql, luego 02-schema.sql).
-- El script 01-create-user.sql crea el usuario ENCUENTROS_ADMIN en la base de datos XEPDB1.
-- El script 02-schema.sql crea todas las tablas, secuencias, procedimientos almacenados y vistas necesarias.
-- Si tienes problemas de conexión, verifica los logs: docker logs encuentros_db
+## Notas Importantes
+
+- La base de datos PostgreSQL se inicializa automáticamente con el esquema completo
+- No se requiere configuración manual de base de datos
+- Todos los servicios están containerizados y orquestados
+- El healthcheck de la base de datos asegura que esté lista antes de iniciar el backend
+- La primera vez puede tardar 2-3 minutos en descargar todas las imágenes
+- Asegúrate de que los puertos 3000, 5432, 8090, 3020, 9095, 3110, 8085 estén disponibles
+
+## Contribución
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## Contacto
+
+- **Repositorio**: [github.com/AGV48/Encuentros](https://github.com/AGV48/Encuentros)
+- **Issues**: [github.com/AGV48/Encuentros/issues](https://github.com/AGV48/Encuentros/issues)
+
+## Licencia
+
+Este proyecto es de código abierto y está disponible bajo la licencia MIT.
+
+---
+
+<div align="center">
+  
+**Hecho con NestJS, Angular y PostgreSQL**
+
+</div>
+
