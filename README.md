@@ -3,6 +3,7 @@
 <div align="center">
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
 ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
 ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
 ![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
@@ -120,6 +121,13 @@ Ver [JENKINS_SETUP.md](./JENKINS_SETUP.md) para configuración detallada.
 - 4GB RAM mínimo (8GB recomendado)
 - 10GB espacio en disco
 
+### Para ejecución con Kubernetes/Minikube
+- Minikube 1.30+
+- kubectl 1.28+
+- Docker Desktop 4.x+ o Docker Engine 20.x+
+- 4GB RAM mínimo (8GB recomendado)
+- 15GB espacio en disco
+
 ### Para desarrollo local
 - Node.js 20.x+
 - npm 10.x+
@@ -161,6 +169,171 @@ Ver [JENKINS_SETUP.md](./JENKINS_SETUP.md) para configuración detallada.
 2. Click en **"Code"** > **"Download ZIP"**
 3. Extraer la carpeta
 4. Seguir los pasos de Docker Compose
+
+### Opción 3: Usando Kubernetes con Minikube
+
+Esta opción permite desplegar la aplicación completa en un clúster Kubernetes local usando Minikube, incluyendo todos los servicios de observabilidad.
+
+#### Prerrequisitos
+- Minikube instalado
+- kubectl instalado
+- Docker Desktop o Docker Engine en ejecución
+- 4GB RAM mínimo (8GB recomendado)
+
+#### Pasos para desplegar
+
+1. **Verificar que Minikube esté corriendo**:
+   ```bash
+   minikube status
+   ```
+
+   Si no está corriendo, iniciarlo:
+   ```bash
+   minikube start
+   ```
+
+2. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/AGV48/Encuentros.git
+   cd Encuentros
+   ```
+
+3. **Desplegar en orden**:
+
+   ```bash
+   # Crear namespace y configuración
+   kubectl apply -f kube/namespace.yaml
+   kubectl apply -f kube/secret.yaml
+   kubectl apply -f kube/configmap.yaml
+
+   # Crear almacenamiento persistente
+   kubectl apply -f kube/database-pvc.yaml
+
+   # Desplegar base de datos
+   kubectl apply -f kube/database-deployment.yaml
+
+   # Desplegar backend
+   kubectl apply -f kube/backend-deployment.yaml
+
+   # Desplegar frontend
+   kubectl apply -f kube/frontend-deployment.yaml
+
+   # Crear servicios de red
+   kubectl apply -f kube/service.yaml
+
+   # Desplegar observabilidad (opcional)
+   kubectl apply -f kube/loki-deployment.yaml
+   kubectl apply -f kube/prometheus-deployment.yaml
+   kubectl apply -f kube/grafana-deployment.yaml
+   kubectl apply -f kube/cadvisor-deployment.yaml
+   ```
+
+   O desplegar todo de una vez:
+   ```bash
+   kubectl apply -f kube/
+   ```
+
+4. **Verificar el estado de los pods**:
+   ```bash
+   kubectl get pods -n encuentros
+   ```
+
+5. **Acceder a los servicios**:
+
+   En Windows con Docker driver, necesitas crear túneles para cada servicio:
+
+   ```bash
+   # Frontend (mantener la terminal abierta)
+   minikube service frontend-service -n encuentros
+
+   # Grafana (en otra terminal)
+   minikube service grafana-service -n encuentros
+
+   # Prometheus (en otra terminal)
+   minikube service prometheus-service -n encuentros
+   ```
+
+   Los comandos anteriores abrirán automáticamente los servicios en tu navegador con URLs locales (ej: http://127.0.0.1:xxxxx).
+
+#### Servicios desplegados en Kubernetes
+
+- **Frontend**: NodePort 30080 (Angular)
+- **Backend**: ClusterIP 3000 (NestJS API)
+- **Database**: ClusterIP 5432 (PostgreSQL)
+- **Grafana**: NodePort 30030 (admin/admin)
+- **Prometheus**: NodePort 30090
+- **Loki**: ClusterIP 3100
+- **cAdvisor**: DaemonSet en cada nodo
+
+#### Arquitectura en Kubernetes
+
+```
+Namespace: encuentros
+
+┌─────────────────────────────────────────────────────┐
+│  Frontend (2 replicas)                               │
+│  NodePort: 30080                                     │
+└────────────────────┬────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│  Backend (2 replicas)                                │
+│  ClusterIP: 3000                                     │
+└────────────────────┬────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────┐
+│  Database (1 replica)                                │
+│  ClusterIP: 5432                                     │
+│  PVC: 2Gi                                            │
+└─────────────────────────────────────────────────────┘
+
+Observabilidad:
+├── Grafana (NodePort: 30030, PVC: 500Mi)
+├── Prometheus (NodePort: 30090, PVC: 1Gi)
+├── Loki (ClusterIP: 3100, PVC: 1Gi)
+└── cAdvisor (DaemonSet)
+```
+
+#### Comandos útiles para Kubernetes
+
+```bash
+# Ver todos los recursos
+kubectl get all -n encuentros
+
+# Ver logs de un pod
+kubectl logs -f <pod-name> -n encuentros
+
+# Ver logs del backend
+kubectl logs -f deployment/backend -n encuentros
+
+# Reiniciar un deployment
+kubectl rollout restart deployment/backend -n encuentros
+
+# Escalar replicas
+kubectl scale deployment/backend --replicas=3 -n encuentros
+
+# Ver detalles de un pod
+kubectl describe pod <pod-name> -n encuentros
+
+# Acceder a un pod
+kubectl exec -it <pod-name> -n encuentros -- /bin/sh
+
+# Ver servicios y sus puertos
+kubectl get svc -n encuentros
+
+# Eliminar todo el despliegue
+kubectl delete namespace encuentros
+```
+
+#### Notas importantes para Minikube
+
+- En Windows con Docker driver, los servicios NodePort no son accesibles directamente via IP de Minikube
+- Debes usar `minikube service <service-name> -n encuentros` para crear túneles
+- Las terminales con túneles deben permanecer abiertas
+- El backend se conecta a la base de datos usando el servicio interno `database-service`
+- Cada componente tiene health checks configurados (liveness y readiness probes)
+- Los volúmenes persistentes se crean automáticamente en Minikube
 
 ## Estructura del Proyecto
 
