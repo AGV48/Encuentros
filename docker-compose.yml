@@ -2,7 +2,7 @@ version: "3.8"
 services:
   database:
     build: ./database
-    image: tomasra98/encuentros-database:latest
+    image: joshhd01/encuentros-database:latest
     container_name: encuentros_db
     environment:
       POSTGRES_DB: encuentros_db
@@ -22,7 +22,7 @@ services:
       retries: 5
 
   backend:
-    image: tomasra98/encuentros-backend:latest
+    image: joshhd01/encuentros-backend:latest
     container_name: encuentros_back
     environment:
       DB_TYPE: postgres
@@ -43,7 +43,7 @@ services:
       - encuentros-net
 
   frontend:
-    image: tomasra98/encuentros-frontend:latest
+    image: joshhd01/encuentros-frontend:latest
     container_name: encuentros_front
     ports:
       - "8090:80"
