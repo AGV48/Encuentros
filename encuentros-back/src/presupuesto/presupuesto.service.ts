@@ -70,31 +70,51 @@ export class PresupuestoService {
   async agregarItem(
     createItemDto: CreateItemPresupuestoDto,
   ): Promise<ItemPresupuesto> {
-    // Llamar al procedimiento almacenado
-    await this.dataSource.query(
-      `BEGIN agregar_item_presupuesto(:p_id_presupuesto, :p_id_encuentro, :p_nombre_item, :p_monto_item); END;`,
-      [
-        createItemDto.idPresupuesto,
-        createItemDto.idEncuentro,
-        createItemDto.nombreItem,
-        createItemDto.montoItem,
-      ],
-    );
+    // Usar transacción para insertar item y actualizar presupuesto total
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    // Obtener el item recién creado
-    const item = await this.itemPresupuestoRepository.findOne({
-      where: {
-        idPresupuesto: createItemDto.idPresupuesto,
-        nombreItem: createItemDto.nombreItem,
-      },
-      order: { id: 'DESC' },
-    });
+    try {
+      // Insertar el item
+      const result = await queryRunner.query(
+        `INSERT INTO items_presupuesto (id_presupuesto, id_encuentro, nombre_item, monto_item)
+         VALUES ($1, $2, $3, $4)
+         RETURNING id_item`,
+        [
+          createItemDto.idPresupuesto,
+          createItemDto.idEncuentro,
+          createItemDto.nombreItem,
+          createItemDto.montoItem,
+        ],
+      );
 
-    if (!item) {
-      throw new NotFoundException('No se pudo crear el item');
+      // Actualizar el presupuesto total
+      await queryRunner.query(
+        `UPDATE presupuestos 
+         SET presupuesto_total = presupuesto_total + $1 
+         WHERE id_presupuesto = $2`,
+        [createItemDto.montoItem, createItemDto.idPresupuesto],
+      );
+
+      await queryRunner.commitTransaction();
+
+      // Obtener el item recién creado
+      const item = await this.itemPresupuestoRepository.findOne({
+        where: { id: result[0].id_item },
+      });
+
+      if (!item) {
+        throw new NotFoundException('No se pudo crear el item');
+      }
+
+      return item;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    return item;
   }
 
   async getItems(idPresupuesto: number): Promise<ItemPresupuesto[]> {

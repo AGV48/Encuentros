@@ -49,13 +49,13 @@ export class ParticipantesEncuentroService {
       throw new ConflictException('El usuario ya está participando en este encuentro');
     }
 
-    // Usar SQL directo para evitar problemas con constraints de Oracle
+    // Usar SQL directo para insertar
     const rol = createParticipanteDto.rol || 'participante';
     
     try {
       const sql = `
-        INSERT INTO PARTICIPANTES_ENCUENTRO (ID_ENCUENTRO, ID_USUARIO, ROL)
-        VALUES (:1, :2, :3)
+        INSERT INTO participantes_encuentro (id_encuentro, id_usuario, rol)
+        VALUES ($1, $2, $3)
       `;
       
       await this.dataSource.query(sql, [
@@ -137,44 +137,44 @@ export class ParticipantesEncuentroService {
     return { message: 'Participante eliminado correctamente' };
   }
 
-  // Métodos para consultar la vista V_PARTICIPANTES_ENCUENTRO
+  // Métodos para consultar la vista v_participantes_encuentro
   async findAllFromView(idEncuentro?: number, idUsuario?: number) {
     let sql = `
       SELECT 
-        ID_ENCUENTRO,
-        TITULO_ENCUENTRO,
-        FECHA,
-        ID_USUARIO,
-        NOMBRE_COMPLETO,
-        ROL
-      FROM V_PARTICIPANTES_ENCUENTRO
+        id_encuentro,
+        titulo_encuentro,
+        fecha,
+        id_usuario,
+        nombre_completo,
+        rol
+      FROM v_participantes_encuentro
       WHERE 1=1
     `;
     
     const params: any[] = [];
     
     if (idEncuentro) {
-      sql += ` AND ID_ENCUENTRO = :1`;
+      sql += ` AND id_encuentro = $1`;
       params.push(idEncuentro);
     }
     
     if (idUsuario) {
       const paramIndex = params.length + 1;
-      sql += ` AND ID_USUARIO = :${paramIndex}`;
+      sql += ` AND id_usuario = $${paramIndex}`;
       params.push(idUsuario);
     }
     
-    sql += ` ORDER BY FECHA DESC, TITULO_ENCUENTRO`;
+    sql += ` ORDER BY fecha DESC, titulo_encuentro`;
     
     const result = await this.dataSource.query(sql, params);
     
     return result.map((row: any) => ({
-      idEncuentro: row.ID_ENCUENTRO,
-      tituloEncuentro: row.TITULO_ENCUENTRO,
-      fecha: row.FECHA,
-      idUsuario: row.ID_USUARIO,
-      nombreCompleto: row.NOMBRE_COMPLETO,
-      rol: row.ROL
+      idEncuentro: row.id_encuentro,
+      tituloEncuentro: row.titulo_encuentro,
+      fecha: row.fecha,
+      idUsuario: row.id_usuario,
+      nombreCompleto: row.nombre_completo,
+      rol: row.rol
     }));
   }
 
@@ -186,47 +186,47 @@ export class ParticipantesEncuentroService {
     return this.findAllFromView(undefined, idUsuario);
   }
 
-  // Métodos para consultar la vista VISTAPARTICIPANTESAPORTES
+  // Métodos para consultar la vista vistaparticipantesaportes
   async findParticipantesConAportes(idEncuentro?: number, idUsuario?: number) {
     let sql = `
       SELECT 
-        ID_ENCUENTRO,
-        NOMBRE_ENCUENTRO,
-        ID_USUARIO,
-        NOMBRE_USUARIO,
-        APELLIDO_USUARIO,
-        ROL,
-        TOTAL_APORTES
-      FROM VISTAPARTICIPANTESAPORTES
+        id_encuentro,
+        nombre_encuentro,
+        id_usuario,
+        nombre_usuario,
+        apellido_usuario,
+        rol,
+        total_aportes
+      FROM vistaparticipantesaportes
       WHERE 1=1
     `;
     
     const params: any[] = [];
     
     if (idEncuentro) {
-      sql += ` AND ID_ENCUENTRO = :1`;
+      sql += ` AND id_encuentro = $1`;
       params.push(idEncuentro);
     }
     
     if (idUsuario) {
       const paramIndex = params.length + 1;
-      sql += ` AND ID_USUARIO = :${paramIndex}`;
+      sql += ` AND id_usuario = $${paramIndex}`;
       params.push(idUsuario);
     }
     
-    sql += ` ORDER BY TOTAL_APORTES DESC, NOMBRE_USUARIO`;
+    sql += ` ORDER BY total_aportes DESC, nombre_usuario`;
     
     const result = await this.dataSource.query(sql, params);
     
     return result.map((row: any) => ({
-      idEncuentro: row.ID_ENCUENTRO,
-      nombreEncuentro: row.NOMBRE_ENCUENTRO,
-      idUsuario: row.ID_USUARIO,
-      nombreUsuario: row.NOMBRE_USUARIO,
-      apellidoUsuario: row.APELLIDO_USUARIO,
-      nombreCompleto: `${row.NOMBRE_USUARIO} ${row.APELLIDO_USUARIO}`,
-      rol: row.ROL,
-      totalAportes: row.TOTAL_APORTES || 0
+      idEncuentro: row.id_encuentro,
+      nombreEncuentro: row.nombre_encuentro,
+      idUsuario: row.id_usuario,
+      nombreUsuario: row.nombre_usuario,
+      apellidoUsuario: row.apellido_usuario,
+      nombreCompleto: `${row.nombre_usuario} ${row.apellido_usuario}`,
+      rol: row.rol,
+      totalAportes: parseFloat(row.total_aportes) || 0
     }));
   }
 

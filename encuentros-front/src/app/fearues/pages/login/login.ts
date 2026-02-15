@@ -33,16 +33,7 @@ export class Login {
             console.log('Token guardado:', localStorage.getItem('access_token'));
             console.log('Usuario guardado:', localStorage.getItem('currentUser'));
             
-            Swal.fire({
-              icon: 'success',
-              title: '¡Bienvenido!',
-              text: `Hola ${res.user.nombre}`,
-              timer: 1500,
-              showConfirmButton: false
-            }).then(() => {
-              // Navegar después de cerrar el alert
-              this.router.navigate(['/home']);
-            });
+            this.router.navigate(['/home']);
           },
           error: (err) => {
             console.error('Login error:', err);

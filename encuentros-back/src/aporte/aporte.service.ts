@@ -71,32 +71,51 @@ export class AporteService {
       );
     }
 
-    // Llamar al procedimiento almacenado
-    await this.dataSource.query(
-      `BEGIN agregar_aporte(:p_id_bolsillo, :p_id_encuentro, :p_id_usuario, :p_monto); END;`,
-      [
-        createAporteDto.idBolsillo,
-        createAporteDto.idEncuentro,
-        createAporteDto.idUsuario,
-        createAporteDto.monto,
-      ],
-    );
+    // Usar transacción para insertar aporte y actualizar saldo del bolsillo
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    // Obtener el aporte recién creado
-    const aporte = await this.aporteRepository.findOne({
-      where: {
-        idBolsillo: createAporteDto.idBolsillo,
-        idUsuario: createAporteDto.idUsuario,
-        idEncuentro: createAporteDto.idEncuentro,
-      },
-      relations: ['bolsillo', 'usuario', 'encuentro'],
-      order: { id: 'DESC' },
-    });
+    try {
+      // Insertar el aporte
+      const result = await queryRunner.query(
+        `INSERT INTO aportes (id_bolsillo, id_encuentro, id_usuario, monto, fecha_aporte)
+         VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+         RETURNING id_aporte`,
+        [
+          createAporteDto.idBolsillo,
+          createAporteDto.idEncuentro,
+          createAporteDto.idUsuario,
+          createAporteDto.monto,
+        ],
+      );
 
-    if (!aporte) {
-      throw new NotFoundException('No se pudo crear el aporte');
+      // Actualizar el saldo del bolsillo
+      await queryRunner.query(
+        `UPDATE bolsillos 
+         SET saldo_actual = saldo_actual + $1 
+         WHERE id_bolsillo = $2`,
+        [createAporteDto.monto, createAporteDto.idBolsillo],
+      );
+
+      await queryRunner.commitTransaction();
+
+      // Obtener el aporte recién creado
+      const aporte = await this.aporteRepository.findOne({
+        where: { id: result[0].id_aporte },
+        relations: ['bolsillo', 'usuario', 'encuentro'],
+      });
+
+      if (!aporte) {
+        throw new NotFoundException('No se pudo crear el aporte');
+      }
+
+      return aporte;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-
-    return aporte;
   }
 }

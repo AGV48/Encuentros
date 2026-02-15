@@ -1,36 +1,36 @@
 import { ViewEntity, ViewColumn } from 'typeorm';
 
 @ViewEntity({
-  name: 'V_PARTICIPANTES_ENCUENTRO',
+  name: 'v_participantes_encuentro',
   expression: `
     SELECT
       e.id_encuentro,
       e.titulo AS titulo_encuentro,
       e.fecha,
       u.id_usuario,
-      u.nombre || ' ' || u.apellido AS nombre_completo,
+      CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
       p.rol
-    FROM Participantes_Encuentro p
-    JOIN Usuarios u ON p.id_usuario = u.id_usuario
-    JOIN Encuentros e ON p.id_encuentro = e.id_encuentro
+    FROM participantes_encuentro p
+    JOIN usuarios u ON p.id_usuario = u.id_usuario
+    JOIN encuentros e ON p.id_encuentro = e.id_encuentro
   `
 })
 export class ParticipantesEncuentroView {
-  @ViewColumn({ name: 'ID_ENCUENTRO' })
+  @ViewColumn({ name: 'id_encuentro' })
   idEncuentro: number;
 
-  @ViewColumn({ name: 'TITULO_ENCUENTRO' })
+  @ViewColumn({ name: 'titulo_encuentro' })
   tituloEncuentro: string;
 
-  @ViewColumn({ name: 'FECHA' })
+  @ViewColumn({ name: 'fecha' })
   fecha: Date;
 
-  @ViewColumn({ name: 'ID_USUARIO' })
+  @ViewColumn({ name: 'id_usuario' })
   idUsuario: number;
 
-  @ViewColumn({ name: 'NOMBRE_COMPLETO' })
+  @ViewColumn({ name: 'nombre_completo' })
   nombreCompleto: string;
 
-  @ViewColumn({ name: 'ROL' })
+  @ViewColumn({ name: 'rol' })
   rol: string;
 }

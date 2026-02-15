@@ -1,57 +1,57 @@
 import { ViewEntity, ViewColumn } from 'typeorm';
 
 @ViewEntity({
-  name: 'V_ENCUENTRO_RESUMEN',
+  name: 'v_encuentro_resumen',
   expression: `
     SELECT
       e.id_encuentro,
       e.titulo,
       e.lugar,
       e.fecha,
-      NVL(p.id_presupuesto, NULL) AS id_presupuesto,
-      NVL(p.presupuesto_total, 0) AS presupuesto_total,
-      NVL(b.id_bolsillo, NULL) AS id_bolsillo,
-      NVL(b.nombre, 'SIN_BOLSILLO') AS nombre_bolsillo,
-      NVL(b.saldo_actual, 0) AS saldo_bolsillo,
-      NVL(pe.cant_participantes, 0) AS cant_participantes
-    FROM Encuentros e
-    LEFT JOIN Presupuestos p ON e.id_encuentro = p.id_encuentro
-    LEFT JOIN Bolsillos b ON e.id_encuentro = b.id_encuentro
+      p.id_presupuesto AS id_presupuesto,
+      COALESCE(p.presupuesto_total, 0) AS presupuesto_total,
+      b.id_bolsillo AS id_bolsillo,
+      COALESCE(b.nombre, 'SIN_BOLSILLO') AS nombre_bolsillo,
+      COALESCE(b.saldo_actual, 0) AS saldo_bolsillo,
+      COALESCE(pe.cant_participantes, 0) AS cant_participantes
+    FROM encuentros e
+    LEFT JOIN presupuestos p ON e.id_encuentro = p.id_encuentro
+    LEFT JOIN bolsillos b ON e.id_encuentro = b.id_encuentro
     LEFT JOIN (
       SELECT id_encuentro, COUNT(*) AS cant_participantes
-      FROM Participantes_Encuentro
+      FROM participantes_encuentro
       GROUP BY id_encuentro
     ) pe ON e.id_encuentro = pe.id_encuentro
   `
 })
 export class EncuentroResumen {
-  @ViewColumn({ name: 'ID_ENCUENTRO' })
+  @ViewColumn({ name: 'id_encuentro' })
   idEncuentro: number;
 
-  @ViewColumn({ name: 'TITULO' })
+  @ViewColumn({ name: 'titulo' })
   titulo: string;
 
-  @ViewColumn({ name: 'LUGAR' })
+  @ViewColumn({ name: 'lugar' })
   lugar: string;
 
-  @ViewColumn({ name: 'FECHA' })
+  @ViewColumn({ name: 'fecha' })
   fecha: Date;
 
-  @ViewColumn({ name: 'ID_PRESUPUESTO' })
+  @ViewColumn({ name: 'id_presupuesto' })
   idPresupuesto: number | null;
 
-  @ViewColumn({ name: 'PRESUPUESTO_TOTAL' })
+  @ViewColumn({ name: 'presupuesto_total' })
   presupuestoTotal: number;
 
-  @ViewColumn({ name: 'ID_BOLSILLO' })
+  @ViewColumn({ name: 'id_bolsillo' })
   idBolsillo: number | null;
 
-  @ViewColumn({ name: 'NOMBRE_BOLSILLO' })
+  @ViewColumn({ name: 'nombre_bolsillo' })
   nombreBolsillo: string;
 
-  @ViewColumn({ name: 'SALDO_BOLSILLO' })
+  @ViewColumn({ name: 'saldo_bolsillo' })
   saldoBolsillo: number;
 
-  @ViewColumn({ name: 'CANT_PARTICIPANTES' })
+  @ViewColumn({ name: 'cant_participantes' })
   cantParticipantes: number;
 }
