@@ -52,7 +52,10 @@ export class BolsilloController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bolsilloService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @Body('idUsuario') idUsuario: number,
+  ) {
+    return this.bolsilloService.remove(+id, idUsuario);
   }
 }

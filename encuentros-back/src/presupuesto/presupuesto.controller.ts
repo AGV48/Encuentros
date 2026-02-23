@@ -60,4 +60,12 @@ export class PresupuestoController {
   getItems(@Param('id') id: string) {
     return this.presupuestoService.getItems(+id);
   }
+
+  @Delete('item/:id')
+  removeItem(
+    @Param('id') id: string,
+    @Body('idUsuario') idUsuario: number,
+  ) {
+    return this.presupuestoService.removeItem(+id, idUsuario);
+  }
 }

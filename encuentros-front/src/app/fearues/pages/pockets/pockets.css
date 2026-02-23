@@ -233,10 +233,32 @@ header {
 	gap: 12px;
 }
 
+.pocket header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
 .pocket h3 {
 	margin: 0;
 	color: #1e293b;
 	font-size: 1.1rem;
+}
+
+.btn-delete-pocket {
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	font-size: 1.2rem;
+	padding: 4px 8px;
+	color: #dc2626;
+	transition: all 0.2s;
+	border-radius: 6px;
+}
+
+.btn-delete-pocket:hover {
+	background: #fee2e2;
+	transform: scale(1.1);
 }
 
 .pocket dl {

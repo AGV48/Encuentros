@@ -73,6 +73,14 @@
             <article class="pocket" *ngFor="let pocket of pockets; trackBy: trackPocketById">
               <header>
                 <h3>{{ pocket.nombre }}</h3>
+                <button 
+                  class="btn-delete-pocket" 
+                  (click)="eliminarBolsillo(pocket)"
+                  title="Eliminar bolsillo"
+                  type="button"
+                >
+                  🗑️
+                </button>
               </header>
               <dl>
                 <div>

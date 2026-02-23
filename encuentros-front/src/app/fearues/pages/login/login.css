@@ -81,6 +81,31 @@ input::placeholder {
   color: #A0A5BA;
 }
 
+/* Inputs con error */
+input.input-error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+input.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* Mensajes de error */
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  text-align: left;
+}
+
+.error-message span {
+  display: block;
+}
+
 /* Opciones (recordarme + link) */
 .options {
   display: flex;

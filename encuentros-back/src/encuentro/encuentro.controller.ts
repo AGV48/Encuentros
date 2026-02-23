@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
 import { EncuentroService } from './encuentro.service';
 import { CreateEncuentroDto } from './dto/create-encuentro.dto';
 import { UpdateEncuentroDto } from './dto/update-encuentro.dto';
@@ -32,12 +32,23 @@ export class EncuentroController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEncuentroDto: UpdateEncuentroDto) {
-    return this.encuentroService.update(+id, updateEncuentroDto);
+  update(
+    @Param('id') id: string, 
+    @Body() updateEncuentroDto: UpdateEncuentroDto,
+    @Body('idUsuario') idUsuario: number
+  ) {
+    return this.encuentroService.update(+id, updateEncuentroDto, idUsuario);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.encuentroService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id') id: string, @Body('idUsuario') idUsuario: number) {
+    return this.encuentroService.remove(+id, idUsuario);
+  }
+
+  @Post(':id/salir')
+  @HttpCode(HttpStatus.OK)
+  salirDelEncuentro(@Param('id') id: string, @Body('idUsuario') idUsuario: number) {
+    return this.encuentroService.salirDelEncuentro(+id, idUsuario);
   }
 }

@@ -81,4 +81,23 @@ export class UsersService {
       .select(['u.id', 'u.nombre', 'u.apellido', 'u.email', 'u.imagenPerfil'])
       .getMany();
   }
+
+  async updateResetToken(userId: number, token: string): Promise<void> {
+    await this.usersRepository.update(userId, {
+      resetPasswordToken: token,
+    });
+  }
+
+  async findByResetToken(token: string): Promise<User | null> {
+    return await this.usersRepository.findOne({ 
+      where: { resetPasswordToken: token } 
+    });
+  }
+
+  async resetUserPassword(userId: number, hashedPassword: string): Promise<void> {
+    await this.usersRepository.update(userId, {
+      contrasena: hashedPassword,
+      resetPasswordToken: null,
+    });
+  }
 }

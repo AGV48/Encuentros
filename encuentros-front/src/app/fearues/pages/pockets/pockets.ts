@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { BolsilloService } from '../../../services/bolsillo.service';
 
 interface PocketDetails {
   id?: number;
@@ -25,16 +26,33 @@ export class Pockets implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+  private readonly bolsilloService = inject(BolsilloService);
 
   encuentroId: string | null = null;
   presupuestoId: number | null = null;
   pockets: PocketDetails[] = [];
   submitting = false;
   loading = true;
+  currentUserId: number | null = null;
 
   pocketForm = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(200)]],
   });
+
+  constructor() {
+    // Obtener el usuario actual
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      try {
+        const user = JSON.parse(stored);
+        if (user && user.id) {
+          this.currentUserId = user.id;
+        }
+      } catch (e) {
+        console.warn('Error parseando user desde localStorage', e);
+      }
+    }
+  }
 
   ngOnInit() {
     // Obtener el ID del encuentro de los parámetros de la ruta
@@ -175,5 +193,58 @@ export class Pockets implements OnInit {
 
   trackPocketById(index: number, pocket: PocketDetails): string {
     return pocket.id?.toString() ?? `${index}`;
+  }
+
+  /**
+   * Elimina un bolsillo
+   */
+  eliminarBolsillo(pocket: PocketDetails): void {
+    if (!this.currentUserId || !pocket.id) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo identificar el usuario o bolsillo actual',
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Eliminar bolsillo?',
+      html: `
+        <p>¿Estás seguro de que quieres eliminar el bolsillo "${pocket.nombre}"?</p>
+        <p style="color: #d32f2f; font-size: 0.9em; margin-top: 8px;">No se puede eliminar si tiene aportes asociados.</p>
+      `,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.bolsilloService.eliminarBolsillo(pocket.id!, this.currentUserId!).subscribe({
+          next: (response) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Bolsillo eliminado',
+              text: response.message || 'El bolsillo ha sido eliminado correctamente',
+              timer: 1500,
+              showConfirmButton: false,
+            });
+
+            // Actualizar la lista localmente
+            this.pockets = this.pockets.filter(p => p.id !== pocket.id);
+          },
+          error: (err) => {
+            console.error('Error eliminando bolsillo:', err);
+            const errorMsg = err.error?.message || 'No se pudo eliminar el bolsillo';
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMsg,
+            });
+          },
+        });
+      }
+    });
   }
 }

@@ -456,6 +456,55 @@ nav.bottom {
   color: #475569;
 }
 
+/* =========================
+   BOTÓN DE SALIR
+========================= */
+.btn-exit {
+  background: #f44336 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+}
+
+.btn-exit:hover {
+  background: #d32f2f !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* =========================
+   BOTÓN DE ELIMINAR
+========================= */
+.btn-delete-home {
+  background: white !important;
+  color: #d32f2f !important;
+  border: 2px solid #d32f2f !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  transition: all 0.3s ease !important;
+  white-space: nowrap !important;
+}
+
+.btn-delete-home:hover {
+  background: #d32f2f !important;
+  color: white !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
+}
+
+.btn-exit:active {
+  transform: scale(0.98) !important;
+}
+
 @media (max-width: 480px) {
   .form-header h2 {
     font-size: 1.1rem;
@@ -472,6 +521,16 @@ nav.bottom {
   
   .btn-primary,
   .btn-secondary {
+    width: 100%;
+  }
+  
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .btn-exit {
     width: 100%;
   }
 }

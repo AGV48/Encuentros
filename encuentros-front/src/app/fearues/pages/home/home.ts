@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { EncuentroService } from '../../../services/encuentro.service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,7 @@ import Swal from 'sweetalert2';
 export class Home {
   router = inject(Router);
   http = inject(HttpClient);
+  encuentroService = inject(EncuentroService);
   month: string;
   days: number[] = [];
   emptyDays: number[] = []; // Celdas vacías antes del día 1
@@ -173,10 +175,11 @@ export class Home {
       error: (err) => {
         this.creating = false;
         console.error('Error creando encuentro', err);
+        const errorMsg = err.error?.message || 'Hubo un error al crear el encuentro.';
         Swal.fire({
           icon: 'error',
           title: 'Error creando encuentro',
-          text: 'Hubo un error al crear el encuentro.',
+          text: errorMsg,
         });
       },
     });
@@ -285,5 +288,152 @@ export class Home {
         this.daysWithEncuentros.add(d.getDate());
       }
     }
+  }
+
+  /**
+   * Permite salir de un encuentro
+   * Solo si no eres el creador
+   */
+  salirDeEncuentro(encuentro: any) {
+    if (!this.currentUserId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo identificar el usuario actual',
+      });
+      return;
+    }
+
+    // Verificar si el usuario es el creador
+    if (encuentro.idCreador === this.currentUserId) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No puedes salir',
+        text: 'Eres el creador de este encuentro. Si deseas cancelarlo, debes eliminarlo.',
+      });
+      return;
+    }
+
+    // Confirmar antes de salir
+    Swal.fire({
+      title: '¿Salir del encuentro?',
+      text: `¿Estás seguro de que quieres salir de "${encuentro.titulo}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, salir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.encuentroService.salirDelEncuentro(encuentro.id, this.currentUserId!).subscribe({
+          next: (response) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Has salido del encuentro',
+              text: response.message || 'Has dejado el encuentro correctamente',
+              timer: 2000,
+            });
+            // Recargar la lista de encuentros
+            this.loadEncuentros();
+          },
+          error: (err) => {
+            console.error('Error saliendo del encuentro:', err);
+            const errorMsg = err.error?.message || 'No se pudo salir del encuentro';
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMsg,
+            });
+          },
+        });
+      }
+    });
+  }
+
+  /**
+   * Verifica si el usuario actual es el creador del encuentro
+   */
+  isCreador(encuentro: any): boolean {
+    return encuentro.idCreador === this.currentUserId;
+  }
+
+  /**
+   * Elimina un encuentro permanentemente
+   * Solo el creador puede hacerlo
+   */
+  eliminarEncuentro(encuentro: any) {
+    if (!this.currentUserId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo identificar el usuario actual',
+      });
+      return;
+    }
+
+    // Verificar si el usuario es el creador
+    if (!this.isCreador(encuentro)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No tienes permiso',
+        text: 'Solo el creador puede eliminar este encuentro.',
+      });
+      return;
+    }
+
+    // Confirmar antes de eliminar (doble confirmación por ser una acción destructiva)
+    Swal.fire({
+      title: '⚠️ ¿Eliminar encuentro?',
+      html: `
+        <p>Estás a punto de eliminar permanentemente el encuentro:</p>
+        <p style="font-weight: bold; color: #d33;">"${encuentro.titulo}"</p>
+        <p style="color: #666; font-size: 0.9em;">Esta acción no se puede deshacer. Se eliminarán todos los datos asociados: participantes, presupuestos, aportes, etc.</p>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6366f1',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Segunda confirmación
+        Swal.fire({
+          title: '¿Estás completamente seguro?',
+          text: 'Esta es tu última oportunidad para cancelar',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminar definitivamente',
+          cancelButtonText: 'No, conservar',
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6366f1',
+        }).then((secondResult) => {
+          if (secondResult.isConfirmed) {
+            this.encuentroService.deleteEncuentro(encuentro.id, this.currentUserId!).subscribe({
+              next: (response) => {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Encuentro eliminado',
+                  text: response.message || 'El encuentro ha sido eliminado correctamente',
+                  timer: 2000,
+                });
+                // Recargar la lista de encuentros
+                this.loadEncuentros();
+              },
+              error: (err) => {
+                console.error('Error eliminando el encuentro:', err);
+                const errorMsg = err.error?.message || 'No se pudo eliminar el encuentro';
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: errorMsg,
+                });
+              },
+            });
+          }
+        });
+      }
+    });
   }
 }

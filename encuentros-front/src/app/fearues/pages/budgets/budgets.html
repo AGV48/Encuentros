@@ -102,12 +102,23 @@
             <tr>
               <th>Producto</th>
               <th class="text-right">Monto estimado</th>
+              <th class="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of budget.items">
               <td>{{ item.nombreItem }}</td>
               <td class="text-right">{{ item.montoItem | currency : 'COP' : 'symbol-narrow' : '1.0-2' }}</td>
+              <td class="text-center">
+                <button 
+                  class="btn-delete-item" 
+                  (click)="eliminarItem(item)"
+                  title="Eliminar item"
+                  type="button"
+                >
+                  🗑️
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>

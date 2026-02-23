@@ -114,43 +114,118 @@
   <!-- Modal para detalles del encuentro -->
   <div class="modal-overlay" *ngIf="showEncuentroDetails" (click)="toggleEncuentroDetails()">
     <div class="modal-content modal-encuentro" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <div class="avatar-large">
-          {{ encuentro?.titulo?.substring(0, 2).toUpperCase() || 'EN' }}
+      
+      <!-- Vista de solo lectura -->
+      <div *ngIf="!isEditing">
+        <div class="modal-header">
+          <div class="avatar-large">
+            {{ encuentro?.titulo?.substring(0, 2).toUpperCase() || 'EN' }}
+          </div>
+          <h2>{{ encuentro?.titulo }}</h2>
         </div>
-        <h2>{{ encuentro?.titulo }}</h2>
-      </div>
 
-      <div class="encuentro-details">
-        <div class="detail-item">
-          <div class="detail-icon">📍</div>
-          <div class="detail-content">
-            <span class="detail-label">Lugar</span>
-            <span class="detail-value">{{ encuentro?.lugar }}</span>
+        <div class="encuentro-details">
+          <div class="detail-item">
+            <div class="detail-icon">📍</div>
+            <div class="detail-content">
+              <span class="detail-label">Lugar</span>
+              <span class="detail-value">{{ encuentro?.lugar }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">📅</div>
+            <div class="detail-content">
+              <span class="detail-label">Fecha y hora</span>
+              <span class="detail-value">{{ formatDate(encuentro?.fecha) }}</span>
+            </div>
+          </div>
+
+          <div class="detail-item" *ngIf="encuentro?.descripcion">
+            <div class="detail-icon">📝</div>
+            <div class="detail-content">
+              <span class="detail-label">Descripción</span>
+              <span class="detail-value">{{ encuentro?.descripcion }}</span>
+            </div>
           </div>
         </div>
 
-        <div class="detail-item">
-          <div class="detail-icon">📅</div>
-          <div class="detail-content">
-            <span class="detail-label">Fecha y hora</span>
-            <span class="detail-value">{{ formatDate(encuentro?.fecha) }}</span>
-          </div>
-        </div>
-
-        <div class="detail-item" *ngIf="encuentro?.descripcion">
-          <div class="detail-icon">📝</div>
-          <div class="detail-content">
-            <span class="detail-label">Descripción</span>
-            <span class="detail-value">{{ encuentro?.descripcion }}</span>
-          </div>
+        <div class="modal-actions">
+          <button class="btn-primary" (click)="goToBudgets()">💰 Presupuestos</button>
+          <button class="btn-edit" *ngIf="isCreador()" (click)="activarEdicion()">✏️ Editar</button>
+          <button class="btn-exit" *ngIf="!isCreador()" (click)="salirDelEncuentro()">🚪 Salir</button>
+          <button class="btn-delete" *ngIf="isCreador()" (click)="eliminarEncuentro()">🗑️ Eliminar</button>
+          <button class="btn-cancel" (click)="toggleEncuentroDetails()">Cerrar</button>
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button class="btn-primary" (click)="goToBudgets()">💰 Presupuestos</button>
-        <button class="btn-cancel" (click)="toggleEncuentroDetails()">Cerrar</button>
+      <!-- Vista de edición -->
+      <div *ngIf="isEditing">
+        <div class="modal-header">
+          <div class="avatar-large">
+            ✏️
+          </div>
+          <h2>Editar Encuentro</h2>
+        </div>
+
+        <form class="edit-form">
+          <div class="form-group-edit">
+            <label for="edit-titulo">📌 Título</label>
+            <input 
+              id="edit-titulo"
+              type="text"
+              [(ngModel)]="encuentroEditando.titulo"
+              name="titulo"
+              placeholder="Título del encuentro"
+              class="form-input-edit"
+              required
+            />
+          </div>
+
+          <div class="form-group-edit">
+            <label for="edit-lugar">📍 Lugar</label>
+            <input 
+              id="edit-lugar"
+              type="text"
+              [(ngModel)]="encuentroEditando.lugar"
+              name="lugar"
+              placeholder="Lugar del encuentro"
+              class="form-input-edit"
+              required
+            />
+          </div>
+
+          <div class="form-group-edit">
+            <label for="edit-fecha">📅 Fecha y hora</label>
+            <input 
+              id="edit-fecha"
+              type="datetime-local"
+              [(ngModel)]="encuentroEditando.fecha"
+              name="fecha"
+              class="form-input-edit"
+              required
+            />
+          </div>
+
+          <div class="form-group-edit">
+            <label for="edit-descripcion">📝 Descripción</label>
+            <textarea 
+              id="edit-descripcion"
+              [(ngModel)]="encuentroEditando.descripcion"
+              name="descripcion"
+              placeholder="Descripción del encuentro"
+              class="form-textarea-edit"
+              rows="4"
+            ></textarea>
+          </div>
+        </form>
+
+        <div class="modal-actions">
+          <button class="btn-primary" (click)="guardarEdicion()">💾 Guardar cambios</button>
+          <button class="btn-cancel" (click)="cancelarEdicion()">Cancelar</button>
+        </div>
       </div>
+
     </div>
   </div>
 

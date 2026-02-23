@@ -1,9 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -72,5 +75,54 @@ export class AuthService {
     }
     const { contrasena, ...userWithoutPassword } = user;
     return userWithoutPassword;
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    const user = await this.usersService.findByEmail(forgotPasswordDto.email);
+    
+    if (!user) {
+      // Por seguridad, no revelamos si el usuario existe o no
+      return { 
+        message: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña' 
+      };
+    }
+
+    // Generar token aleatorio
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    // Guardar token en la base de datos
+    await this.usersService.updateResetToken(user.id, hashedToken);
+    
+    return { 
+      message: 'Si el correo está registrado, recibirás un enlace para restablecer tu contraseña',
+      // En desarrollo, devolvemos el token. En producción, esto debería ir por email
+      resetToken: resetToken,
+    };
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    // Hash del token recibido para comparar con el almacenado
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(resetPasswordDto.token)
+      .digest('hex');
+
+    // Buscar usuario con el token
+    const user = await this.usersService.findByResetToken(hashedToken);
+
+    if (!user) {
+      throw new BadRequestException('El token es inválido');
+    }
+
+    // Cifrar la nueva contraseña
+    const hashedPassword = await bcrypt.hash(resetPasswordDto.nuevaContrasena, 10);
+
+    // Actualizar contraseña y limpiar el token
+    await this.usersService.resetUserPassword(user.id, hashedPassword);
+
+    return { 
+      message: 'Contraseña restablecida exitosamente' 
+    };
   }
 }

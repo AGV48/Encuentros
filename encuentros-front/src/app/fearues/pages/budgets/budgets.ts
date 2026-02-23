@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { PresupuestoService } from '../../../services/presupuesto.service';
 
 interface ItemPresupuesto {
   id: number;
@@ -30,6 +31,7 @@ export class Budgets implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly http = inject(HttpClient);
+  private readonly presupuestoService = inject(PresupuestoService);
 
   encuentroId: string | null = null;
   submitting = false;
@@ -37,11 +39,27 @@ export class Budgets implements OnInit {
   budget: BudgetDetails | null = null;
   loading = true;
   addingItem = false;
+  currentUserId: number | null = null;
 
   itemForm = this.fb.group({
     nombreItem: ['', [Validators.required, Validators.maxLength(200)]],
     montoItem: ['', [Validators.required, Validators.min(0.01)]],
   });
+
+  constructor() {
+    // Obtener el usuario actual
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      try {
+        const user = JSON.parse(stored);
+        if (user && user.id) {
+          this.currentUserId = user.id;
+        }
+      } catch (e) {
+        console.warn('Error parseando user desde localStorage', e);
+      }
+    }
+  }
 
   ngOnInit() {
     // Obtener el ID del encuentro de los parámetros de la ruta
@@ -157,5 +175,60 @@ export class Budgets implements OnInit {
 
   goToEncuentro(): void {
     this.router.navigate(['/chat-detail', this.encuentroId]);
+  }
+
+  /**
+   * Elimina un item del presupuesto
+   */
+  eliminarItem(item: ItemPresupuesto): void {
+    if (!this.currentUserId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo identificar el usuario actual',
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Eliminar item?',
+      text: `¿Estás seguro de que quieres eliminar "${item.nombreItem}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.presupuestoService.eliminarItem(item.id, this.currentUserId!).subscribe({
+          next: (response) => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Item eliminado',
+              text: response.message || 'El item ha sido eliminado correctamente',
+              timer: 1500,
+              showConfirmButton: false,
+            });
+
+            // Actualizar la lista localmente
+            if (this.budget && this.budget.items) {
+              // Restar el monto del total
+              this.budget.presupuestoTotal -= item.montoItem;
+              // Eliminar el item de la lista
+              this.budget.items = this.budget.items.filter(i => i.id !== item.id);
+            }
+          },
+          error: (err) => {
+            console.error('Error eliminando item:', err);
+            const errorMsg = err.error?.message || 'No se pudo eliminar el item';
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: errorMsg,
+            });
+          },
+        });
+      }
+    });
   }
 }

@@ -125,16 +125,30 @@ export class ParticipantesEncuentroService {
   }
 
   async removeByEncuentroAndUsuario(idEncuentro: number, idUsuario: number) {
+    // Verificar que el encuentro existe
+    const encuentro = await this.encuentroRepository.findOne({
+      where: { id: idEncuentro }
+    });
+
+    if (!encuentro) {
+      throw new NotFoundException('El encuentro no existe');
+    }
+
+    // Verificar que el usuario no es el creador del encuentro
+    if (encuentro.idCreador === idUsuario) {
+      throw new ForbiddenException('El creador no puede salir de su propio encuentro. Debe eliminarlo si desea cancelarlo.');
+    }
+
     const participante = await this.participanteRepository.findOne({
       where: { idEncuentro, idUsuario },
     });
 
     if (!participante) {
-      throw new NotFoundException('Participante no encontrado');
+      throw new NotFoundException('No eres participante de este encuentro');
     }
 
     await this.participanteRepository.remove(participante);
-    return { message: 'Participante eliminado correctamente' };
+    return { message: 'Has salido del encuentro correctamente' };
   }
 
   // Métodos para consultar la vista v_participantes_encuentro

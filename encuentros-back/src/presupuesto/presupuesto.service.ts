@@ -123,4 +123,62 @@ export class PresupuestoService {
       order: { id: 'ASC' },
     });
   }
+
+  async removeItem(idItem: number, idUsuario: number): Promise<{ success: boolean; message: string }> {
+    // Usar transacción para eliminar item y actualizar presupuesto total
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Obtener el item a eliminar
+      const item = await this.itemPresupuestoRepository.findOne({
+        where: { id: idItem },
+      });
+
+      if (!item) {
+        throw new NotFoundException('Item de presupuesto no encontrado');
+      }
+
+      // Verificar que el usuario es el creador del encuentro
+      const encuentro = await queryRunner.query(
+        'SELECT id_creador FROM encuentros WHERE id_encuentro = $1',
+        [item.idEncuentro],
+      );
+
+      if (!encuentro || encuentro.length === 0) {
+        throw new NotFoundException('Encuentro no encontrado');
+      }
+
+      if (encuentro[0].id_creador !== idUsuario) {
+        throw new NotFoundException('Solo el creador puede eliminar items del presupuesto');
+      }
+
+      // Actualizar el presupuesto total (restar el monto del item)
+      await queryRunner.query(
+        `UPDATE presupuestos 
+         SET presupuesto_total = presupuesto_total - $1 
+         WHERE id_presupuesto = $2`,
+        [item.montoItem, item.idPresupuesto],
+      );
+
+      // Eliminar el item
+      await queryRunner.query(
+        'DELETE FROM items_presupuesto WHERE id_item = $1',
+        [idItem],
+      );
+
+      await queryRunner.commitTransaction();
+
+      return {
+        success: true,
+        message: 'Item de presupuesto eliminado correctamente',
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }

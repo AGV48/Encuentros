@@ -1,10 +1,11 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CreateEncuentroDto } from './dto/create-encuentro.dto';
 import { UpdateEncuentroDto } from './dto/update-encuentro.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Encuentro } from './entities/encuentro.entity';
 import { EncuentroResumen } from './entities/encuentro-resumen.entity';
 import { Repository, DataSource } from 'typeorm';
+import { ParticipanteEncuentro } from '../participantes-encuentro/entities/participante-encuentro.entity';
 
 @Injectable()
 export class EncuentroService {
@@ -13,6 +14,8 @@ export class EncuentroService {
       private encuentrosRepository: Repository<Encuentro>,
       @InjectRepository(EncuentroResumen)
       private encuentroResumenRepository: Repository<EncuentroResumen>,
+      @InjectRepository(ParticipanteEncuentro)
+      private participanteRepository: Repository<ParticipanteEncuentro>,
       private dataSource: DataSource,
     ) {}
   async create(createEncuentroDto: CreateEncuentroDto) {
@@ -34,6 +37,9 @@ export class EncuentroService {
         fecha: fechaParam,
       });
       
+      // Guardar el encuentro para obtener su ID generado
+      await this.encuentrosRepository.save(nuevoEncuentro);
+
       // Insertar el usuario como creador en la tabla de participantes usando SQL directo
       const sql = `
         INSERT INTO participantes_encuentro (id_encuentro, id_usuario, rol)
@@ -176,11 +182,99 @@ export class EncuentroService {
     }));
   }
 
-  update(id: number, updateEncuentroDto: UpdateEncuentroDto) {
-    return `This action updates a #${id} encuentro`;
+  async update(idEncuentro: number, updateEncuentroDto: UpdateEncuentroDto, idUsuario: number) {
+    // Verificar que el encuentro existe
+    const encuentro = await this.encuentrosRepository.findOne({
+      where: { id: idEncuentro }
+    });
+
+    if (!encuentro) {
+      throw new NotFoundException('El encuentro no existe');
+    }
+
+    // Verificar que el usuario es el creador del encuentro
+    if (encuentro.idCreador !== idUsuario) {
+      throw new ForbiddenException('Solo el creador puede editar este encuentro');
+    }
+
+    // Validar la fecha si se está actualizando
+    if (updateEncuentroDto.fecha) {
+      const fechaParam = updateEncuentroDto.fecha instanceof Date 
+        ? updateEncuentroDto.fecha 
+        : new Date(updateEncuentroDto.fecha);
+      
+      // Validación: la fecha no puede ser pasada
+      if (fechaParam.getTime() < Date.now()) {
+        throw new BadRequestException('La fecha del encuentro no puede ser anterior a la fecha actual');
+      }
+      updateEncuentroDto.fecha = fechaParam;
+    }
+
+    // Actualizar los campos proporcionados
+    Object.assign(encuentro, updateEncuentroDto);
+    await this.encuentrosRepository.save(encuentro);
+    
+    return { 
+      success: true,
+      message: 'El encuentro ha sido actualizado correctamente',
+      encuentro
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} encuentro`;
+  async remove(idEncuentro: number, idUsuario: number) {
+    // Verificar que el encuentro existe
+    const encuentro = await this.encuentrosRepository.findOne({
+      where: { id: idEncuentro }
+    });
+
+    if (!encuentro) {
+      throw new NotFoundException('El encuentro no existe');
+    }
+
+    // Verificar que el usuario es el creador del encuentro
+    if (encuentro.idCreador !== idUsuario) {
+      throw new ForbiddenException('Solo el creador puede eliminar este encuentro');
+    }
+
+    // Eliminar el encuentro (las eliminaciones en cascada se manejan en la BD)
+    await this.encuentrosRepository.remove(encuentro);
+    
+    return { 
+      success: true,
+      message: 'El encuentro ha sido eliminado correctamente' 
+    };
+  }
+
+  async salirDelEncuentro(idEncuentro: number, idUsuario: number) {
+    // Verificar que el encuentro existe
+    const encuentro = await this.encuentrosRepository.findOne({
+      where: { id: idEncuentro }
+    });
+
+    if (!encuentro) {
+      throw new NotFoundException('El encuentro no existe');
+    }
+
+    // Verificar que el usuario no es el creador del encuentro
+    if (encuentro.idCreador === idUsuario) {
+      throw new ForbiddenException('El creador no puede salir de su propio encuentro. Debe eliminarlo si desea cancelarlo.');
+    }
+
+    // Verificar que el usuario es participante
+    const participante = await this.participanteRepository.findOne({
+      where: { idEncuentro, idUsuario },
+    });
+
+    if (!participante) {
+      throw new NotFoundException('No eres participante de este encuentro');
+    }
+
+    // Eliminar la participación
+    await this.participanteRepository.remove(participante);
+    
+    return { 
+      success: true,
+      message: 'Has salido del encuentro correctamente' 
+    };
   }
 }

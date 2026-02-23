@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { Login } from './fearues/pages/login/login';
 import { SignUp } from './fearues/pages/sign-up/sign-up';
+import { ForgotPassword } from './fearues/pages/forgot-password/forgot-password';
+import { ResetPassword } from './fearues/pages/reset-password/reset-password';
 import { Home } from './fearues/pages/home/home';
 import { Chats } from './fearues/pages/chats/chats';
 import { ChatDetail } from './fearues/pages/chat-detail/chat-detail';
@@ -22,6 +24,16 @@ export const routes: Routes = [
   {
     path: 'sign-up',
     component: SignUp,
+    pathMatch: 'full',
+  },
+  {
+    path: 'forgot-password',
+    component: ForgotPassword,
+    pathMatch: 'full',
+  },
+  {
+    path: 'reset-password',
+    component: ResetPassword,
     pathMatch: 'full',
   },
   {

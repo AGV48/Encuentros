@@ -22,4 +22,7 @@ export class User {
 
   @Column({ name: 'fecha_registro', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   fechaRegistro: Date;
+
+  @Column({ name: 'reset_password_token', type: 'varchar', length: 255, nullable: true })
+  resetPasswordToken: string | null;
 }

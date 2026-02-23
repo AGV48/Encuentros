@@ -1,15 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { CreateBolsilloDto } from './dto/create-bolsillo.dto';
 import { UpdateBolsilloDto } from './dto/update-bolsillo.dto';
 import { Bolsillo } from './entities/bolsillo.entity';
+import { InjectDataSource } from '@nestjs/typeorm';
 
 @Injectable()
 export class BolsilloService {
   constructor(
     @InjectRepository(Bolsillo)
     private readonly bolsilloRepository: Repository<Bolsillo>,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createBolsilloDto: CreateBolsilloDto): Promise<Bolsillo> {
@@ -59,8 +62,40 @@ export class BolsilloService {
     return await this.bolsilloRepository.save(bolsillo);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, idUsuario: number): Promise<{ success: boolean; message: string }> {
     const bolsillo = await this.findOne(id);
+
+    // Verificar que el usuario es el creador del encuentro
+    const encuentro = await this.dataSource.query(
+      'SELECT id_creador FROM encuentros WHERE id_encuentro = $1',
+      [bolsillo.idEncuentro],
+    );
+
+    if (!encuentro || encuentro.length === 0) {
+      throw new NotFoundException('Encuentro no encontrado');
+    }
+
+    if (encuentro[0].id_creador !== idUsuario) {
+      throw new ForbiddenException('Solo el creador puede eliminar bolsillos');
+    }
+
+    // Verificar si el bolsillo tiene aportes asociados
+    const aportes = await this.dataSource.query(
+      'SELECT COUNT(*) as count FROM aportes WHERE id_bolsillo = $1',
+      [id],
+    );
+
+    if (aportes[0].count > 0) {
+      throw new ForbiddenException(
+        'No se puede eliminar el bolsillo porque tiene aportes asociados. Elimina primero los aportes.',
+      );
+    }
+
     await this.bolsilloRepository.remove(bolsillo);
+
+    return {
+      success: true,
+      message: 'Bolsillo eliminado correctamente',
+    };
   }
 }

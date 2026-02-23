@@ -103,7 +103,7 @@
     <section class="list" aria-label="Próximos encuentros">
       <div *ngIf="upcoming && upcoming.length === 0" class="muted">No hay próximos encuentros</div>
       <div class="card" *ngFor="let e of upcoming">
-        <div>
+        <div style="flex: 1;">
           <strong>{{ e.titulo }}</strong><br>
           <span class="muted">{{ e.displayWhen }}</span>
           <div class="small muted">{{ e.descripcion }}</div>
@@ -116,7 +116,30 @@
             <span class="badge" *ngIf="e.presupuestoTotal !== undefined && e.presupuestoTotal > 0" style="background: #2196F3; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
               💰 ${{ e.presupuestoTotal | number:'1.0-0' }}
             </span>
+            <span class="badge" *ngIf="isCreador(e)" style="background: #FF9800; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+              ⭐ Creador
+            </span>
           </div>
+        </div>
+        <!-- Botón de salir (solo si NO es el creador) -->
+        <div *ngIf="!isCreador(e)" style="margin-left: 8px;">
+          <button 
+            class="btn-exit" 
+            (click)="salirDeEncuentro(e)"
+            title="Salir del encuentro"
+            style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s;">
+            🚪 Salir
+          </button>
+        </div>
+        <!-- Botón de eliminar (solo si ES el creador) -->
+        <div *ngIf="isCreador(e)" style="margin-left: 8px;">
+          <button 
+            class="btn-delete-home" 
+            (click)="eliminarEncuentro(e)"
+            title="Eliminar encuentro"
+            style="background: white; color: #d32f2f; border: 2px solid #d32f2f; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.3s;">
+            🗑️ Eliminar
+          </button>
         </div>
       </div>
     </section>
