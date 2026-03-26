@@ -1,0 +1,97 @@
+
+> encuentros-front@0.0.0 test:cov
+> ng test --no-watch --code-coverage
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[33mÔØ»[39m Building...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[32mÔ£ö[39m Building...
+[1mInitial chunk files[22m       [2m | [22m[1mNames[22m                  [2m | [22m [1mRaw size[22m
+[32mchunk-LMB4JLN5.js[39m         [2m | [22m[2m-[22m                      [2m | [22m  [36m2.26 MB[39m[2m | [22m
+[32mpolyfills.js[39m              [2m | [22m[2mpolyfills[22m              [2m | [22m  [36m1.03 MB[39m[2m | [22m
+[32mchunk-F4GV2MAY.js[39m         [2m | [22m[2m-[22m                      [2m | [22m[36m252.70 kB[39m[2m | [22m
+[32mchunk-WXPLE5HK.js[39m         [2m | [22m[2m-[22m                      [2m | [22m[36m242.32 kB[39m[2m | [22m
+[32mchunk-6VRAWEYG.js[39m         [2m | [22m[2m-[22m                      [2m | [22m[36m239.68 kB[39m[2m | [22m
+[32mspec-chat-detail.spec.js[39m  [2m | [22m[2mspec-chat-detail.spec[22m  [2m | [22m[36m176.18 kB[39m[2m | [22m
+[32mchunk-ICONLAJO.js[39m         [2m | [22m[2m-[22m                      [2m | [22m[36m150.93 kB[39m[2m | [22m
+[32mspec-home.spec.js[39m         [2m | [22m[2mspec-home.spec[22m         [2m | [22m[36m143.16 kB[39m[2m | [22m
+[32mchunk-MIQ2Y7OB.js[39m         [2m | [22m[2m-[22m                      [2m | [22m [36m96.00 kB[39m[2m | [22m
+[32mspec-account.spec.js[39m      [2m | [22m[2mspec-account.spec[22m      [2m | [22m [36m88.44 kB[39m[2m | [22m
+[32mjasmine-cleanup-1.js[39m      [2m | [22m[2mjasmine-cleanup-1[22m      [2m | [22m [36m67.20 kB[39m[2m | [22m
+[32mspec-notifications.spec.js[39m[2m | [22m[2mspec-notifications.spec[22m[2m | [22m [36m51.39 kB[39m[2m | [22m
+[32mspec-chats.spec.js[39m        [2m | [22m[2mspec-chats.spec[22m        [2m | [22m [36m42.49 kB[39m[2m | [22m
+[32mspec-sign-up.spec.js[39m      [2m | [22m[2mspec-sign-up.spec[22m      [2m | [22m [36m27.21 kB[39m[2m | [22m
+[32mchunk-3LRYMX3K.js[39m         [2m | [22m[2m-[22m                      [2m | [22m [36m25.33 kB[39m[2m | [22m
+[32mspec-login.spec.js[39m        [2m | [22m[2mspec-login.spec[22m        [2m | [22m [36m22.26 kB[39m[2m | [22m
+[32mtest_main.js[39m              [2m | [22m[2mtest_main[22m              [2m | [22m [36m21.81 kB[39m[2m | [22m
+[32mchunk-INW7JAJY.js[39m         [2m | [22m[2m-[22m                      [2m | [22m [36m12.23 kB[39m[2m | [22m
+[32mchunk-PJVAFXHK.js[39m         [2m | [22m[2m-[22m                      [2m | [22m [36m12.05 kB[39m[2m | [22m
+[32mspec-app.spec.js[39m          [2m | [22m[2mspec-app.spec[22m          [2m | [22m  [36m4.40 kB[39m[2m | [22m
+[32mspec-auth.service.spec.js[39m [2m | [22m[2mspec-auth.service.spec[22m [2m | [22m  [36m3.13 kB[39m[2m | [22m
+[32mchunk-HBW54YOI.js[39m         [2m | [22m[2m-[22m                      [2m | [22m  [36m3.02 kB[39m[2m | [22m
+[32mjasmine-cleanup-0.js[39m      [2m | [22m[2mjasmine-cleanup-0[22m      [2m | [22m[36m519 bytes[39m[2m | [22m
+[32mstyles.css[39m                [2m | [22m[2mstyles[22m                 [2m | [22m[36m158 bytes[39m[2m | [22m
+
+[1m [22m                         [2m | [22m[1mInitial total[22m          [2m | [22m  [1m4.97 MB[22m
+
+Application bundle generation complete. [14.142 seconds] - 2026-03-26T01:56:51.170Z
+
+[32m25 03 2026 20:56:51.662:INFO [karma-server]: [39mKarma v6.4.4 server started at http://localhost:9876/
+[32m25 03 2026 20:56:51.664:INFO [launcher]: [39mLaunching browsers Chrome with concurrency unlimited
+[32m25 03 2026 20:56:51.687:INFO [launcher]: [39mStarting browser Chrome
+[32m25 03 2026 20:56:54.547:INFO [Chrome 146.0.0.0 (Windows 10)]: [39mConnected on socket I9ccS4T6O7qJqbHaAAAB with id 24911029
+Chrome 146.0.0.0 (Windows 10): Executed 0 of 16[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 1 of 16[32m SUCCESS[39m (0 secs / 0.022 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 2 of 16[32m SUCCESS[39m (0 secs / 0.029 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 3 of 16[32m SUCCESS[39m (0 secs / 0.041 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 4 of 16[32m SUCCESS[39m (0 secs / 0.044 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 5 of 16[32m SUCCESS[39m (0 secs / 0.049 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 6 of 16[32m SUCCESS[39m (0 secs / 0.053 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 7 of 16[32m SUCCESS[39m (0 secs / 0.057 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 8 of 16[32m SUCCESS[39m (0 secs / 0.081 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 9 of 16[32m SUCCESS[39m (0 secs / 0.086 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 10 of 16[32m SUCCESS[39m (0 secs / 0.244 secs)
+[1A[2KLOG: [36m'User from localStorage:', '{"id":1,"nombre":"Juan","email":"juan@test.com","fechaRegistro":"2026-03-26T01:56:56.720Z"}'[39m
+Chrome 146.0.0.0 (Windows 10): Executed 10 of 16[32m SUCCESS[39m (0 secs / 0.244 secs)
+LOG: 'User from localStorage:', '{"id":1,"nombre":"Juan","email":"juan@test.com","fechaRegistro":"2026-03-26T01:56:56.720Z"}'
+[1A[2KLOG: [36m'Parsed user:', Object{id: 1, nombre: 'Juan', email: 'juan@test.com', fechaRegistro: '2026-03-26T01:56:56.720Z'}[39m
+Chrome 146.0.0.0 (Windows 10): Executed 10 of 16[32m SUCCESS[39m (0 secs / 0.244 secs)
+LOG: 'Parsed user:', Object{id: 1, nombre: 'Juan', email: 'juan@test.com', fechaRegistro: '2026-03-26T01:56:56.720Z'}
+[1A[2KLOG: [36m'User ID set:', 1[39m
+Chrome 146.0.0.0 (Windows 10): Executed 10 of 16[32m SUCCESS[39m (0 secs / 0.244 secs)
+LOG: 'User ID set:', 1
+[1A[2KLOG: [36m'Loading encuentros for userId:', 1[39m
+Chrome 146.0.0.0 (Windows 10): Executed 10 of 16[32m SUCCESS[39m (0 secs / 0.244 secs)
+LOG: 'Loading encuentros for userId:', 1
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 11 of 16[32m SUCCESS[39m (0 secs / 0.368 secs)
+[1A[2K[31mChrome 146.0.0.0 (Windows 10) Chats should create FAILED[39m
+	╔ÁNotFound: NG0201: No provider found for `_HttpClient`. Source: Standalone[Chats2]. Find more at https://v20.angular.dev/errors/NG0201
+	error properties: Object({ code: -201, ngErrorCode: -201, ngErrorMessage: 'No provider found for `_HttpClient`.', ngTokenPath: [ '_HttpClient' ] })
+	╔ÁNotFound: NG0201: No provider found for `_HttpClient`. Source: Standalone[Chats2]. Find more at https://v20.angular.dev/errors/NG0201
+	    at createRuntimeError (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/render3/errors_di.ts:130:17)
+	    at NullInjector.get (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/di/null_injector.ts:20:21)
+	    at R3Injector.get (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/di/r3_injector.ts:381:27)
+	    at R3Injector.get (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/di/r3_injector.ts:381:27)
+	    at R3Injector.get (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/di/r3_injector.ts:381:27)
+	    at ChainedInjector.get (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/render3/chained_injector.ts:43:32)
+	    at lookupTokenUsingModuleInjector (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/render3/di.ts:426:64)
+	    at getOrCreateInjectable (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/render3/di.ts:493:10)
+	    at ╔Á╔ÁdirectiveInject (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/render3/instructions/di.ts:58:17)
+	    at ╔Á╔Áinject (http://localhost:9876/k8-fastbuild-ST-199a4f3c4e20/bin/packages/core/src/di/injector_compatibility.ts:144:40)
+Chrome 146.0.0.0 (Windows 10): Executed 12 of 16[31m (1 FAILED)[39m (0 secs / 0.885 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 13 of 16[31m (1 FAILED)[39m (0 secs / 0.95 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 14 of 16[31m (1 FAILED)[39m (0 secs / 1.109 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 15 of 16[31m (1 FAILED)[39m (0 secs / 1.172 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 16 of 16[31m (1 FAILED)[39m (0 secs / 1.218 secs)
+[1A[2KChrome 146.0.0.0 (Windows 10): Executed 16 of 16[31m (1 FAILED)[39m (1.536 secs / 1.218 secs)
+[31mTOTAL: 1 FAILED, 15 SUCCESS[39m
+
+=============================== Coverage summary ===============================
+Statements   : 30.24% ( 173/572 )
+Branches     : 12.79% ( 38/297 )
+Functions    : 20.71% ( 29/140 )
+Lines        : 30.01% ( 163/543 )
+================================================================================
