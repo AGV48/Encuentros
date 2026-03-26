@@ -1,0 +1,6 @@
+projectKey=encuentros-front
+serverUrl=http://localhost:9000
+serverVersion=26.3.0.120487
+dashboardUrl=http://localhost:9000/dashboard?id=encuentros-front
+ceTaskId=265786aa-8627-4fbc-9bb1-d0841f8652a6
+ceTaskUrl=http://localhost:9000/api/ce/task?id=265786aa-8627-4fbc-9bb1-d0841f8652a6
