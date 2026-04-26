@@ -5,11 +5,9 @@ FROM node:20-alpine AS build
 # Directorio de trabajo
 WORKDIR /app
 # Copiamos los archivos de configuración de dependencias
-COPY package*.json ./ package-lock.json ./
+COPY package*.json ./
 
 # Instalamos dependencias
-RUN npm install
-
 RUN npm ci --silent
 # Copiamos el resto  de la aplicación
 COPY . .
@@ -23,7 +21,7 @@ RUN npm run build --
 FROM nginx:stable-alpine
 
 # Copia los artefactos del build al directorio de nginx
-COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/dist/encuentros-front/browser /usr/share/nginx/html
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Exponemos el puerto 80

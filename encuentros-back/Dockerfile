@@ -5,12 +5,10 @@ FROM node:20-alpine AS build
 # Definir el directorio de trabajo
 WORKDIR /app
 
-# copia package-lock si existe para npm ci reproducible
-COPY package*.json ./ ./ package-lock.json ./
+# Copiamos metadatos de dependencias para aprovechar cache de capas
+COPY package*.json ./
 
-# Instalamos dependencias
-RUN npm install
-
+# Instalamos dependencias para compilar
 RUN npm ci --silent
 # Copiamos el resto de la aplicación
 COPY . .
@@ -24,11 +22,11 @@ FROM node:20-alpine
 # Definir el directorio de trabajo
 WORKDIR /app
 
-# copia package-lock 
-COPY package*.json ./ ./ package-lock.json ./
+# Copiamos metadatos de dependencias
+COPY package*.json ./
 
 # Instalamos solo las dependencias de producción
-RUN npm ci --only=production --silent
+RUN npm ci --omit=dev --silent
 
 # Copia los archivos generados en el build
 COPY --from=build /app/dist ./dist
