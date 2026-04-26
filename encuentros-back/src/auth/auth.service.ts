@@ -50,8 +50,8 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    // Verificar la contraseña
-    const isPasswordValid = await bcrypt.compare(loginDto.contrasena, user.contrasena);
+    // Verificar la contraseña y migrar contraseñas legacy en texto plano.
+    const isPasswordValid = await this.verifyAndUpgradePassword(loginDto.contrasena, user);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -66,6 +66,22 @@ export class AuthService {
       user: userWithoutPassword,
       access_token: token,
     };
+  }
+
+  private async verifyAndUpgradePassword(plainPassword: string, user: { id: number; contrasena: string }) {
+    try {
+      return await bcrypt.compare(plainPassword, user.contrasena);
+    } catch {
+      const isLegacyPlainTextMatch = plainPassword === user.contrasena;
+      if (!isLegacyPlainTextMatch) {
+        return false;
+      }
+
+      const hashedPassword = await bcrypt.hash(plainPassword, 10);
+      await this.usersService.resetUserPassword(user.id, hashedPassword);
+      user.contrasena = hashedPassword;
+      return true;
+    }
   }
 
   async validateUser(userId: number) {
