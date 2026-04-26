@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "installCommand": "npm ci --prefix Encuentros-Front",
+  "buildCommand": "npm run build --prefix Encuentros-Front",
+  "outputDirectory": "Encuentros-Front/dist/encuentros-front/browser",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
