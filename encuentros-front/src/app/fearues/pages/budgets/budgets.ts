@@ -82,7 +82,7 @@ export class Budgets implements OnInit {
 
     this.loading = true;
     this.http
-      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .get<any>(`/presupuesto?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (presupuesto) => {
           this.loading = false;
@@ -131,7 +131,7 @@ export class Budgets implements OnInit {
       montoItem: Number(montoItem),
     };
 
-    this.http.post<any>('http://localhost:3000/presupuesto/item', payload).subscribe({
+    this.http.post<any>('/presupuesto/item', payload).subscribe({
       next: (item) => {
         this.addingItem = false;
         

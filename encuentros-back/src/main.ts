@@ -24,6 +24,94 @@ function configureDnsForNode() {
   if (isOnlyLocalResolver) {
     dns.setServers(['1.1.1.1', '8.8.8.8']);
   }
+
+  const originalLookup = dns.lookup.bind(dns);
+  dns.lookup = ((hostname: string, optionsOrCallback: unknown, maybeCallback?: unknown) => {
+    const hasOptions = typeof optionsOrCallback !== 'function';
+    const options = (hasOptions ? optionsOrCallback : undefined) as
+      | dns.LookupOneOptions
+      | dns.LookupAllOptions
+      | number
+      | undefined;
+    const callback = (hasOptions ? maybeCallback : optionsOrCallback) as
+      | ((err: NodeJS.ErrnoException | null, address: string, family: number) => void)
+      | ((
+          err: NodeJS.ErrnoException | null,
+          addresses: dns.LookupAddress[],
+        ) => void)
+      | undefined;
+
+    if (!callback) {
+      return originalLookup(hostname, options as dns.LookupOptions);
+    }
+
+    const wantsAll = typeof options === 'object' && options !== null && 'all' in options && !!options.all;
+
+    return originalLookup(hostname, options as dns.LookupOptions, (err, address, family) => {
+      if (!err) {
+        if (wantsAll) {
+          (callback as (err: NodeJS.ErrnoException | null, addresses: dns.LookupAddress[]) => void)(
+            null,
+            address as dns.LookupAddress[],
+          );
+        } else {
+          (callback as (err: NodeJS.ErrnoException | null, address: string, family: number) => void)(
+            null,
+            address as string,
+            family as number,
+          );
+        }
+        return;
+      }
+
+      if (err.code !== 'ENOTFOUND') {
+        if (wantsAll) {
+          (callback as (err: NodeJS.ErrnoException | null, addresses: dns.LookupAddress[]) => void)(
+            err,
+            [] as dns.LookupAddress[],
+          );
+        } else {
+          (callback as (err: NodeJS.ErrnoException | null, address: string, family: number) => void)(
+            err,
+            '' as string,
+            0,
+          );
+        }
+        return;
+      }
+
+      dns.resolve4(hostname, (resolveErr, addresses) => {
+        if (resolveErr || !addresses || addresses.length === 0) {
+          if (wantsAll) {
+            (callback as (err: NodeJS.ErrnoException | null, addresses: dns.LookupAddress[]) => void)(
+              err,
+              [] as dns.LookupAddress[],
+            );
+          } else {
+            (callback as (err: NodeJS.ErrnoException | null, address: string, family: number) => void)(
+              err,
+              '' as string,
+              0,
+            );
+          }
+          return;
+        }
+
+        if (wantsAll) {
+          (callback as (err: NodeJS.ErrnoException | null, addresses: dns.LookupAddress[]) => void)(
+            null,
+            addresses.map((resolvedAddress) => ({ address: resolvedAddress, family: 4 })),
+          );
+        } else {
+          (callback as (err: NodeJS.ErrnoException | null, address: string, family: number) => void)(
+            null,
+            addresses[0],
+            4,
+          );
+        }
+      });
+    });
+  }) as typeof dns.lookup;
 }
 
 async function bootstrap() {

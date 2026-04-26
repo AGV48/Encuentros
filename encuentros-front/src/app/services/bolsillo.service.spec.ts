@@ -6,7 +6,7 @@ import { BolsilloService, Bolsillo, CreateBolsilloDto } from './bolsillo.service
 describe('BolsilloService', () => {
   let service: BolsilloService;
   let httpMock: HttpTestingController;
-  const API_URL = 'http://localhost:3000/bolsillo';
+  const API_URL = '/bolsillo';
 
   const mockBolsillos: Bolsillo[] = [
     { id: 1, idPresupuesto: 10, idEncuentro: 20, nombre: 'Bolsillo 1', saldoActual: 100 },

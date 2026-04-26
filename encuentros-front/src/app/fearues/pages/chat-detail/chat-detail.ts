@@ -90,7 +90,7 @@ export class ChatDetail implements OnInit {
     if (!this.encuentroId) return;
 
     // Cargar el encuentro desde el backend
-    this.http.get<any>(`http://localhost:3000/encuentro/${this.encuentroId}`).subscribe({
+    this.http.get<any>(`/encuentro/${this.encuentroId}`).subscribe({
       next: (encuentro) => {
         if (encuentro) {
           this.encuentro = encuentro;
@@ -111,7 +111,7 @@ export class ChatDetail implements OnInit {
 
     // Cargar participantes básicos (para compatibilidad)
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro?encuentro=${this.encuentroId}`)
+      .get<any[]>(`/participantes-encuentro?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (participantes) => {
           this.participantes = participantes;
@@ -123,7 +123,7 @@ export class ChatDetail implements OnInit {
     
     // Cargar participantes desde la vista con información detallada
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro/vista/detalle?encuentro=${this.encuentroId}`)
+      .get<any[]>(`/participantes-encuentro/vista/detalle?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (participantes) => {
           this.participantesDetalle = participantes;
@@ -136,7 +136,7 @@ export class ChatDetail implements OnInit {
     
     // Cargar participantes con aportes desde la vista VISTAPARTICIPANTESAPORTES
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro/aportes/resumen?encuentro=${this.encuentroId}`)
+      .get<any[]>(`/participantes-encuentro/aportes/resumen?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (aportes) => {
           this.participantesAportes = aportes;
@@ -177,7 +177,7 @@ export class ChatDetail implements OnInit {
     this.loadingFriends = true;
     this.http
       .get<any>(
-        `http://localhost:3000/users/friends/${this.currentUserId}?userId=${this.currentUserId}`
+        `/users/friends/${this.currentUserId}?userId=${this.currentUserId}`
       )
       .subscribe({
         next: (response) => {
@@ -224,7 +224,7 @@ export class ChatDetail implements OnInit {
       rol: 'participante',
     };
 
-    this.http.post('http://localhost:3000/participantes-encuentro', payload).subscribe({
+    this.http.post('/participantes-encuentro', payload).subscribe({
       next: () => {
         Swal.fire({
           icon: 'success',

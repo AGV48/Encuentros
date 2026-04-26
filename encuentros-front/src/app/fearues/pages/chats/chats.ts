@@ -50,7 +50,7 @@ export class Chats implements OnInit {
     }
 
     // Cargar encuentros desde el backend
-    this.http.get<any[]>(`http://localhost:3000/encuentro?creador=${this.currentUserId}`).subscribe({
+    this.http.get<any[]>(`/encuentro?creador=${this.currentUserId}`).subscribe({
       next: (encuentros) => {
         this.chats = encuentros
           .filter((encuentro: any) => encuentro && encuentro.titulo) // Filtrar encuentros vacíos o sin título

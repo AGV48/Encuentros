@@ -22,7 +22,7 @@ export interface CreateBolsilloDto {
 })
 export class BolsilloService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/bolsillo';
+  private readonly API_URL = '/bolsillo';
 
   /**
    * Obtiene todos los bolsillos

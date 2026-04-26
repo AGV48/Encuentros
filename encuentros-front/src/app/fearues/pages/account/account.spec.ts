@@ -123,7 +123,7 @@ describe('Account Component', () => {
       component.profileForm.setValue({ nombre: 'Johnny', apellido: 'Doe' });
       component.saveProfile();
 
-      const req = httpMock.expectOne('http://localhost:3000/users/update');
+      const req = httpMock.expectOne('/users/update');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ email: 'john@test.com', updateData: { nombre: 'Johnny', apellido: 'Doe' } });
 
@@ -136,7 +136,7 @@ describe('Account Component', () => {
 
     it('should show error modal if success is false', () => {
       component.saveProfile();
-      const req = httpMock.expectOne('http://localhost:3000/users/update');
+      const req = httpMock.expectOne('/users/update');
       req.flush({ success: false, message: 'Invalid data' });
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ text: 'Invalid data' }));
     });
@@ -144,7 +144,7 @@ describe('Account Component', () => {
     it('should handle HTTP error gracefully', () => {
       spyOn(console, 'error');
       component.saveProfile();
-      const req = httpMock.expectOne('http://localhost:3000/users/update');
+      const req = httpMock.expectOne('/users/update');
       req.flush('Error', { status: 500, statusText: 'Server Error' });
       expect(console.error).toHaveBeenCalled();
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ text: 'Error al actualizar los datos' }));
@@ -186,7 +186,7 @@ describe('Account Component', () => {
       component.passwordForm.setValue({ actual: 'oldpwd', nueva: 'newpwd123', confirm: 'newpwd123' });
       component.updatePassword();
 
-      const req = httpMock.expectOne('http://localhost:3000/users/updatePassword');
+      const req = httpMock.expectOne('/users/updatePassword');
       expect(req.request.method).toBe('POST');
       req.flush({ success: true, user: { nombre: 'Jane' } }); // Simulate backend returning stripped user
       
@@ -198,7 +198,7 @@ describe('Account Component', () => {
     it('should show error if success is false on updatePassword', () => {
       component.passwordForm.setValue({ actual: 'old', nueva: 'newpwd123', confirm: 'newpwd123' });
       component.updatePassword();
-      const req = httpMock.expectOne('http://localhost:3000/users/updatePassword');
+      const req = httpMock.expectOne('/users/updatePassword');
       req.flush({ success: false, message: 'Wrong current password' });
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ text: 'Wrong current password' }));
     });
@@ -207,7 +207,7 @@ describe('Account Component', () => {
       spyOn(console, 'error');
       component.passwordForm.setValue({ actual: 'old', nueva: 'newpwd123', confirm: 'newpwd123' });
       component.updatePassword();
-      const req = httpMock.expectOne('http://localhost:3000/users/updatePassword');
+      const req = httpMock.expectOne('/users/updatePassword');
       req.flush({ message: 'HTTP 500' }, { status: 500, statusText: 'Error' });
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ text: 'HTTP 500' }));
     });
@@ -247,14 +247,14 @@ describe('Account Component', () => {
       (Swal.fire as jasmine.Spy).and.returnValue(Promise.resolve({ isConfirmed: false } as any));
       component.deleteAccount();
       flush();
-      httpMock.expectNone('http://localhost:3000/users/delete');
+      httpMock.expectNone('/users/delete');
     }));
 
     it('should delete account, clean localStorage, and navigate to home on success', fakeAsync(() => {
       component.deleteAccount();
       flush();
 
-      const req = httpMock.expectOne('http://localhost:3000/users/delete');
+      const req = httpMock.expectOne('/users/delete');
       req.flush({ success: true });
 
       expect(mockLocalStorage['user']).toBeUndefined();
@@ -266,7 +266,7 @@ describe('Account Component', () => {
       component.deleteAccount();
       flush();
       
-      const req = httpMock.expectOne('http://localhost:3000/users/delete');
+      const req = httpMock.expectOne('/users/delete');
       req.flush({ success: false, message: 'No se puede eliminar' });
       
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ text: 'No se puede eliminar' }));
@@ -277,7 +277,7 @@ describe('Account Component', () => {
       component.deleteAccount();
       flush();
       
-      const req = httpMock.expectOne('http://localhost:3000/users/delete');
+      const req = httpMock.expectOne('/users/delete');
       req.flush('Server Error', { status: 500, statusText: 'Error' });
       
       expect(console.error).toHaveBeenCalled();

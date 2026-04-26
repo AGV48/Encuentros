@@ -6,7 +6,7 @@ import { EncuentroService, Encuentro, CreateEncuentroDto } from './encuentro.ser
 describe('EncuentroService', () => {
   let service: EncuentroService;
   let httpMock: HttpTestingController;
-  const API_URL = 'http://localhost:3000/encuentro';
+  const API_URL = '/encuentro';
 
   const mockEncuentros: Encuentro[] = [
     { id: 1, titulo: 'Meeting 1', lugar: 'Room A', fecha: new Date() },

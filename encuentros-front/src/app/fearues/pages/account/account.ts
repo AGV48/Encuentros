@@ -78,7 +78,7 @@ export class Account {
       return;
     }
 
-    this.http.post('http://localhost:3000/users/update', { email: this.email, updateData }).subscribe({
+    this.http.post('/users/update', { email: this.email, updateData }).subscribe({
       next: (res: any) => {
         if (res?.success) {
           const updated = res.user;
@@ -125,7 +125,7 @@ export class Account {
       return;
     }
 
-    this.http.post('http://localhost:3000/users/updatePassword', { email: this.email, currentPassword: current, newPassword: nueva }).subscribe({
+    this.http.post('/users/updatePassword', { email: this.email, currentPassword: current, newPassword: nueva }).subscribe({
       next: (res: any) => {
         if (res?.success) {
           // Actualizar localStorage si backend devolvió usuario (sin contrasena)
@@ -164,7 +164,7 @@ export class Account {
     }).then((result) => {
       if (result.isConfirmed) {
         // Lógica para eliminar la cuenta
-        this.http.post('http://localhost:3000/users/delete', { email: this.email }).subscribe({
+        this.http.post('/users/delete', { email: this.email }).subscribe({
           next: (res: any) => {
             if (res?.success) {
               Swal.fire({ icon: 'success', title: 'Cuenta eliminada', text: 'Tu cuenta ha sido eliminada correctamente' });

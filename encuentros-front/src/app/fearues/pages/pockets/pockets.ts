@@ -75,7 +75,7 @@ export class Pockets implements OnInit {
     if (!this.encuentroId) return;
 
     this.http
-      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .get<any>(`/presupuesto?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (presupuesto) => {
           if (presupuesto) {
@@ -92,7 +92,7 @@ export class Pockets implements OnInit {
     if (!this.encuentroId) return;
 
     this.loading = true;
-    this.http.get<any[]>(`http://localhost:3000/bolsillo?encuentro=${this.encuentroId}`).subscribe({
+    this.http.get<any[]>(`/bolsillo?encuentro=${this.encuentroId}`).subscribe({
       next: (bolsillos) => {
         this.loading = false;
         this.pockets = bolsillos.map((b) => ({
@@ -135,7 +135,7 @@ export class Pockets implements OnInit {
       saldoActual: 0,
     };
 
-    this.http.post<any>('http://localhost:3000/bolsillo', payload).subscribe({
+    this.http.post<any>('/bolsillo', payload).subscribe({
       next: (bolsillo) => {
         this.submitting = false;
         this.pockets = [

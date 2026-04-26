@@ -59,22 +59,22 @@ describe('Contributions Component', () => {
     fixture.detectChanges(); // triggers ngOnInit
 
     // 1. loadParticipantes
-    const reqParticipantes = httpTestingController.expectOne('http://localhost:3000/participantes-encuentro?encuentro=10');
+    const reqParticipantes = httpTestingController.expectOne('/participantes-encuentro?encuentro=10');
     reqParticipantes.flush([{ id: 99 }, { id: 100 }]);
 
     // 2. loadBudget
-    const reqBudget = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+    const reqBudget = httpTestingController.expectOne('/presupuesto?encuentro=10');
     reqBudget.flush({ id: 200, presupuestoTotal: 1000 });
 
     // 3. loadPockets
-    const reqPockets = httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10');
+    const reqPockets = httpTestingController.expectOne('/bolsillo?encuentro=10');
     reqPockets.flush([
       { id: 1, nombre: 'Viaje', saldoActual: 0 },
       { id: 2, nombre: 'Comida', saldoActual: 0 }
     ]);
 
     // 4. loadAportes
-    const reqAportes = httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10');
+    const reqAportes = httpTestingController.expectOne('/aporte?encuentro=10');
     reqAportes.flush([
       { id: 50, idBolsillo: 1, idUsuario: 99, monto: 500 }, // Mi aporte al bolsillo 1
       { id: 51, idBolsillo: 1, idUsuario: 100, monto: 500 } // Otro aporte al bolsillo 1
@@ -152,43 +152,43 @@ describe('Contributions Component', () => {
     });
 
     it('should handle API errors across parallel requests (participantes)', () => {
-      const r1 = httpTestingController.expectOne('http://localhost:3000/participantes-encuentro?encuentro=10');
+      const r1 = httpTestingController.expectOne('/participantes-encuentro?encuentro=10');
       r1.flush('Error', { status: 500, statusText: 'Error' });
       expect(console.error).toHaveBeenCalledWith('Error cargando participantes', jasmine.any(Object));
 
-      httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10').flush({});
-      httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10').flush([]);
-      httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10').flush([]);
+      httpTestingController.expectOne('/presupuesto?encuentro=10').flush({});
+      httpTestingController.expectOne('/bolsillo?encuentro=10').flush([]);
+      httpTestingController.expectOne('/aporte?encuentro=10').flush([]);
     });
 
     it('should handle API errors across parallel requests (budget)', () => {
-      httpTestingController.expectOne('http://localhost:3000/participantes-encuentro?encuentro=10').flush([]);
+      httpTestingController.expectOne('/participantes-encuentro?encuentro=10').flush([]);
       
-      const r2 = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const r2 = httpTestingController.expectOne('/presupuesto?encuentro=10');
       r2.flush('Error', { status: 500, statusText: 'Error' });
       expect(console.error).toHaveBeenCalledWith('Error cargando presupuesto', jasmine.any(Object));
 
-      httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10').flush([]);
-      httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10').flush([]);
+      httpTestingController.expectOne('/bolsillo?encuentro=10').flush([]);
+      httpTestingController.expectOne('/aporte?encuentro=10').flush([]);
     });
 
     it('should handle API errors across parallel requests (pockets)', () => {
-      httpTestingController.expectOne('http://localhost:3000/participantes-encuentro?encuentro=10').flush([]);
-      httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10').flush({});
+      httpTestingController.expectOne('/participantes-encuentro?encuentro=10').flush([]);
+      httpTestingController.expectOne('/presupuesto?encuentro=10').flush({});
       
-      const r3 = httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10');
+      const r3 = httpTestingController.expectOne('/bolsillo?encuentro=10');
       r3.flush('Error', { status: 500, statusText: 'Error' });
       expect(console.error).toHaveBeenCalledWith('Error cargando bolsillos', jasmine.any(Object));
 
-      httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10').flush([]);
+      httpTestingController.expectOne('/aporte?encuentro=10').flush([]);
     });
 
     it('should handle API errors across parallel requests (aportes)', () => {
-      httpTestingController.expectOne('http://localhost:3000/participantes-encuentro?encuentro=10').flush([]);
-      httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10').flush({});
-      httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10').flush([]);
+      httpTestingController.expectOne('/participantes-encuentro?encuentro=10').flush([]);
+      httpTestingController.expectOne('/presupuesto?encuentro=10').flush({});
+      httpTestingController.expectOne('/bolsillo?encuentro=10').flush([]);
       
-      const r4 = httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10');
+      const r4 = httpTestingController.expectOne('/aporte?encuentro=10');
       r4.flush('Error', { status: 500, statusText: 'Error' });
       expect(console.error).toHaveBeenCalledWith('Error cargando aportes', jasmine.any(Object));
       expect(component.loading).toBeFalse();
@@ -256,7 +256,7 @@ describe('Contributions Component', () => {
       component.confirmContribution(1);
       flush();
       
-      const reqPatch = httpTestingController.expectOne('http://localhost:3000/aporte/50');
+      const reqPatch = httpTestingController.expectOne('/aporte/50');
       expect(reqPatch.request.method).toBe('PATCH');
       expect(reqPatch.request.body).toEqual({ monto: 600 });
       reqPatch.flush({});
@@ -264,7 +264,7 @@ describe('Contributions Component', () => {
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: '¡Aporte actualizado!' }));
       
       // It subsequently calls loadAportes()
-      httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10').flush([]);
+      httpTestingController.expectOne('/aporte?encuentro=10').flush([]);
     }));
 
     it('should post new contribution if myAporte does not exist', fakeAsync(() => {
@@ -277,7 +277,7 @@ describe('Contributions Component', () => {
       component.confirmContribution(2);
       flush();
       
-      const reqPost = httpTestingController.expectOne('http://localhost:3000/aporte');
+      const reqPost = httpTestingController.expectOne('/aporte');
       expect(reqPost.request.method).toBe('POST');
       expect(reqPost.request.body).toEqual({ idBolsillo: 2, idEncuentro: 10, idUsuario: 99, monto: 1000 });
       reqPost.flush({ id: 900 });
@@ -285,8 +285,8 @@ describe('Contributions Component', () => {
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: '¡Aporte registrado!' }));
       
       // It subsqeuently calls loadAportes and loadPockets
-      httpTestingController.expectOne('http://localhost:3000/aporte?encuentro=10').flush([]);
-      httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10').flush([]);
+      httpTestingController.expectOne('/aporte?encuentro=10').flush([]);
+      httpTestingController.expectOne('/bolsillo?encuentro=10').flush([]);
     }));
 
     it('should handle patch error', fakeAsync(() => {
@@ -299,7 +299,7 @@ describe('Contributions Component', () => {
       component.confirmContribution(1);
       flush();
       
-      const reqPatch = httpTestingController.expectOne('http://localhost:3000/aporte/50');
+      const reqPatch = httpTestingController.expectOne('/aporte/50');
       reqPatch.flush('Error', { status: 500, statusText: 'Error' });
       
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: 'Error', text: 'No se pudo actualizar el aporte' }));
@@ -317,7 +317,7 @@ describe('Contributions Component', () => {
       component.confirmContribution(2);
       flush();
       
-      const reqPost = httpTestingController.expectOne('http://localhost:3000/aporte');
+      const reqPost = httpTestingController.expectOne('/aporte');
       reqPost.flush({ message: 'Server blow up' }, { status: 500, statusText: 'Error' });
       
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: 'Error', text: 'Server blow up' }));

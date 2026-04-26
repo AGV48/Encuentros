@@ -85,7 +85,7 @@ describe('Chats Component', () => {
     it('should load and formats chats correctly from backend', () => {
       component.loadChats();
 
-      const req = httpTestingController.expectOne('http://localhost:3000/encuentro?creador=99');
+      const req = httpTestingController.expectOne('/encuentro?creador=99');
       expect(req.request.method).toEqual('GET');
 
       req.flush([
@@ -150,7 +150,7 @@ describe('Chats Component', () => {
       spyOn(console, 'error');
       
       component.loadChats();
-      const req = httpTestingController.expectOne('http://localhost:3000/encuentro?creador=99');
+      const req = httpTestingController.expectOne('/encuentro?creador=99');
       req.flush('Error de servidor', { status: 500, statusText: 'Internal Server Error' });
 
       expect(console.error).toHaveBeenCalledWith('Error cargando encuentros', jasmine.any(Object));

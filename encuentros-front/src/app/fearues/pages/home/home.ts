@@ -154,7 +154,7 @@ export class Home {
     };
 
     this.creating = true;
-    this.http.post('http://localhost:3000/encuentro', payload, { responseType: 'json' }).subscribe({
+    this.http.post('/encuentro', payload, { responseType: 'json' }).subscribe({
       next: (res: any) => {
         this.creating = false;
         this.showCreate = false;
@@ -192,7 +192,7 @@ export class Home {
     }
     console.log('Loading encuentros for userId:', this.currentUserId);
     this.http
-      .get<any[]>(`http://localhost:3000/encuentro/resumen?creador=${this.currentUserId}`)
+      .get<any[]>(`/encuentro/resumen?creador=${this.currentUserId}`)
       .subscribe({
         next: (res) => {
           console.log('Encuentros received from API:', res);

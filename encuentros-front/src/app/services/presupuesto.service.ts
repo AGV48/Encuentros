@@ -29,7 +29,7 @@ export interface CreateItemPresupuestoDto {
 })
 export class PresupuestoService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/presupuesto';
+  private readonly API_URL = '/presupuesto';
 
   /**
    * Obtiene un presupuesto por ID

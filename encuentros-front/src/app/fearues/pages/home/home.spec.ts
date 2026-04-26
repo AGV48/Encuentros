@@ -86,7 +86,7 @@ describe('Home Component', () => {
       expect(component.currentUserId).toBe(100);
       
       // Should trigger loadEncuentros via constructor
-      const req = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=100');
+      const req = httpTestingController.expectOne('/encuentro/resumen?creador=100');
       req.flush([]);
     });
   });
@@ -116,7 +116,7 @@ describe('Home Component', () => {
       httpTestingController = TestBed.inject(HttpTestingController);
 
       // Flush initial load
-      const initReq = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=99');
+      const initReq = httpTestingController.expectOne('/encuentro/resumen?creador=99');
       initReq.flush([]);
     });
 
@@ -142,14 +142,14 @@ describe('Home Component', () => {
       component.newEncuentro = { idCreador: 99, titulo: 'T', descripcion: 'D', lugar: 'L', fecha: '2026-04-01T10:00:00Z' };
       component.createEncuentro();
 
-      const reqPost = httpTestingController.expectOne('http://localhost:3000/encuentro');
+      const reqPost = httpTestingController.expectOne('/encuentro');
       expect(reqPost.request.method).toBe('POST');
       reqPost.flush({ message: 'Success' });
 
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: 'Encuentro creado' }));
       expect(component.newEncuentro.titulo).toBe('');
       
-      const reqGet = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=99');
+      const reqGet = httpTestingController.expectOne('/encuentro/resumen?creador=99');
       reqGet.flush([]);
     });
 
@@ -157,7 +157,7 @@ describe('Home Component', () => {
       component.newEncuentro = { idCreador: 99, titulo: 'T', descripcion: 'D', lugar: 'L', fecha: '2026-04-01T10:00:00Z' };
       component.createEncuentro();
 
-      const req = httpTestingController.expectOne('http://localhost:3000/encuentro');
+      const req = httpTestingController.expectOne('/encuentro');
       req.flush({ message: 'Error Server' }, { status: 500, statusText: 'Internal Error' });
 
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: 'Error creando encuentro' }));
@@ -167,7 +167,7 @@ describe('Home Component', () => {
     it('should load encuentros and compute metrics correctly', () => {
       component.loadEncuentros();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=99');
+      const req = httpTestingController.expectOne('/encuentro/resumen?creador=99');
       req.flush([
         { id: 1, titulo: 'Today', fecha: '2026-03-25T14:00:00Z' },
         { id: 2, titulo: 'Past', fecha: '2026-03-20T10:00:00Z' },
@@ -201,7 +201,7 @@ describe('Home Component', () => {
       fixture = TestBed.createComponent(Home);
       component = fixture.componentInstance;
       httpTestingController = TestBed.inject(HttpTestingController);
-      const initReq = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=99');
+      const initReq = httpTestingController.expectOne('/encuentro/resumen?creador=99');
       initReq.flush([]);
     });
 
@@ -224,7 +224,7 @@ describe('Home Component', () => {
       expect(encuentroServiceSpy.salirDelEncuentro).toHaveBeenCalledWith(50, 99);
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: 'Has salido del encuentro' }));
       
-      const reqList = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=99');
+      const reqList = httpTestingController.expectOne('/encuentro/resumen?creador=99');
       reqList.flush([]);
     }));
 
@@ -237,7 +237,7 @@ describe('Home Component', () => {
       expect(encuentroServiceSpy.deleteEncuentro).toHaveBeenCalledWith(50, 99);
       expect(Swal.fire).toHaveBeenCalledWith(jasmine.objectContaining({ title: 'Encuentro eliminado' }));
       
-      const reqList = httpTestingController.expectOne('http://localhost:3000/encuentro/resumen?creador=99');
+      const reqList = httpTestingController.expectOne('/encuentro/resumen?creador=99');
       reqList.flush([]);
     }));
 

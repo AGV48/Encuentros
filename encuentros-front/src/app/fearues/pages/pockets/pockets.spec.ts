@@ -63,11 +63,11 @@ describe('Pockets Component', () => {
     fixture.detectChanges(); // calls ngOnInit
 
     // Flush loadPresupuesto parameters:
-    const reqPresupuesto = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+    const reqPresupuesto = httpTestingController.expectOne('/presupuesto?encuentro=10');
     reqPresupuesto.flush({ id: 200 });
     
     // Flush loadPockets parameters:
-    const reqPockets = httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10');
+    const reqPockets = httpTestingController.expectOne('/bolsillo?encuentro=10');
     reqPockets.flush([{ id: 1, nombre: 'Viaje', saldoActual: 1500, idPresupuesto: 200, idEncuentro: 10 }]);
   };
 
@@ -115,10 +115,10 @@ describe('Pockets Component', () => {
       httpTestingController = TestBed.inject(HttpTestingController);
       fixture.detectChanges(); 
       
-      const reqPresupuesto = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const reqPresupuesto = httpTestingController.expectOne('/presupuesto?encuentro=10');
       reqPresupuesto.flush('Not Found', { status: 404, statusText: 'Not Found' });
       
-      const reqPockets = httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10');
+      const reqPockets = httpTestingController.expectOne('/bolsillo?encuentro=10');
       reqPockets.flush([]);
 
       expect(console.error).toHaveBeenCalled();
@@ -132,10 +132,10 @@ describe('Pockets Component', () => {
       httpTestingController = TestBed.inject(HttpTestingController);
       fixture.detectChanges(); 
       
-      const reqPresupuesto = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const reqPresupuesto = httpTestingController.expectOne('/presupuesto?encuentro=10');
       reqPresupuesto.flush({ id: 200 });
       
-      const reqPockets = httpTestingController.expectOne('http://localhost:3000/bolsillo?encuentro=10');
+      const reqPockets = httpTestingController.expectOne('/bolsillo?encuentro=10');
       reqPockets.flush('Server Error', { status: 500, statusText: 'Server Error' });
 
       expect(component.loading).toBeFalse();
@@ -167,7 +167,7 @@ describe('Pockets Component', () => {
       
       expect(component.submitting).toBeTrue();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/bolsillo');
+      const req = httpTestingController.expectOne('/bolsillo');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ idEncuentro: 10, idPresupuesto: 200, nombre: 'Comida', saldoActual: 0 });
       
@@ -185,7 +185,7 @@ describe('Pockets Component', () => {
       component.pocketForm.setValue({ nombre: 'Bebidas' });
       component.onCreatePocket();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/bolsillo');
+      const req = httpTestingController.expectOne('/bolsillo');
       req.flush({ message: 'Error de servidor' }, { status: 500, statusText: 'Internal Error' });
       
       expect(component.submitting).toBeFalse();

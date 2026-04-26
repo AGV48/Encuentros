@@ -28,7 +28,7 @@ export interface CreateEncuentroDto {
 })
 export class EncuentroService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/encuentro';
+  private readonly API_URL = '/encuentro';
 
   /**
    * Obtiene todos los encuentros del usuario (como creador o participante)

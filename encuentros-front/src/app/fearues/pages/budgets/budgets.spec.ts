@@ -69,7 +69,7 @@ describe('Budgets Component', () => {
       spyOn(console, 'warn');
       createComponent();
 
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const req = httpTestingController.expectOne('/presupuesto?encuentro=10');
       req.flush({ id: 100 });
 
       expect(console.warn).toHaveBeenCalledWith('Error parseando user desde localStorage', jasmine.any(SyntaxError));
@@ -91,7 +91,7 @@ describe('Budgets Component', () => {
     it('should load presupuesto correctly on init', () => {
       createComponent();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const req = httpTestingController.expectOne('/presupuesto?encuentro=10');
       expect(req.request.method).toBe('GET');
       req.flush({ id: 100, presupuestoTotal: 50, idEncuentro: 10, items: [] });
       
@@ -104,7 +104,7 @@ describe('Budgets Component', () => {
       spyOn(console, 'error');
       createComponent();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const req = httpTestingController.expectOne('/presupuesto?encuentro=10');
       req.flush('Not Found', { status: 404, statusText: 'Not Found' });
       
       expect(component.loading).toBeFalse();
@@ -115,7 +115,7 @@ describe('Budgets Component', () => {
   describe('Adding Items', () => {
     beforeEach(() => {
       createComponent();
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const req = httpTestingController.expectOne('/presupuesto?encuentro=10');
       req.flush({ id: 100, presupuestoTotal: 0, idEncuentro: 10, items: [] });
     });
 
@@ -132,7 +132,7 @@ describe('Budgets Component', () => {
       
       expect(component.addingItem).toBeTrue();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto/item');
+      const req = httpTestingController.expectOne('/presupuesto/item');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ idPresupuesto: 100, idEncuentro: 10, nombreItem: 'Cervezas', montoItem: 500 });
       
@@ -150,7 +150,7 @@ describe('Budgets Component', () => {
       component.itemForm.setValue({ nombreItem: 'Cervezas', montoItem: '500' });
       component.onAddItem();
       
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto/item');
+      const req = httpTestingController.expectOne('/presupuesto/item');
       req.flush({ message: 'Error Server' }, { status: 500, statusText: 'Internal Error' });
       
       expect(component.addingItem).toBeFalse();
@@ -162,7 +162,7 @@ describe('Budgets Component', () => {
   describe('Routing', () => {
     beforeEach(() => {
       createComponent();
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const req = httpTestingController.expectOne('/presupuesto?encuentro=10');
       req.flush({ id: 100 });
     });
 
@@ -180,7 +180,7 @@ describe('Budgets Component', () => {
   describe('Deleting Items', () => {
     beforeEach(() => {
       createComponent();
-      const req = httpTestingController.expectOne('http://localhost:3000/presupuesto?encuentro=10');
+      const req = httpTestingController.expectOne('/presupuesto?encuentro=10');
       req.flush({ 
         id: 100, 
         presupuestoTotal: 500, 

@@ -131,7 +131,7 @@ export default class Contributions implements OnInit {
     if (!this.encuentroId) return;
 
     this.http
-      .get<any[]>(`http://localhost:3000/participantes-encuentro?encuentro=${this.encuentroId}`)
+      .get<any[]>(`/participantes-encuentro?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (participantes) => {
           this.participantes.totalParticipantes = participantes.length;
@@ -152,7 +152,7 @@ export default class Contributions implements OnInit {
     if (!this.encuentroId) return;
 
     this.http
-      .get<any>(`http://localhost:3000/presupuesto?encuentro=${this.encuentroId}`)
+      .get<any>(`/presupuesto?encuentro=${this.encuentroId}`)
       .subscribe({
         next: (presupuesto) => {
           if (presupuesto) {
@@ -178,7 +178,7 @@ export default class Contributions implements OnInit {
   private loadPockets(): void {
     if (!this.encuentroId) return;
 
-    this.http.get<any[]>(`http://localhost:3000/bolsillo?encuentro=${this.encuentroId}`).subscribe({
+    this.http.get<any[]>(`/bolsillo?encuentro=${this.encuentroId}`).subscribe({
       next: (bolsillos) => {
         this.pockets = bolsillos.map((b) => ({
           id: b.id,
@@ -195,7 +195,7 @@ export default class Contributions implements OnInit {
   private loadAportes(): void {
     if (!this.encuentroId) return;
 
-    this.http.get<any[]>(`http://localhost:3000/aporte?encuentro=${this.encuentroId}`).subscribe({
+    this.http.get<any[]>(`/aporte?encuentro=${this.encuentroId}`).subscribe({
       next: (aportes) => {
         this.aportes = aportes.map((a) => ({
           id: a.id,
@@ -357,7 +357,7 @@ export default class Contributions implements OnInit {
 
     if (existingAporte && existingAporte.id) {
       // Actualizar aporte existente
-      this.http.patch(`http://localhost:3000/aporte/${existingAporte.id}`, { monto }).subscribe({
+      this.http.patch(`/aporte/${existingAporte.id}`, { monto }).subscribe({
         next: () => {
           this.submittingPocketId = null;
           Swal.fire({
@@ -387,7 +387,7 @@ export default class Contributions implements OnInit {
         monto,
       };
 
-      this.http.post('http://localhost:3000/aporte', nuevoAporte).subscribe({
+      this.http.post('/aporte', nuevoAporte).subscribe({
         next: () => {
           this.submittingPocketId = null;
           Swal.fire({

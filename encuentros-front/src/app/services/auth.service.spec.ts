@@ -67,7 +67,7 @@ describe('AuthService', () => {
         expect(JSON.parse(localStorage.getItem('currentUser')!)).toEqual(jasmine.objectContaining({ email: 'test@test.com' }));
       });
 
-      const req = httpMock.expectOne('http://localhost:3000/auth/register');
+      const req = httpMock.expectOne('/auth/register');
       expect(req.request.method).toBe('POST');
       req.flush(mockAuthResponse);
     });
@@ -78,7 +78,7 @@ describe('AuthService', () => {
         expect(localStorage.getItem('isLogged')).toBe('true');
       });
 
-      const req = httpMock.expectOne('http://localhost:3000/auth/login');
+      const req = httpMock.expectOne('/auth/login');
       expect(req.request.method).toBe('POST');
       req.flush(mockAuthResponse);
     });
@@ -110,7 +110,7 @@ describe('AuthService', () => {
       service.validateToken().subscribe(res => {
         expect(res).toBeTruthy();
       });
-      const req = httpMock.expectOne('http://localhost:3000/auth/validate');
+      const req = httpMock.expectOne('/auth/validate');
       req.flush({ valid: true });
     });
   });
@@ -120,7 +120,7 @@ describe('AuthService', () => {
       service.forgotPassword('test@test.com').subscribe(res => {
         expect(res.message).toBe('Email sent');
       });
-      const req = httpMock.expectOne('http://localhost:3000/auth/forgot-password');
+      const req = httpMock.expectOne('/auth/forgot-password');
       req.flush({ message: 'Email sent' });
     });
 
@@ -128,7 +128,7 @@ describe('AuthService', () => {
       service.resetPassword('token', 'new-pwd').subscribe(res => {
         expect(res.message).toBe('Success');
       });
-      const req = httpMock.expectOne('http://localhost:3000/auth/reset-password');
+      const req = httpMock.expectOne('/auth/reset-password');
       req.flush({ message: 'Success' });
     });
   });
