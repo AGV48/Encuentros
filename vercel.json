@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "npm ci --prefix Encuentros-Front",
-  "buildCommand": "npm run build --prefix Encuentros-Front",
+  "installCommand": "cd Encuentros-Front && npm ci",
+  "buildCommand": "cd Encuentros-Front && npm run build",
   "outputDirectory": "Encuentros-Front/dist/encuentros-front/browser",
   "rewrites": [
     {
