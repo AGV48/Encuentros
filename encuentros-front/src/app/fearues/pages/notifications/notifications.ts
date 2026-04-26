@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { FriendshipService } from '../../../modules/amistades/friendship.service';
 
 @Component({
   selector: 'app-notifications',
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
   styleUrl: './notifications.css'
 })
 export class Notifications {
-  http = inject(HttpClient);
+  private friendshipService = inject(FriendshipService);
   notifications: Array<any> = [];
   accepted: Array<any> = [];
   loading = false;
@@ -30,14 +30,17 @@ export class Notifications {
   loadNotifications() {
     if (!this.currentUserId) return;
     this.loading = true;
-    this.http.get<any>(`http://localhost:3000/users/notifications?userId=${this.currentUserId}`).subscribe({
+    this.friendshipService.getNotifications(this.currentUserId).subscribe({
       next: res => {
-        // backend devuelve { pending: [...], accepted: [...] }
         this.notifications = (res && Array.isArray(res.pending)) ? res.pending : [];
         this.accepted = (res && Array.isArray(res.accepted)) ? res.accepted : [];
         this.loading = false;
       },
-      error: err => { this.loading = false; console.error(err); Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar notificaciones' }); }
+      error: err => {
+        this.loading = false;
+        console.error(err);
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar notificaciones' });
+      }
     });
   }
 
@@ -46,10 +49,9 @@ export class Notifications {
       Swal.fire({ icon: 'warning', title: 'No autorizado', text: 'Inicia sesión' });
       return;
     }
-    this.http.post('http://localhost:3000/users/accept-request', { id_relacion_amistad: id_relacion, userId: this.currentUserId }).subscribe({
+    this.friendshipService.acceptRequest(id_relacion, this.currentUserId).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Solicitud aceptada' });
-        // remover notificación aceptada (admitir distintos nombres de propiedad según driver)
         this.notifications = this.notifications.filter(n => !(n.id_relacion === id_relacion || n.ID_RELACION === id_relacion || n.id_relacion_amistad === id_relacion));
         this.loadNotifications();
       },
@@ -66,10 +68,9 @@ export class Notifications {
       Swal.fire({ icon: 'warning', title: 'No autorizado', text: 'Inicia sesión' });
       return;
     }
-    this.http.post('http://localhost:3000/users/reject-request', { id_relacion_amistad: id_relacion, userId: this.currentUserId }).subscribe({
+    this.friendshipService.rejectRequest(id_relacion, this.currentUserId).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Solicitud rechazada' });
-        // remover notificación rechazada
         this.notifications = this.notifications.filter(n => !(n.id_relacion === id_relacion || n.ID_RELACION === id_relacion || n.id_relacion_amistad === id_relacion));
         this.loadNotifications();
       },
@@ -81,3 +82,4 @@ export class Notifications {
     });
   }
 }
+
